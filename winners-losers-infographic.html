@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winners and Losers: Generative AI and Freelancer Demand Shift</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 45px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f5576c;
+        }
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric {
+            padding: 25px;
+            background: #fff5f7;
+            border-radius: 12px;
+            text-align: center;
+            border-top: 4px solid #f5576c;
+        }
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f5576c;
+            margin-bottom: 8px;
+        }
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        .classification-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .skill-category {
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid;
+        }
+        .substitutable {
+            background: #ffe5e9;
+            border-left-color: #f5576c;
+        }
+        .complementary {
+            background: #fff5f7;
+            border-left-color: #f093fb;
+        }
+        .unaffected {
+            background: #f5f5f5;
+            border-left-color: #999;
+        }
+        .skill-category h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .substitutable h3 {
+            color: #c2185b;
+        }
+        .complementary h3 {
+            color: #d946ef;
+        }
+        .unaffected h3 {
+            color: #666;
+        }
+        .skill-category p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .skill-examples {
+            font-size: 12px;
+            line-height: 1.7;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+        .skill-examples strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+        }
+        .winners-losers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .winner, .loser {
+            padding: 25px;
+            border-radius: 12px;
+        }
+        .winner {
+            background: #e8f5e9;
+            border-left: 5px solid #4caf50;
+        }
+        .loser {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+        .winner h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+        .loser h3 {
+            color: #c62828;
+            margin-bottom: 15px;
+        }
+        .job-item {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .job-item:last-child {
+            border-bottom: none;
+        }
+        .job-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        .job-change {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .winner .job-change {
+            color: #4caf50;
+        }
+        .loser .job-change {
+            color: #f44336;
+        }
+        .paradox {
+            background: #fdf3e1;
+            border-left: 5px solid #ff9800;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .paradox h3 {
+            color: #e65100;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .paradox p {
+            color: #e65100;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .implications {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .implication {
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            border-top: 4px solid #f5576c;
+        }
+        .implication h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .implication p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .footer {
+            background: #f5f5f5;
+            padding: 30px 40px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+        .footer a {
+            color: #f5576c;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .key-metrics,
+            .classification-grid,
+            .winners-losers,
+            .implications {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .section-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Winners and Losers</h1>
+            <p>Generative AI and Freelancer Demand Shift<br>
+            Teutloff et al. (2025) | Journal of Economic Behavior & Organization</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title">🎯 핵심 발견: 창조적 파괴의 가속화</h2>
+                <div class="key-metrics">
+                    <div class="metric">
+                        <div class="metric-value">-24%</div>
+                        <div class="metric-label">대체 가능 직무<br>상대적 수요 감소<br>(ChatGPT 이후)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">+179%</div>
+                        <div class="metric-label">AI 챗봇 개발<br>수요 급증<br>(약 3배)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">300만+</div>
+                        <div class="metric-label">분석 구인공고<br>2021~2023년<br>글로벌 플랫폼</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🏷️ 스킬 3분류: AI 영향도에 따른 분류</h2>
+                <div class="classification-grid">
+                    <div class="skill-category substitutable">
+                        <h3>🔴 대체 가능<br>(Substitutable)</h3>
+                        <p><strong>정의:</strong> 비전문가도 LLM으로 전문가 수준의 결과를 얻을 수 있는 작업</p>
+                        <div class="skill-examples">
+                            <strong>예시:</strong>
+                            블로그 글쓰기<br>
+                            단순 번역<br>
+                            텍스트 교정<br>
+                            (12개 클러스터)
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category complementary">
+                        <h3>🟣 보완 가능<br>(Complementary)</h3>
+                        <p><strong>정의:</strong> 전문가가 LLM 도구로 시간을 절반 이상 단축할 수 있는 작업</p>
+                        <div class="skill-examples">
+                            <strong>예시:</strong>
+                            웹 개발<br>
+                            ML 모델링<br>
+                            챗봇 개발<br>
+                            (59개 클러스터)
+                        </div>
+                    </div>
+                    
+                    <div class="skill-category unaffected">
+                        <h3>⚪ 영향 없음<br>(Unaffected)</h3>
+                        <p><strong>정의:</strong> LLM 활용에 따른 시간 단축 효과가 제한적인 작업</p>
+                        <div class="skill-examples">
+                            <strong>예시:</strong>
+                            그래픽 디자인<br>
+                            일러스트레이션<br>
+                            물리적 서비스<br>
+                            (45개 클러스터)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📊 직무별 승패: Winners and Losers</h2>
+                <div class="winners-losers">
+                    <div class="loser">
+                        <h3>❌ 최대 피해 (Losers)</h3>
+                        
+                        <div class="job-item">
+                            <div class="job-name">부동산 관련 글쓰기</div>
+                            <div class="job-change">-52%</div>
+                        </div>
+                        
+                        <div class="job-item">
+                            <div class="job-name">회사 소개 페이지 작성</div>
+                            <div class="job-change">-59%</div>
+                        </div>
+                        
+                        <div class="job-item">
+                            <div class="job-name">블로그 콘텐츠 글쓰기</div>
+                            <div class="job-change">-20%</div>
+                        </div>
+                        
+                        <div class="job-item">
+                            <div class="job-name">서유럽 언어 번역</div>
+                            <div class="job-change">-23%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="winner">
+                        <h3>✅ 최대 성장 (Winners)</h3>
+                        
+                        <div class="job-item">
+                            <div class="job-name">AI 기반 챗봇 개발</div>
+                            <div class="job-change">+179%</div>
+                        </div>
+                        
+                        <div class="job-item">
+                            <div class="job-name">머신러닝 프로젝트</div>
+                            <div class="job-change">+24~29%</div>
+                        </div>
+                        
+                        <div class="job-item">
+                            <div class="job-name">스페인어 현지화</div>
+                            <div class="job-change">안정적 유지</div>
+                        </div>
+                        
+                        <div class="job-item">
+                            <div class="job-name">창작 글쓰기</div>
+                            <div class="job-change">안정적 유지</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="paradox">
+                    <h3>⚠️ 역설: 보완적 스킬도 초급 인력은 감소</h3>
+                    <p>
+                        <strong>실험실 예상:</strong> AI 도구가 초급 프리랜서의 생산성을 높일 것<br><br>
+                        <strong>실제 현장:</strong> 보완적 스킬 전체 수요는 변하지 않았으나, 
+                        초급(Novice) 경력 요구 공고는 -16% 감소<br><br>
+                        <strong>원인:</strong> 기업이 내부 직원에게 AI 도구를 제공하여 
+                        외부 초급 프리랜서 고용 필요성이 감소
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">💡 정책 및 교육적 함의</h2>
+                <div class="implications">
+                    <div class="implication">
+                        <h4>📚 교육의 재설계</h4>
+                        <p>단순 AI 리터러시를 넘어, 학생들이 AI를 도구로 활용해 고차원적 분석을 수행할 수 있도록 돕는 재교육(Reskilling) 프로그램이 시급합니다.</p>
+                    </div>
+                    <div class="implication">
+                        <h4>🔗 경력 초기 사다리 약화</h4>
+                        <p>신규 진입자가 경험을 쌓고 고급 인력으로 성장할 수 있는 사다리가 약화되고 있습니다. 기업-대학 인턴십 연계 강화가 필요합니다.</p>
+                    </div>
+                    <div class="implication">
+                        <h4>✨ 창의성의 가치 재발견</h4>
+                        <p>AI가 쉽게 대체할 수 없는 맥락적 이해, 언어적 뉘앙스, 창의적 스토리텔링, 복합 시스템 통합 스킬의 가치가 상승합니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📋 연구 데이터 & 방법론</h2>
+                <div style="background: #f8f9ff; padding: 25px; border-radius: 12px;">
+                    <p style="font-size: 14px; color: #333; line-height: 1.8; margin-bottom: 15px;">
+                        <strong>분석 대상:</strong> 세계 최대 규모의 글로벌 온라인 프리랜싱 플랫폼<br>
+                        <strong>데이터:</strong> 300만 건 이상의 신규 구인공고 (2021년 1월 ~ 2023년 9월)<br>
+                        <strong>스킬 분류:</strong> Transformer 모델(SBERT)을 통한 116개 세분화된 스킬 클러스터<br>
+                        <strong>분석 방법:</strong> 이중차분법(Difference-in-Differences) + ChatGPT 공개일(2022년 11월 30일) 기점<br>
+                        <strong>AI 분류 신뢰도:</strong> GPT-4o 프롬프트 엔지니어링으로 93% 정확도 달성
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Teutloff, O., Einsiedler, J., Kässi, O., Braesemann, F., Mishkin, P., & del Rio-Chanona, R. M. (2025). Winners and losers of generative AI: Early Evidence of Shifts in Freelancer Demand. Journal of Economic Behavior & Organization, 235, 106845.<br><br>
+            인포그래픽: Donghun Chung | <a href="https://donghunc.kr" target="_blank">donghunc.kr</a>
+        </div>
+    </div>
+</body>
+</html>
