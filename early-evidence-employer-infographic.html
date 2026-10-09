@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 사용 프레이밍과 채용 담당자의 학업 성적 해석 | 인포그래픽</title>
+<style>
+:root{--red:#DC2626;--blue:#2563EB;--blue-light:#DBEAFE;--orange:#EA580C;--green:#059669;--ink:#1E293B;--gray:#64748B;--line:#E2E8F0;--bg:#F8FAFC;--card:#FFF;--shadow:0 4px 24px rgba(0,0,0,.08);--c-ctrl:#64748B;--c-weak:#2563EB;--c-strong:#DC2626}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;word-break:keep-all}
+.container{max-width:900px;margin:0 auto;padding:24px 16px}
+.hero{text-align:center;padding:52px 20px 34px;background:linear-gradient(135deg,var(--blue-light),#FEE2E2);border-radius:20px;margin-bottom:32px}
+.hero .badge{display:inline-block;background:#FEF3C7;color:#92400E;border:1px solid #F59E0B;border-radius:999px;font-size:.72rem;font-weight:700;padding:3px 12px;margin-bottom:14px}
+.hero h1{font-size:clamp(1.3rem,3.6vw,2rem);font-weight:900;margin-bottom:12px;line-height:1.4}
+.hero .subtitle{font-size:.95rem;color:var(--gray);max-width:680px;margin:0 auto}
+.hero .ref{font-size:.8rem;color:var(--gray);font-style:italic;margin-top:12px}
+.section{margin-bottom:34px}
+.section-title{font-size:1.15rem;font-weight:700;margin-bottom:14px;padding-left:12px;border-left:4px solid var(--blue)}
+.section-title.red{border-left-color:var(--red)}
+.section-title.orange{border-left-color:var(--orange)}
+.section-title.green{border-left-color:var(--green)}
+.lead{font-size:.9rem;color:#334155;margin-bottom:14px}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:16px 0}
+.stat-card{background:var(--card);border-radius:16px;padding:18px 14px;text-align:center;box-shadow:var(--shadow)}
+.stat-card .num{font-size:1.7rem;font-weight:900;line-height:1.3}
+.stat-card .label{font-size:.78rem;color:var(--gray);margin-top:4px}
+.card{background:var(--card);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.card h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:.86rem}
+.card ul{padding-left:18px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media(max-width:640px){.compare{grid-template-columns:1fr}}
+.compare-card{border-radius:16px;padding:20px}
+.compare-card.a{background:#EFF6FF;border:2px solid var(--blue)}
+.compare-card.b{background:#FEF2F2;border:2px solid var(--red)}
+.compare-card h3{font-size:1rem;font-weight:700;margin-bottom:6px}
+.compare-card.a h3{color:var(--blue)}
+.compare-card.b h3{color:var(--red)}
+.compare-card p{font-size:.85rem}
+/* tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tab{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 14px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.tab:hover{border-color:#94A3B8}
+.tab.active{color:#fff}
+.tab.active[data-c="ctrl"]{background:var(--c-ctrl);border-color:var(--c-ctrl)}
+.tab.active[data-c="weak"]{background:var(--c-weak);border-color:var(--c-weak)}
+.tab.active[data-c="strong"]{background:var(--c-strong);border-color:var(--c-strong)}
+.tab.active[data-c="neutral"]{background:var(--ink);border-color:var(--ink)}
+.tab:focus-visible{outline:3px solid #93C5FD;outline-offset:2px}
+.panel{display:none}
+.panel.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.cond-box{border-radius:14px;padding:18px;border:2px solid}
+.cond-box.ctrl{background:#F1F5F9;border-color:var(--c-ctrl)}
+.cond-box.weak{background:#EFF6FF;border-color:var(--c-weak)}
+.cond-box.strong{background:#FEF2F2;border-color:var(--c-strong)}
+.cond-box h4{font-size:.95rem;margin-bottom:6px}
+.cond-box p{font-size:.85rem}
+.note{font-size:.76rem;color:var(--gray);margin-top:10px}
+.caution{background:#FEF3C7;border:2px solid #F59E0B;border-radius:14px;padding:14px 16px;margin-top:14px}
+.caution b{color:#92400E}
+.caution p,.caution li{font-size:.82rem;color:#78350F}
+.caution ul{padding-left:18px}
+/* bar charts */
+.bars{margin-top:8px}
+.bar-row{display:grid;grid-template-columns:110px 1fr;align-items:center;gap:10px;margin:10px 0}
+.bar-label{font-size:.82rem;font-weight:700}
+.bar-track{background:#F1F5F9;border-radius:8px;height:34px;position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:800;font-size:.85rem;width:0;transition:width .8s ease}
+.bar-fill.ctrl{background:var(--c-ctrl)}.bar-fill.weak{background:var(--c-weak)}.bar-fill.strong{background:var(--c-strong)}
+.bar-row[data-tip]{cursor:help}
+@media(max-width:520px){.bar-row{grid-template-columns:84px 1fr}.bar-label{font-size:.75rem}}
+.tip-box{min-height:46px;background:#F8FAFC;border:1px dashed #CBD5E1;border-radius:10px;padding:10px 12px;font-size:.8rem;color:#334155;margin-top:10px}
+.delta-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:14px}
+.delta{border-radius:12px;padding:12px;text-align:center;background:#fff;border:1px solid var(--line)}
+.delta .v{font-size:1.3rem;font-weight:900}
+.delta .t{font-size:.76rem;color:var(--gray)}
+.sig{display:inline-block;font-size:.68rem;font-weight:700;border-radius:6px;padding:1px 7px;margin-left:4px;vertical-align:middle}
+.sig.yes{background:#D1FAE5;color:#065F46}
+.sig.no{background:#E2E8F0;color:#475569}
+/* interview scale */
+.scale{position:relative;height:96px;margin:18px 6px 6px}
+.scale-axis{position:absolute;left:0;right:0;top:60px;height:4px;background:#CBD5E1;border-radius:2px}
+.tick{position:absolute;top:68px;font-size:.7rem;color:var(--gray);transform:translateX(-50%)}
+.gap-band{position:absolute;top:52px;height:20px;border-radius:6px;opacity:.22;transition:left .6s ease,width .6s ease,background .3s}
+.dot{position:absolute;top:50px;width:24px;height:24px;border-radius:50%;transform:translateX(-50%);border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:left .6s ease,background .3s}
+.dot-lbl{position:absolute;top:2px;transform:translateX(-50%);font-size:.74rem;font-weight:700;text-align:center;white-space:nowrap;transition:left .6s ease}
+.gap-readout{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.gap-readout .delta{flex:1;min-width:150px}
+/* salary */
+.sal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:end;height:220px;padding:0 6px;border-bottom:2px solid #CBD5E1}
+.sal-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.sal-bar{width:70%;max-width:90px;border-radius:10px 10px 0 0;transition:height .7s ease;display:flex;align-items:flex-start;justify-content:center;color:#fff;font-weight:800;font-size:.82rem;padding-top:6px;min-height:0}
+.sal-bar.na{background:repeating-linear-gradient(45deg,#E2E8F0,#E2E8F0 6px,#F1F5F9 6px,#F1F5F9 12px);color:var(--gray);font-size:.7rem;font-weight:600;text-align:center;padding:6px 4px}
+.sal-x{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;font-size:.78rem;font-weight:700;margin-top:6px}
+/* myth cards */
+.myth-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.myth{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:16px;cursor:pointer;border:2px solid transparent;transition:.2s;text-align:left;font-family:inherit;color:inherit;width:100%}
+.myth:hover{border-color:#FCA5A5}
+.myth .q{font-size:.86rem;font-weight:700}
+.myth .q::before{content:'오해  ';color:var(--red);font-weight:900;font-size:.75rem}
+.myth .a{display:none;font-size:.8rem;color:#334155;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.myth .a::before{content:'원고 근거  ';color:var(--green);font-weight:900;font-size:.75rem}
+.myth .hint{font-size:.7rem;color:var(--gray);margin-top:6px}
+.myth.open{border-color:var(--green)}
+.myth.open .a{display:block}
+.myth.open .hint{display:none}
+/* accordion */
+details.acc{background:#fff;border-radius:12px;box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden}
+details.acc summary{cursor:pointer;padding:14px 16px;font-size:.9rem;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{content:'+';font-size:1.2rem;color:var(--gray);font-weight:400}
+details.acc[open] summary::after{content:'−'}
+details.acc .body{padding:0 16px 14px;font-size:.84rem;color:#334155}
+.tag{display:inline-block;font-size:.68rem;font-weight:700;border-radius:6px;padding:1px 7px;background:#E0E7FF;color:#3730A3;margin-left:6px;white-space:nowrap}
+.limit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.limit{background:#fff;border-left:4px solid var(--orange);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow);font-size:.82rem}
+.limit b{display:block;font-size:.86rem;margin-bottom:2px}
+.implication{background:var(--blue-light);border-radius:16px;padding:22px;margin-top:8px}
+.implication h3{color:#1E40AF;font-size:1.05rem;margin-bottom:10px}
+.implication p{font-size:.88rem}
+.footer{text-align:center;padding:36px 16px;color:var(--gray);font-size:.78rem;border-top:1px solid var(--line);margin-top:20px}
+.footer .cite{max-width:720px;margin:0 auto 10px;text-align:left;padding-left:2em;text-indent:-2em}
+.footer a{color:var(--blue);word-break:break-all}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HERO -->
+<header class="hero">
+  <span class="badge">워킹페이퍼 · 동료심사 전</span>
+  <h1>AI는 학생의 능력을 높이는가, 대신하는가?<br>채용 담당자의 학업 성적 해석</h1>
+  <p class="subtitle">AI가 학생의 능력을 높인다고 보는가, 학생의 능력을 대신한다고 보는가에 따라 채용 담당자의 학업 성적 해석이 달라진다.</p>
+  <p class="ref">Early Evidence on Employer Responses to College Student Use of Generative AI (2026, EdWorkingPaper No. 26-1604)</p>
+</header>
+
+<!-- KEY NUMBERS -->
+<section class="section">
+  <h2 class="section-title">연구 한눈에 보기</h2>
+  <div class="stat-row">
+    <div class="stat-card"><div class="num" style="color:var(--blue)">1,750명</div><div class="label">완료 응답자<br>(미국 채용 의사결정 재직자)</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--ink)">3개 집단</div><div class="label">대조군 · 약한 AI 프레이밍 ·<br>강한 AI 프레이밍 (무작위 배정)</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--orange)">3.8 vs 2.7</div><div class="label">이력서 GPA (4.0 만점)<br>응답자당 1장씩 평가</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--green)">92.2%</div><div class="label">직장에서 어떤 형태로든<br>AI를 사용한다고 응답</div></div>
+  </div>
+  <p class="note">조사 기간: 2026년 5월 21일 ~ 6월 8일 (Prolific). 이 연구는 AI가 실제 일자리를 얼마나 줄였는지가 아니라, 대학생의 AI 사용을 설명하는 정보가 채용 판단을 어떻게 바꾸는지를 살펴본다.</p>
+</section>
+
+<!-- THEORY -->
+<section class="section">
+  <h2 class="section-title">이론적 배경: 역량 형성 vs 역량 신호</h2>
+  <p class="lead">대학의 역할에는 역량 형성과 역량에 대한 신호 제공이 함께 있다. 두 기능은 관련되어 있지만 동일하지 않다.</p>
+  <div class="compare">
+    <div class="compare-card a">
+      <h3>인적자본 관점</h3>
+      <p>교육이 학생의 지식과 판단 능력을 높이는 것이 중요하다.</p>
+      <p class="note">AI가 설명, 피드백, 연습을 지원하면 학습을 <b>보완</b>하는 도구가 된다.</p>
+    </div>
+    <div class="compare-card b">
+      <h3>신호 이론</h3>
+      <p>성적이나 학위가 고용주에게 보이지 않는 능력과 노력을 전달하는 것이 중요하다.</p>
+      <p class="note">AI가 과제 수행 자체를 <b>대신</b>하면 결과물과 학점이 학생 자신의 역량을 반영하는 정도가 낮아질 수 있다.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>논문이 제기하는 문제</h3>
+    <p>고용주는 이 두 사용(보완과 대체)을 구별하기 어렵다. 경력자는 직장 성과나 경력 기록을 제시할 수 있지만, 신규 졸업생은 학위와 GPA에 더 의존할 수 있어 신호의 불확실성이 중요하다.</p>
+    <p class="note">이는 연구의 이론적 설명이며, 이 실험에서 경력자와 신입의 실제 고용을 비교한 것은 아니다. 또한 신호가 불확실해지면 인종·성별 차이가 커질 가능성도 검토했지만, 지원자 인종·성별에 따른 일관된 처치 효과 차이는 찾지 못했다.</p>
+  </div>
+</section>
+
+<!-- METHOD -->
+<section class="section">
+  <h2 class="section-title">연구 설계: 설문 실험</h2>
+  <div class="card">
+    <h3>무작위 배정된 세 가지 조건 <span class="tag">탭을 눌러 비교</span></h3>
+    <div class="tabs" role="tablist" data-group="cond">
+      <button class="tab active" data-c="ctrl" data-target="cond-ctrl" role="tab">대조군</button>
+      <button class="tab" data-c="weak" data-target="cond-weak" role="tab">약한 AI 프레이밍</button>
+      <button class="tab" data-c="strong" data-target="cond-strong" role="tab">강한 AI 프레이밍</button>
+    </div>
+    <div class="panel active" id="cond-ctrl" data-group="cond">
+      <div class="cond-box ctrl"><h4>대조군</h4><p>이력서 평가 안내만 받았다.</p><p class="note">단, 대조군도 사전에 AI 관련 질문을 받았다.</p></div>
+    </div>
+    <div class="panel" id="cond-weak" data-group="cond">
+      <div class="cond-box weak"><h4>약한 AI 프레이밍</h4><p>AI가 학습을 도울 수 있지만 부정한 사용도 있으며, 대학의 대응 방법이 명확하지 않다는 설명을 제시했다.</p></div>
+    </div>
+    <div class="panel" id="cond-strong" data-group="cond">
+      <div class="cond-box strong"><h4>강한 AI 프레이밍</h4><p>AI 에이전트가 학생의 과제와 시험 등 학업 활동을 대신할 수 있고, 대학이 이를 탐지하기 어렵다는 설명을 제시했다.</p><p class="note">이 능력에 관한 서술은 실험 자극의 내용이지, 모든 대학 과제를 AI가 해결한다고 검증된 사실이 아니다.</p></div>
+    </div>
+    <div class="caution"><p><b>해석 주의</b> 두 문구는 보완 대 대체만이 아니라 언론·성적 인플레이션·탐지 문제 등 여러 요소에서 달라, 효과를 어느 한 문장이나 요소에 귀속할 수 없다.</p></div>
+  </div>
+
+  <div class="compare">
+    <div class="card" style="margin:0">
+      <h3>표본</h3>
+      <ul>
+        <li>미국 거주, 영리 부문 전일제 재직</li>
+        <li>현 직장 근속 1년 이상</li>
+        <li>채용 의사결정 책임 보유</li>
+        <li>Prolific 모집, 완료 응답자 1,750명</li>
+      </ul>
+      <p class="note">전국 고용주를 확률 추출한 대표 표본이 아니라, 플랫폼에서 자발적으로 참여한 재직자 집단이다.</p>
+    </div>
+    <div class="card" style="margin:0">
+      <h3>가상 이력서</h3>
+      <ul>
+        <li>GPA 3.8/4.0 이력서와 2.7/4.0 이력서를 하나씩 평가 (순서 무작위)</li>
+        <li>이름으로 백인·흑인, 남성·여성을 시사하도록 무작위 배정</li>
+        <li>경력·기술·동아리·봉사 경험은 유사하게 구성</li>
+        <li>학교와 전공은 가림 (응답자가 통상 채용하는 학교·전공을 가정)</li>
+      </ul>
+    </div>
+  </div>
+
+  <details class="acc">
+    <summary>측정과 분석 방법 자세히 보기</summary>
+    <div class="body">
+      <p><b>결과 변수:</b> 면접 초청 의향(7점 척도), 최초 제시 연봉보다 얼마나 더 지급할 의향이 있는지(추가 인상 의향).</p>
+      <p><b>주요 모형:</b> 응답자 고정효과, 프레이밍·GPA·인종·성별의 상호작용, 이력서 제시 순서를 사용하고 표준오차를 응답자 수준에서 군집화했다.</p>
+      <p><b>주의:</b> 동일 응답자의 두 평가를 이용하므로 프레이밍의 주효과는 고정효과에 흡수된다. 따라서 GPA에 따른 상대 평가와 프레이밍별 차이를 특히 주의해서 읽어야 한다.</p>
+      <p><b>다중검정:</b> 주요 검정에는 Romano-Wolf 다중검정 보정을 적용했지만, 세부 집단 분석의 검정력과 우연한 유의성 문제는 남는다.</p>
+      <p><b>성격:</b> 실제 지원자의 AI 사용 이력을 공개한 실험도, 실제 공고에 이력서를 보낸 현장 감사 실험도 아니다.</p>
+    </div>
+  </details>
+</section>
+
+<!-- RESULT 1 -->
+<section class="section">
+  <h2 class="section-title red">결과 1. 학업 자격 신뢰에 대한 우려가 높아졌다</h2>
+  <div class="card">
+    <h3>학업 자격 신뢰 우려: 조정 평균 (Table 3)</h3>
+    <p class="note" style="margin-top:0">각 막대에 마우스를 올리거나 탭하면 설명이 표시됩니다.</p>
+    <div class="bars" id="concernBars">
+      <div class="bar-row" data-tip="대조군: 이력서 평가 안내만 받은 집단의 조정 평균 4.126."><span class="bar-label">대조군</span><div class="bar-track"><div class="bar-fill ctrl" data-w="4.126">4.126</div></div></div>
+      <div class="bar-row" data-tip="약한 프레이밍: 4.374. 대조군 대비 +0.248점, 유의."><span class="bar-label">약한 프레이밍</span><div class="bar-track"><div class="bar-fill weak" data-w="4.374">4.374</div></div></div>
+      <div class="bar-row" data-tip="강한 프레이밍: 4.570. 대조군 대비 +0.444점, 유의. 약한 프레이밍 대비 +0.196점, 유의(p=.025)."><span class="bar-label">강한 프레이밍</span><div class="bar-track"><div class="bar-fill strong" data-w="4.570">4.570</div></div></div>
+    </div>
+    <div class="tip-box" id="concernTip">막대를 선택하면 해당 집단의 비교 결과가 여기에 표시됩니다.</div>
+    <div class="delta-row">
+      <div class="delta"><div class="v" style="color:var(--c-weak)">+0.248</div><div class="t">약한 프레이밍 vs 대조군 <span class="sig yes">유의</span></div></div>
+      <div class="delta"><div class="v" style="color:var(--c-strong)">+0.444</div><div class="t">강한 프레이밍 vs 대조군 <span class="sig yes">유의</span></div></div>
+      <div class="delta"><div class="v" style="color:var(--ink)">+0.196</div><div class="t">강한 vs 약한 프레이밍 <span class="sig yes">p=.025</span></div></div>
+    </div>
+    <p class="note">막대 길이는 0을 기준으로 한 시각적 비교용이며, 이 우려 척도의 범위는 원고에 명시되어 있지 않다.</p>
+    <div class="caution">
+      <ul>
+        <li>이는 해당 정보가 응답자의 판단을 바꿀 수 있다는 증거이지, 모든 고용주가 이미 졸업장을 불신한다는 증거가 아니다.</li>
+        <li><b>관측 수 불일치:</b> 이 표의 관측 수는 <b>1,754</b>로, 본문의 완료 응답자 <b>1,750명</b>과 다르다. 표본 수가 모든 분석에서 같다고 보아서는 안 된다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT 2 -->
+<section class="section">
+  <h2 class="section-title red">결과 2. 높은 GPA의 면접 평가 이점이 강한 프레이밍에서 작아졌다</h2>
+  <div class="card">
+    <h3>예시: 백인 남성 이력서의 예측 면접 점수 (7점 척도)</h3>
+    <div class="tabs" role="tablist" data-group="iv">
+      <button class="tab active" data-c="ctrl" data-iv="ctrl" role="tab">대조군</button>
+      <button class="tab" data-c="weak" data-iv="weak" role="tab">약한 프레이밍</button>
+      <button class="tab" data-c="strong" data-iv="strong" role="tab">강한 프레이밍</button>
+    </div>
+    <div class="scale" id="ivScale">
+      <div class="scale-axis"></div>
+      <div class="gap-band" id="ivBand"></div>
+      <div class="dot" id="ivLow" style="background:#94A3B8"></div>
+      <div class="dot" id="ivHigh"></div>
+      <div class="dot-lbl" id="ivLowLbl"></div>
+      <div class="dot-lbl" id="ivHighLbl"></div>
+    </div>
+    <div class="gap-readout">
+      <div class="delta"><div class="v" id="ivHighVal">5.22</div><div class="t">높은 GPA 백인 남성 예측 점수</div></div>
+      <div class="delta"><div class="v" style="color:#64748B">4.18</div><div class="t">낮은 GPA 백인 남성 (고정효과 모형의 기준, 고정값)</div></div>
+      <div class="delta"><div class="v" id="ivGapVal">1.04점</div><div class="t" id="ivGapTxt">높은 GPA와의 격차</div></div>
+    </div>
+    <p class="note">원고는 격차를 대조군 1.04점, 강한 프레이밍 0.62점으로 제시한다. 약한 프레이밍의 높은 GPA 점수(5.22)는 대조군과 같다.</p>
+    <div class="caution">
+      <ul>
+        <li>이 수치는 GPA 프리미엄 축소의 예이며, <b>실제 면접 확률이 40% 하락했다는 뜻이 아니다.</b></li>
+        <li>본문은 주요 인종·성별 집단의 강한 프레이밍 면접 감소가 95% 수준에서 유의하지 않은 경우를 명시한다. 모든 지원자 집단의 면접 관심 감소가 통계적으로 유의한 것은 아니다.</li>
+        <li>낮은 GPA 집단의 면접 의향에서는 처치 효과에 대한 증거가 더 약했다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT 3 -->
+<section class="section">
+  <h2 class="section-title red">결과 3. 연봉 추가 인상 의향에서 차이가 더 뚜렷했다</h2>
+  <div class="card">
+    <h3>높은 GPA 이력서: 최초 제시 연봉 위 추가 인상 의향(%)</h3>
+    <div class="tabs" role="tablist" data-group="sal">
+      <button class="tab active" data-c="neutral" data-sal="wm" role="tab">백인 남성</button>
+      <button class="tab" data-c="neutral" data-sal="bm" role="tab">흑인 남성</button>
+      <button class="tab" data-c="neutral" data-sal="bf" role="tab">흑인 여성</button>
+      <button class="tab" data-c="neutral" data-sal="wf" role="tab">백인 여성</button>
+    </div>
+    <div class="sal-grid">
+      <div class="sal-col"><div class="sal-bar" id="salC" style="background:var(--c-ctrl)"></div></div>
+      <div class="sal-col"><div class="sal-bar" id="salW" style="background:var(--c-weak)"></div></div>
+      <div class="sal-col"><div class="sal-bar" id="salS" style="background:var(--c-strong)"></div></div>
+    </div>
+    <div class="sal-x"><span style="color:var(--c-ctrl)">대조군</span><span style="color:var(--c-weak)">약한 프레이밍</span><span style="color:var(--c-strong)">강한 프레이밍</span></div>
+    <div class="tip-box" id="salTxt"></div>
+    <div class="caution">
+      <ul>
+        <li>이 숫자는 최초 제시 연봉 위에 <b>더 줄 의향</b>이지, 전체 연봉 감소율이나 실제 협상 타결액이 아니다.</li>
+        <li>약한 프레이밍과 대조군의 차이가 유의하지 않은 경우가 많으므로, AI 보조 사용을 설명하면 연봉이 오른다는 결론도 성립하지 않는다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT 4 & 5 -->
+<section class="section">
+  <h2 class="section-title orange">결과 4·5. 세부 집단과 우려를 줄이는 정보</h2>
+  <div class="compare">
+    <div class="card" style="margin:0">
+      <h3>결과 4. 인종·성별·산업별 세부 결과는 신중히</h3>
+      <ul>
+        <li>높은 GPA 백인 여성에서 강한 프레이밍의 불이익이 작았던 패턴은 소매업 및 정보기술·소프트웨어 산업 응답자에 민감했다.</li>
+        <li>그 산업을 제외하면 다른 높은 GPA 집단과 비슷한 음의 패턴이 나타났다.</li>
+        <li>AI 노출이 높은 산업이 반드시 가장 크게 반응한 것은 아니며, 중간 노출 산업에서 뚜렷한 패턴이 관찰됐다.</li>
+      </ul>
+      <p class="note">특정 집단이 AI 우려로부터 보호된다는 법칙으로 해석할 수 없다.</p>
+    </div>
+    <div class="card" style="margin:0">
+      <h3>결과 5. 무엇이 우려를 줄이는가</h3>
+      <ul>
+        <li>두 처치 집단 모두 <b>대면 시험</b>을 대조군보다 더 안심이 되는 정보로 평가했다.</li>
+        <li>약한 프레이밍: 프로젝트·인턴십 등 다른 정보도 더 긍정적으로 평가하는 경향.</li>
+        <li>강한 프레이밍: 이런 정보에 대한 낙관이 줄었다.</li>
+        <li>온라인 마이크로 자격보다 대면 마이크로 자격이 더 안심이 된다는 응답도 관찰됐다.</li>
+      </ul>
+      <p class="note">이는 제시된 정보의 설득력에 대한 평가이며, 대면 시험의 학습 효과나 예측 타당도, 온라인 교육의 실제 품질을 측정한 결과가 아니다. 대면 시험 도입이 실제 채용이나 임금을 회복시키는지도 검증하지 않았다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MYTHS -->
+<section class="section">
+  <h2 class="section-title orange">이렇게 읽으면 안 된다 <span class="tag">카드를 눌러 확인</span></h2>
+  <div class="myth-grid">
+    <button class="myth"><div class="q">면접 확률이 40% 떨어졌다.</div><div class="a">격차가 1.04점에서 0.62점으로 줄어든 것은 GPA 프리미엄 축소의 예이며, 실제 면접 확률 하락이 아니다.</div><div class="hint">눌러서 근거 보기</div></button>
+    <button class="myth"><div class="q">AI 때문에 신입 연봉이 깎인다.</div><div class="a">측정한 것은 최초 제시 연봉 위 추가 인상 의향이며, 전체 연봉 감소율이나 실제 협상 타결액이 아니다.</div><div class="hint">눌러서 근거 보기</div></button>
+    <button class="myth"><div class="q">AI를 '보조'로 설명하면 유리하다.</div><div class="a">약한 프레이밍에서도 우려는 증가했고, 확실한 면접·연봉 프리미엄은 나타나지 않았다.</div><div class="hint">눌러서 근거 보기</div></button>
+    <button class="myth"><div class="q">대학 교육의 가치가 이미 사라졌다.</div><div class="a">'신호가 약해질 수 있다'와는 전혀 다른 주장이다. 실제 능력 하락, 졸업장 가치 하락, 전국적 신규 채용 감소는 직접 확인하지 않았다.</div><div class="hint">눌러서 근거 보기</div></button>
+    <button class="myth"><div class="q">인종·성별 차이가 없으니 차별도 없다.</div><div class="a">일관된 차이를 찾지 못한 것은 차별이 없다는 증명이 아니다. 세부 표본이 작고 가상 판단의 이해관계가 낮아 실제 차별을 포착하지 못했을 수 있다.</div><div class="hint">눌러서 근거 보기</div></button>
+    <button class="myth"><div class="q">모든 평가를 대면 시험으로 돌려야 한다.</div><div class="a">응답자가 대면 시험을 신뢰한다는 것과 그 시험이 직무 역량을 정확하고 공정하게 측정한다는 것은 다르다.</div><div class="hint">눌러서 근거 보기</div></button>
+    <button class="myth"><div class="q">이력서에 AI 사용 내역을 공개하면 면접에 유리하다.</div><div class="a">연구는 AI 역량 기재나 AI 사용 내역 공개 처치를 하지 않았으므로 그런 권고의 근거가 없다.</div><div class="hint">눌러서 근거 보기</div></button>
+    <button class="myth"><div class="q">낮은 GPA 지원자에게 유리한 결과다.</div><div class="a">낮은 GPA 지원자의 평가가 덜 변했을 뿐이며, 기본 평가에서는 높은 GPA 지원자가 더 긍정적이었다.</div><div class="hint">눌러서 근거 보기</div></button>
+  </div>
+</section>
+
+<!-- IMPLICATIONS -->
+<section class="section">
+  <h2 class="section-title green">결론 및 교육적 함의</h2>
+  <div class="implication" style="margin-bottom:14px">
+    <h3>핵심 관점: 자격의 신뢰 문제</h3>
+    <p>AI 시대의 신규 졸업생 문제는 생산성이나 일자리 수요만의 문제가 아니라, 졸업장과 학점이 개인 역량을 얼마나 믿을 만하게 보여 주는가라는 자격의 신뢰 문제이기도 하다. 학생이 높은 성적을 받더라도 고용주가 그 성적을 누구의 수행으로 이해하는지에 따라 평가가 달라질 수 있다.</p>
+  </div>
+  <p class="note" style="margin-bottom:10px">아래 항목은 원고가 논문 결과에서 도출한 적용 제안 또는 가설이며, 그 효과는 이 연구에서 실험으로 검증되지 않았다.</p>
+  <details class="acc"><summary>대학 홍보와 학생 안내 <span class="tag">교육적 가설</span></summary><div class="body">홍보 문구를 바꾸거나 AI 사용을 긍정적으로 포장하게 하는 것보다, 도구를 사용한 성과와 학생이 직접 할 수 있는 수행을 구분해 제시하는 방식이 중요하다는 가설이 나온다. 이 연구는 그런 제도를 시행한 실험이 아니므로 제도 효과는 별도의 검증 대상이다.</div></details>
+  <details class="acc"><summary>교육과정과 평가 설계 <span class="tag">적용 제안</span></summary><div class="body">AI 활용 능력과 독립 수행 능력을 서로 대체할 지표가 아니라 함께 확인할 대상으로 설계할 수 있다. 예: 자료 분석 과제에서 AI가 제안한 코드를 사용한 결과물을 평가하되, 변수 선택 이유·오류 점검·결과 해석을 도구 없이 설명하게 한다. 글쓰기에서는 AI 보조 초안과 별개로 주장·근거의 연결을 구두로 방어하거나 새로운 반례에 대응하는 짧은 수행을 평가한다. 이 설계가 채용 평가를 높인다는 실험 결과는 없다.</div></details>
+  <details class="acc"><summary>대면 검증의 범위 <span class="tag">적용 제안</span></summary><div class="body">제한시간 시험은 깊은 탐구나 협업 능력을 충분히 측정하지 못할 수 있고, 장애·언어·이동 조건에 따른 장벽도 고려해야 한다. 직무 관련성이 높은 짧은 실습, 구두 설명, 현장 과제, 적절한 편의 제공 등을 함께 검토할 수 있으나, 그 타당성과 형평성은 이 논문에서 검증되지 않았다. 온라인 프로그램을 일괄적으로 낮게 평가하거나 마이크로 자격을 무용하다고 결론 내리는 것도 근거를 넘어선다.</div></details>
+  <details class="acc"><summary>취업 지원과 포트폴리오 <span class="tag">적용 제안</span></summary><div class="body">결과물, 학생의 기여, AI의 도움, 검증 과정, 독립 수행 사례를 구분해 설명하도록 훈련할 수 있다. 도구 사용 기록을 많이 붙이는 것만으로는 충분하지 않으며, 기록은 진짜 판단 능력을 보여 주는 증거와 연결되어야 한다. 지원자는 해당 기업의 실제 과제·공개 요구를 따라야 한다.</div></details>
+  <details class="acc"><summary>기업의 대응 <span class="tag">규범적 함의</span></summary><div class="body">고성적 지원자를 일괄적으로 의심하기보다, 실제 직무와 관련된 수행 증거를 보완하고 허용 도구와 평가 기준을 일관되게 안내하는 방향이 바람직하다. 검증 기회가 자원 있는 학교와 학생에게만 제공되지 않도록 설계를 점검할 필요가 있다.</div></details>
+  <details class="acc"><summary>후속 연구 과제</summary><div class="body">실제 이력서와 직무 과제를 이용해 독립 수행 증거(AI 보조 결과물, 구두 방어, 검증된 실습 기록)의 효과를 검증하고, 실제 면접 요청·제안 연봉·채용 이후 성과를 추적할 필요가 있다. 프레이밍 요소 분리, 신념 변화의 지속성, 한국의 채용 관행 등 다른 환경에서의 재현도 확인해야 한다.</div></details>
+</section>
+
+<!-- LIMITATIONS -->
+<section class="section">
+  <h2 class="section-title orange">연구의 한계</h2>
+  <div class="limit-grid">
+    <div class="limit"><b>비확률 표본</b>전국 고용주의 확률 표본이 아니라 Prolific에서 자발적으로 참여한 민간 재직자 집단이다.</div>
+    <div class="limit"><b>가상 이력서</b>실제 면접 요청, 채용, 연봉 지급을 관찰한 결과가 아니라 가상 이력서에 대한 응답이다.</div>
+    <div class="limit"><b>실제 채용이 아님</b>현장 감사 실험이 아니며, 믿음에 관한 단기 실험과 노동시장의 장기 변화 사이에는 큰 경계가 있다.</div>
+    <div class="limit"><b>학교·전공 가림</b>응답자가 통상 채용하는 학교·전공을 가정했기 때문에 응답자마다 상상한 자격이 다를 수 있다.</div>
+    <div class="limit"><b>복합적 처치 문구</b>문구가 여러 요소에서 달라 효과를 한 요소에 귀속할 수 없고, 현실의 정보 노출은 더 다양하다. 대조군도 사전에 AI 관련 질문을 받았다.</div>
+    <div class="limit"><b>주효과 식별 불가</b>고정효과 모형에서는 프레이밍의 공통 주효과가 직접 식별되지 않아, 모든 지원자에게 동일하게 발생하는 평가 변화는 읽어낼 수 없다.</div>
+    <div class="limit"><b>세부 집단 검정력</b>Romano-Wolf 보정을 주요 검정에 적용했지만 세부 집단 분석의 검정력과 우연한 유의성 문제는 남는다.</div>
+    <div class="limit"><b>관측 수 불일치</b>Table 3 관측 수 1,754 vs 본문 완료 응답자 1,750명. 초록의 '명확한 감소' 요약보다 본문과 표의 비교 집단·유의성을 우선해야 한다.</div>
+    <div class="limit"><b>워킹페이퍼</b>2026년 10월 2일자로 작성된 워킹페이퍼이며, 동료심사 학술지 게재 논문이 아니다.</div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p style="font-weight:700;margin-bottom:6px">출처</p>
+  <p class="cite">Boyd-Swan, C., &amp; Reynolds, C. L. (2026). <i>Early evidence on employer responses to college student use of generative AI</i> (EdWorkingPaper No. 26-1604). Annenberg Institute at Brown University. <a href="https://doi.org/10.26300/13ds-ed72" target="_blank" rel="noopener">https://doi.org/10.26300/13ds-ed72</a></p>
+  <p>동료심사 전 워킹페이퍼로, 결과는 잠정적입니다. 본 인포그래픽은 블로그 리뷰 원고를 바탕으로 AI의 도움을 받아 제작되었으며, 최종 검토는 블로그 운영자가 수행합니다.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+  // generic tabs (condition panels)
+  document.querySelectorAll('.tabs[data-group="cond"] .tab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var g='cond';
+      document.querySelectorAll('.tabs[data-group="'+g+'"] .tab').forEach(function(b){b.classList.remove('active');});
+      document.querySelectorAll('.panel[data-group="'+g+'"]').forEach(function(p){p.classList.remove('active');});
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+    });
+  });
+
+  // Result 1 bars
+  var maxC=4.570;
+  function animateBars(){
+    document.querySelectorAll('#concernBars .bar-fill').forEach(function(f){
+      f.style.width=(parseFloat(f.dataset.w)/maxC*92)+'%';
+    });
+  }
+  var tip=document.getElementById('concernTip');
+  document.querySelectorAll('#concernBars .bar-row').forEach(function(r){
+    var show=function(){tip.textContent=r.dataset.tip;};
+    r.addEventListener('mouseenter',show);
+    r.addEventListener('click',show);
+  });
+
+  // Result 2 interview scale (1-7)
+  var iv={
+    ctrl:{high:5.22,gap:'1.04점',gapTxt:'높은 GPA와의 격차 (대조군)',color:'var(--c-ctrl)'},
+    weak:{high:5.22,gap:'미제시',gapTxt:'약한 프레이밍 격차는 원고에 별도 수치 없음 (높은 GPA 점수는 대조군과 동일)',color:'var(--c-weak)'},
+    strong:{high:4.80,gap:'0.62점',gapTxt:'높은 GPA와의 격차 (강한 프레이밍)',color:'var(--c-strong)'}
+  };
+  var low=4.18;
+  function pos(v){return ((v-1)/6*100)+'%';}
+  var scale=document.getElementById('ivScale');
+  for(var t=1;t<=7;t++){var s=document.createElement('span');s.className='tick';s.style.left=pos(t);s.textContent=t;scale.appendChild(s);}
+  function setIv(k){
+    var d=iv[k];
+    document.getElementById('ivLow').style.left=pos(low);
+    document.getElementById('ivHigh').style.left=pos(d.high);
+    document.getElementById('ivHigh').style.background=d.color;
+    var band=document.getElementById('ivBand');
+    band.style.left=pos(low);band.style.width='calc('+pos(d.high)+' - '+pos(low)+')';band.style.background=d.color;
+    var ll=document.getElementById('ivLowLbl');ll.style.left=pos(low);ll.innerHTML='낮은 GPA<br>4.18';ll.style.color='#64748B';
+    var hl=document.getElementById('ivHighLbl');hl.style.left=pos(d.high);hl.innerHTML='높은 GPA<br>'+d.high.toFixed(2);hl.style.color=d.color;
+    // avoid label overlap
+    if(d.high-low<0.75){ll.style.transform='translateX(-95%)';hl.style.transform='translateX(-5%)';}else{ll.style.transform='translateX(-50%)';hl.style.transform='translateX(-50%)';}
+    var hv=document.getElementById('ivHighVal');hv.textContent=d.high.toFixed(2);hv.style.color=d.color;
+    var gv=document.getElementById('ivGapVal');gv.textContent=d.gap;gv.style.color=d.color;
+    document.getElementById('ivGapTxt').textContent=d.gapTxt;
+  }
+  document.querySelectorAll('.tabs[data-group="iv"] .tab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.tabs[data-group="iv"] .tab').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');setIv(btn.dataset.iv);
+    });
+  });
+  setIv('ctrl');
+
+  // Result 3 salary
+  var sal={
+    wm:{name:'높은 GPA 백인 남성',c:1.97,w:2.28,s:1.76,txt:'약한 → 강한 프레이밍: 0.52%p 낮아짐. 논문은 이 차이가 유의하다고 설명한다.',sig:true},
+    bm:{name:'높은 GPA 흑인 남성',c:2.16,w:2.27,s:1.72,txt:'약한 → 강한 프레이밍: 0.55%p 낮아짐. 논문은 이 차이가 유의하다고 설명한다.',sig:true},
+    bf:{name:'높은 GPA 흑인 여성',c:2.18,w:2.51,s:1.78,txt:'약한 → 강한 프레이밍: 0.73%p 낮아짐. 논문은 이 차이가 유의하다고 설명한다.',sig:true},
+    wf:{name:'높은 GPA 백인 여성',c:null,w:2.15,s:1.87,txt:'두 처치 간 2.15%에서 1.87%로 낮아졌지만 차이는 유의하지 않았다. 대조군 수치는 원고에 제시되지 않았다.',sig:false}
+  };
+  var salMax=2.7;
+  function setBar(el,v){
+    if(v===null){el.classList.add('na');el.style.height='60%';el.textContent='원고에 수치 없음';}
+    else{el.classList.remove('na');el.style.height=(v/salMax*100)+'%';el.textContent=v.toFixed(2)+'%';}
+  }
+  function setSal(k){
+    var d=sal[k];
+    setBar(document.getElementById('salC'),d.c);
+    setBar(document.getElementById('salW'),d.w);
+    setBar(document.getElementById('salS'),d.s);
+    document.getElementById('salTxt').innerHTML='<b>'+d.name+'</b> '+d.txt+' <span class="sig '+(d.sig?'yes':'no')+'">'+(d.sig?'약한 vs 강한: 유의':'약한 vs 강한: 유의하지 않음')+'</span>';
+  }
+  document.querySelectorAll('.tabs[data-group="sal"] .tab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.tabs[data-group="sal"] .tab').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');setSal(btn.dataset.sal);
+    });
+  });
+  setSal('wm');
+
+  // myth cards
+  document.querySelectorAll('.myth').forEach(function(m){
+    m.addEventListener('click',function(){m.classList.toggle('open');});
+  });
+
+  // animate bars on view
+  var target=document.getElementById('concernBars');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){animateBars();io.disconnect();}});},{threshold:.3});
+    io.observe(target);
+  } else animateBars();
+})();
+</script>
+</body>
+</html>

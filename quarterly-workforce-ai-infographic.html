@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>채용 문이 좁아지다: AI 노출과 경력 초기 채용 (QWI 분석) 인포그래픽</title>
+<style>
+:root{--red:#DC2626;--blue:#2563EB;--blue-light:#DBEAFE;--orange:#EA580C;--green:#059669;--ink:#1E293B;--gray:#64748B;--line:#E2E8F0;--bg:#F8FAFC;--card:#FFF;--shadow:0 4px 24px rgba(0,0,0,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;word-break:keep-all}
+.container{max-width:900px;margin:0 auto;padding:24px 16px}
+.hero{text-align:center;padding:52px 20px 34px;background:linear-gradient(135deg,var(--blue-light),#FEE2E2);border-radius:20px;margin-bottom:36px}
+.hero .kicker{font-size:.8rem;font-weight:700;color:var(--blue);letter-spacing:.04em;margin-bottom:8px}
+.hero h1{font-size:clamp(1.35rem,4vw,2.1rem);font-weight:900;margin-bottom:12px;line-height:1.35}
+.hero .subtitle{font-size:.98rem;color:#334155;max-width:680px;margin:0 auto}
+.hero .ref{font-size:.82rem;color:var(--gray);font-style:italic;margin-top:12px}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.badge{font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:999px;background:#fff;border:1.5px solid var(--orange);color:#9A3412}
+.badge.blue{border-color:var(--blue);color:#1E40AF}
+.section{margin-bottom:36px}
+.section-title{font-size:1.2rem;font-weight:700;margin-bottom:8px;padding-left:12px;border-left:4px solid var(--blue)}
+.section-desc{font-size:.86rem;color:var(--gray);margin-bottom:16px;padding-left:16px}
+.hint{font-size:.74rem;color:var(--gray);text-align:right;margin-top:-8px;margin-bottom:8px}
+/* stat cards */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.stat-card{background:var(--card);border-radius:16px;padding:18px 16px;text-align:center;box-shadow:var(--shadow);cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s;font:inherit;color:inherit;width:100%}
+.stat-card:hover,.stat-card:focus-visible{transform:translateY(-2px);border-color:var(--blue-light);outline:none}
+.stat-card.active{border-color:var(--blue)}
+.stat-card .num{font-size:1.9rem;font-weight:900;line-height:1.2}
+.stat-card .unit{font-size:.95rem;font-weight:700}
+.stat-card .label{font-size:.8rem;color:var(--gray);margin-top:6px}
+.c-red{color:var(--red)}.c-blue{color:var(--blue)}.c-orange{color:var(--orange)}.c-green{color:var(--green)}
+.detail{background:#fff;border-left:4px solid var(--blue);border-radius:12px;padding:16px 18px;margin-top:14px;box-shadow:var(--shadow);font-size:.88rem;min-height:84px}
+.detail h4{font-size:.95rem;margin-bottom:6px}
+.detail .caveat{margin-top:8px;font-size:.8rem;color:#9A3412;background:#FFF7ED;border-radius:8px;padding:8px 10px}
+/* flow */
+.flow{display:grid;grid-template-columns:1fr auto 1.2fr auto 1fr;align-items:center;gap:10px;margin:8px 0 6px}
+.node{background:#fff;border:2px solid var(--line);border-radius:14px;padding:16px 12px;text-align:center;cursor:pointer;box-shadow:var(--shadow);font:inherit;color:inherit;width:100%;transition:border-color .2s}
+.node:hover,.node:focus-visible{border-color:#93C5FD;outline:none}
+.node.active{border-color:var(--blue);background:#EFF6FF}
+.node .t{font-weight:900;font-size:1rem}
+.node .s{font-size:.75rem;color:var(--gray)}
+.node.stock{background:#F1F5F9}
+.node.stock.active{background:#EFF6FF}
+.arrow{font-size:1.4rem;color:var(--gray);font-weight:700;text-align:center}
+@media(max-width:640px){.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
+/* compare */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media(max-width:640px){.compare{grid-template-columns:1fr}}
+.compare-card{border-radius:16px;padding:20px}
+.compare-card.a{background:#ECFDF5;border:2px solid var(--green)}
+.compare-card.b{background:#FEF2F2;border:2px solid var(--red)}
+.compare-card h3{font-size:1rem;font-weight:700;margin-bottom:6px}
+.compare-card.a h3{color:var(--green)}.compare-card.b h3{color:var(--red)}
+.compare-card .big{font-size:1.25rem;font-weight:900;margin:4px 0 8px}
+.compare-card p{font-size:.85rem}
+.formula{background:#fff;border:2px dashed #94A3B8;border-radius:14px;padding:16px;text-align:center;font-size:.92rem}
+.formula .eq{font-weight:900;font-size:1.05rem;margin:6px 0}
+.formula .frac{display:inline-block;vertical-align:middle;text-align:center;margin:0 6px}
+.formula .frac span{display:block;padding:0 8px}
+.formula .frac span:first-child{border-bottom:2px solid var(--ink)}
+/* tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0}
+.tab{font:inherit;font-size:.86rem;font-weight:700;padding:9px 14px;border-radius:12px 12px 0 0;border:none;background:#E2E8F0;color:#475569;cursor:pointer}
+.tab.active{background:#fff;color:var(--blue);box-shadow:0 -2px 0 var(--blue) inset}
+.tab-panel{background:#fff;border-radius:0 14px 14px 14px;padding:20px;box-shadow:var(--shadow);font-size:.88rem}
+.tab-panel[hidden]{display:none}
+.tab-panel h4{font-size:.95rem;margin:10px 0 6px}
+.tab-panel h4:first-child{margin-top:0}
+.tab-panel ul{padding-left:18px}
+.tab-panel li{margin-bottom:5px}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+@media(max-width:640px){.pc{grid-template-columns:1fr}}
+.pc div{border-radius:12px;padding:12px 14px;font-size:.84rem}
+.pc .pro{background:#ECFDF5}.pc .con{background:#FEF2F2}
+.pc b{display:block;margin-bottom:4px}
+/* toggle */
+.toggle{display:inline-flex;background:#E2E8F0;border-radius:999px;padding:4px;margin-bottom:12px;flex-wrap:wrap}
+.toggle button{font:inherit;font-size:.85rem;font-weight:700;border:none;background:transparent;padding:8px 16px;border-radius:999px;cursor:pointer;color:#475569}
+.toggle button.active{background:#fff;color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.design-view{background:#fff;border-radius:14px;padding:18px;box-shadow:var(--shadow);font-size:.88rem}
+.design-view .cmp{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 12px}
+.pill{background:#EFF6FF;border:1.5px solid var(--blue);border-radius:10px;padding:6px 12px;font-size:.82rem;font-weight:700}
+.pill.alt{background:#F1F5F9;border-color:#94A3B8}
+.vs{font-weight:900;color:var(--gray)}
+/* timeline */
+.timeline{position:relative;padding-left:40px;margin:16px 0}
+.timeline::before{content:'';position:absolute;left:16px;top:0;bottom:0;width:3px;background:linear-gradient(var(--blue),var(--red))}
+.tl-item{position:relative;margin-bottom:14px;padding:14px 16px;background:var(--card);border-radius:12px;box-shadow:var(--shadow)}
+.tl-item::before{content:'';position:absolute;left:-32px;top:18px;width:12px;height:12px;border-radius:50%;border:3px solid var(--blue);background:#fff}
+.tl-item .year{font-weight:900;color:var(--blue);font-size:.9rem}
+.tl-item .desc{font-size:.85rem;margin-top:2px}
+.tl-note{font-size:.76rem;color:var(--gray);margin-top:-4px}
+/* monetary bar */
+.mp-bar{display:flex;height:46px;border-radius:12px;overflow:hidden;margin:12px 0 8px;box-shadow:var(--shadow)}
+.mp-a{width:25%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;text-align:center;padding:0 4px}
+.mp-b{flex:1;background:repeating-linear-gradient(45deg,#E2E8F0,#E2E8F0 8px,#F8FAFC 8px,#F8FAFC 16px);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;color:#475569;text-align:center;padding:0 8px}
+.mp-legend{font-size:.8rem;color:var(--gray)}
+/* alert */
+.alert{background:#FEF3C7;border:2px solid #F59E0B;border-radius:16px;padding:20px;margin:18px 0}
+.alert h3{font-size:1.02rem;font-weight:700;color:#92400E;margin-bottom:8px;text-align:center}
+.alert p,.alert li{font-size:.86rem;color:#78350F}
+.alert ul{padding-left:18px}
+.alert li{margin-bottom:5px}
+/* myth */
+.myth{background:#fff;border-radius:14px;box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden}
+.myth button{font:inherit;width:100%;text-align:left;background:none;border:none;padding:14px 16px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;font-size:.9rem;font-weight:700;color:var(--ink)}
+.myth .tag{flex:none;font-size:.7rem;font-weight:900;padding:3px 8px;border-radius:6px;background:#FEE2E2;color:var(--red);margin-top:2px}
+.myth .ans{display:none;padding:0 16px 14px 16px;font-size:.86rem;border-top:1px solid var(--line)}
+.myth .ans .tag{background:#D1FAE5;color:var(--green);display:inline-block;margin:10px 8px 0 0}
+.myth.open .ans{display:block}
+/* accordion */
+.acc{background:#fff;border-radius:14px;box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden}
+.acc > button{font:inherit;width:100%;text-align:left;background:none;border:none;padding:14px 44px 14px 16px;cursor:pointer;font-size:.92rem;font-weight:700;color:var(--ink);position:relative}
+.acc > button::after{content:'+';position:absolute;right:18px;top:12px;font-size:1.2rem;color:var(--blue)}
+.acc.open > button::after{content:'\2212'}
+.acc .num-i{display:inline-block;min-width:24px;height:24px;line-height:24px;text-align:center;border-radius:50%;background:var(--blue);color:#fff;font-size:.75rem;margin-right:8px}
+.acc .body{display:none;padding:0 16px 16px 48px;font-size:.86rem}
+.acc.open .body{display:block}
+.acc .body .note{margin-top:8px;font-size:.8rem;color:#9A3412;background:#FFF7ED;border-radius:8px;padding:8px 10px}
+.btn-row{text-align:right;margin-bottom:8px}
+.btn-sm{font:inherit;font-size:.78rem;font-weight:700;border:1.5px solid var(--blue);color:var(--blue);background:#fff;border-radius:8px;padding:4px 10px;cursor:pointer}
+.implication{background:var(--blue-light);border-radius:16px;padding:22px;margin-top:8px}
+.implication h3{color:#1E40AF;font-size:1.05rem;margin-bottom:10px}
+.implication li{font-size:.88rem;margin-bottom:8px;margin-left:18px}
+.footer{padding:30px 16px 40px;color:var(--gray);font-size:.8rem;border-top:1px solid var(--line);margin-top:20px}
+.footer .apa{padding-left:2em;text-indent:-2em;margin-bottom:10px;color:#334155}
+.footer a{color:var(--blue);word-break:break-all}
+.footer p{margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="hero">
+  <div class="kicker">논문 리뷰 인포그래픽 | AI와 경력 초기 고용</div>
+  <h1>채용률이 회복되어도,<br>신입의 자리는 돌아오지 않았을 수 있다</h1>
+  <p class="subtitle">이 연구는 고용의 총량보다 <b>채용과 이직(이탈)의 흐름</b>을 분리해서 보아야 하는 이유를 보여준다.</p>
+  <p class="ref">Tucker, L. C. (2026). You're (not) hired: Artificial intelligence and early career hiring in the Quarterly Workforce Indicators. CES Working Paper No. 26-27.</p>
+  <div class="badge-row">
+    <span class="badge">CES 워킹페이퍼 (동료심사 학술지 논문 아님)</span>
+    <span class="badge">Census Bureau의 공식 입장 아님</span>
+    <span class="badge blue">상관 추정치이며 AI 인과 확정 아님</span>
+  </div>
+</header>
+
+<!-- 1. 핵심 수치 -->
+<section class="section">
+  <h2 class="section-title">핵심 수치</h2>
+  <p class="section-desc">대상: AI 노출이 가장 높은 산업·주 단위 상위 20% 집단의 22~24세 인력. 카드를 누르면 정의와 해석상 주의점이 표시된다.</p>
+  <div class="stat-row" id="stats">
+    <button class="stat-card active" data-k="emp"><div class="num c-red">-12.4<span class="unit">%</span></div><div class="label">22~24세 고용<br>(저자 선호 회귀 추정치)</div></button>
+    <button class="stat-card" data-k="raw"><div class="num c-red">-15.2<span class="unit">%</span></div><div class="label">22~24세 고용<br>(원자료 기준)</div></button>
+    <button class="stat-card" data-k="hire"><div class="num c-orange">-12.7<span class="unit">%</span></div><div class="label">채용 건수<br>(마지막 네 분기 평균)</div></button>
+    <button class="stat-card" data-k="hire9"><div class="num c-orange">약 -9<span class="unit">%</span></div><div class="label">채용 건수<br>(ChatGPT 출시 무렵 급감)</div></button>
+    <button class="stat-card" data-k="sep"><div class="num c-blue">-11.5<span class="unit">%</span></div><div class="label">이탈 건수<br>(네 분기 평균 기준)</div></button>
+    <button class="stat-card" data-k="mp"><div class="num c-green">최대 약 1/4</div><div class="label">통화정책 충격과<br>관련될 가능성이 있는 몫</div></button>
+  </div>
+  <div class="detail" id="statDetail" aria-live="polite"></div>
+</section>
+
+<!-- 2. 흐름 분해 -->
+<section class="section">
+  <h2 class="section-title">저량(stock)과 유량(flow)을 나누어 보기</h2>
+  <p class="section-desc">채용되지 않은 사람은 해고 통계에 나타나지 않는다. 그래서 고용의 저량과 채용·이탈의 유량을 구별해야 한다. 각 상자를 눌러 보자.</p>
+  <div class="flow" id="flow">
+    <button class="node active" data-k="in"><div class="t c-orange">채용 (유입)</div><div class="s">신규 채용 건수</div></button>
+    <div class="arrow" aria-hidden="true">&rarr;</div>
+    <button class="node stock" data-k="stock"><div class="t c-red">고용 (저량)</div><div class="s">22~24세 고용 규모</div></button>
+    <div class="arrow" aria-hidden="true">&rarr;</div>
+    <button class="node" data-k="out"><div class="t c-blue">이탈 (유출)</div><div class="s">자발적 퇴사 등 포함</div></button>
+  </div>
+  <div class="detail" id="flowDetail" aria-live="polite"></div>
+</section>
+
+<!-- 3. 채용률 vs 채용 건수 -->
+<section class="section">
+  <h2 class="section-title">비율의 회복과 기회의 회복은 다르다</h2>
+  <p class="section-desc">두 결과는 서로 모순되지 않는다. 분모인 고용 기반이 줄었기 때문이다.</p>
+  <div class="formula">
+    <div>채용률은 고용 기반을 분모로 한다</div>
+    <div class="eq">채용률 = <span class="frac"><span>채용 건수</span><span>고용 기반 (분모)</span></span></div>
+    <div style="font-size:.82rem;color:var(--gray)">고용 기반이 작아지면 적은 채용 건수로도 이전과 비슷한 채용률이 나온다.</div>
+  </div>
+  <div class="compare">
+    <div class="compare-card a">
+      <h3>채용률</h3>
+      <div class="big">2025년 초 대체로 회복</div>
+      <p>2025년 1분기 채용률은 이전 수준에 가까워졌다. (원문에 구체적 수치는 제시되지 않음)</p>
+    </div>
+    <div class="compare-card b">
+      <h3>채용 건수</h3>
+      <div class="big">회복하지 않음 (-12.7%)</div>
+      <p>출시 무렵 약 9% 감소한 뒤 지속적으로 낮았고, 마지막 네 분기 평균은 기준 네 분기보다 12.7% 낮았다.</p>
+    </div>
+  </div>
+  <div class="alert">
+    <h3>해석 주의</h3>
+    <p style="text-align:center">채용률의 정상화만으로 취업 기회가 정상화되었다고 해석하면 안 된다. 청년 일자리 회복을 평가할 때에는 채용률뿐 아니라 실제 채용 건수, 고용 규모, 졸업자 수 대비 진입 성과를 함께 보아야 한다. (단, 이 연구는 마지막 지표를 직접 추정하지 않았다.)</p>
+  </div>
+</section>
+
+<!-- 4. 연구 설계 -->
+<section class="section">
+  <h2 class="section-title">연구 방법론</h2>
+  <p class="section-desc">자료, 노출 측정, 분석 설계를 탭으로 나누어 정리했다.</p>
+  <div class="tabs" role="tablist" id="mtabs">
+    <button class="tab active" role="tab" data-p="p1">자료: QWI</button>
+    <button class="tab" role="tab" data-p="p2">AI 노출과 표본</button>
+    <button class="tab" role="tab" data-p="p3">분석 설계</button>
+  </div>
+  <div class="tab-panel" id="p1" role="tabpanel">
+    <h4>Quarterly Workforce Indicators (QWI)</h4>
+    <p>미국 QWI 공개 집계 자료. 행정자료 기반 고용주·근로자 연계 체계에서 만들어진 분기 통계이며 민간부문 고용을 폭넓게 포괄한다.</p>
+    <div class="pc">
+      <div class="pro"><b>장점</b>개별 이력서 표본에 비해 포괄성이 높고, 고용·채용·이탈·기업의 일자리 증감을 함께 볼 수 있다.</div>
+      <div class="con"><b>제약</b>개인의 직업이나 졸업 여부를 직접 관찰하지 못한다. 분기 주기와 거친 연령 구간이라는 제약이 있다.</div>
+    </div>
+  </div>
+  <div class="tab-panel" id="p2" role="tabpanel" hidden>
+    <h4>AI 노출 측정</h4>
+    <p>직업별 AI 노출 지표를 2015~2019년 American Community Survey(ACS)의 직업·산업 고용 구성으로 산업 수준에 연결하였다.</p>
+    <h4>핵심 집단과 연령</h4>
+    <ul>
+      <li>핵심 집단: AI 노출이 높은 산업·주 단위 <b>상위 20%</b></li>
+      <li>경력 초기 인력: <b>22~24세</b> (대졸 신입만을 뜻하지 않음)</li>
+      <li>주요 고용 관측: <b>2025년 2분기</b>까지. 채용·이탈의 가용 마지막 시점은 지표별로 다르다.</li>
+    </ul>
+    <div class="detail" style="min-height:0;border-left-color:var(--orange)"><b>주의:</b> AI 노출은 실제 기업별 도입 여부와 다르며, 두 지표를 동일시해서는 안 된다.</div>
+  </div>
+  <div class="tab-panel" id="p3" role="tabpanel" hidden>
+    <ul>
+      <li><b>사건연구:</b> ChatGPT 출시 전후, 노출 집단과 다른 집단의 변화를 비교</li>
+      <li><b>삼중차분:</b> 같은 산업·주의 고령 근로자와 비교하여 공통 산업 충격을 더 제거. 그럼에도 청년과 고령자에게 다르게 작용하는 동시 충격은 남을 수 있다.</li>
+      <li><b>국소투영과 역사적 분해:</b> 산업 수준에서 통화정책 충격을 검토</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 5. 사건연구 vs 삼중차분 -->
+<section class="section">
+  <h2 class="section-title">설계에 따라 달라지는 그림</h2>
+  <p class="section-desc">삼중차분은 단순 사건연구의 해석에 제동을 건다. 토글로 비교해 보자.</p>
+  <div class="toggle" id="dtoggle">
+    <button class="active" data-v="es">사건연구</button>
+    <button data-v="tdd">삼중차분</button>
+  </div>
+  <div class="design-view" id="dview" aria-live="polite"></div>
+</section>
+
+<!-- 6. 시간 흐름 -->
+<section class="section">
+  <h2 class="section-title">원문에 나온 시점 정리</h2>
+  <p class="tl-note">원문에 명시된 시점만 표시했다. ChatGPT 출시 시점과 팬데믹 시점의 정확한 날짜는 원문에 적혀 있지 않다.</p>
+  <div class="timeline">
+    <div class="tl-item"><div class="year">2015~2019년</div><div class="desc">ACS의 직업·산업 고용 구성을 이용해 직업별 AI 노출 지표를 산업 수준에 연결</div></div>
+    <div class="tl-item"><div class="year">팬데믹 무렵</div><div class="desc">삼중차분에서 경력 초기 인력의 상대적 약화가 이 무렵부터 시작된 것으로 보임</div></div>
+    <div class="tl-item"><div class="year">ChatGPT 출시 무렵</div><div class="desc">채용 건수 약 9% 급감, 이후 지속적으로 낮음. 기업 일자리 증감 및 고령자 이탈과 청년 대체채용 간 관계에서 불연속 변화</div></div>
+    <div class="tl-item"><div class="year">2022년 4분기 ~ 2025년 2분기</div><div class="desc">가장 노출된 집단의 22~24세 고용 원자료 기준 15.2% 감소</div></div>
+    <div class="tl-item"><div class="year">2023년까지</div><div class="desc">검토된 통화정책 충격의 기간</div></div>
+    <div class="tl-item"><div class="year">2025년 1분기 (2025년 초)</div><div class="desc">채용률이 이전 수준에 가까워짐. 채용 건수는 회복하지 않음</div></div>
+    <div class="tl-item"><div class="year">2025년 2분기</div><div class="desc">주요 고용 관측 종료 시점 (채용·이탈은 지표별로 마지막 가용 시점이 다름)</div></div>
+  </div>
+</section>
+
+<!-- 7. 통화정책 -->
+<section class="section">
+  <h2 class="section-title">통화정책은 얼마나 설명하는가</h2>
+  <p class="section-desc">2025년 2분기까지 상대적 청년 고용 감소 중 최대 약 4분의 1이 2023년까지의 통화정책 충격과 관련될 가능성이 있다.</p>
+  <div class="mp-bar" role="img" aria-label="최대 약 4분의 1은 통화정책 충격과 관련 가능, 나머지는 원인을 배분할 수 없음">
+    <div class="mp-a">최대 약 1/4</div>
+    <div class="mp-b">나머지: AI 몫으로 배분할 수 없음</div>
+  </div>
+  <p class="mp-legend">막대는 원문의 "최대 약 4분의 1"을 시각적으로 나타낸 개념도이며 정밀한 추정 구간이 아니다.</p>
+  <div class="alert">
+    <h3>잔여 인과 계산은 성립하지 않는다</h3>
+    <ul>
+      <li>통화정책 충격이 고노출 집단의 급격한 채용 감소 <b>시점</b>을 설명한다는 증거는 찾지 못했다.</li>
+      <li>그러나 남은 4분의 3이 모두 AI 때문이라는 식의 계산은 성립하지 않는다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8. 이론: 두 메커니즘 -->
+<section class="section">
+  <h2 class="section-title">두 가지 메커니즘: 현재 대체 vs 미래를 예상한 채용 유예</h2>
+  <div class="compare">
+    <div class="compare-card b">
+      <h3>현재의 업무 대체</h3>
+      <p>이미 쓰는 AI가 신입 업무를 수행했기 때문에 채용이 줄었다는 설명.</p>
+      <p style="margin-top:8px"><b>정책 함의:</b> 과업·기술 전환이 더 중요해진다.</p>
+    </div>
+    <div class="compare-card a" style="background:#EFF6FF;border-color:var(--blue)">
+      <h3 style="color:var(--blue)">미래를 예상한 채용 유예 (저자의 가설)</h3>
+      <p>신입 채용은 미래 숙련에 대한 투자. AI 도입률이 낮더라도 기업이 미래 기술 능력과 조직 개편 시점을 불확실하게 느끼면 채용을 미루고 선택의 여지를 보존할 수 있다.</p>
+      <p style="margin-top:8px"><b>정책 함의:</b> 투자 위험과 진입 기회의 유지 장치가 더 중요해진다.</p>
+    </div>
+  </div>
+  <div class="detail" style="min-height:0;border-left-color:var(--orange)">이 불확실성 설명은 관찰된 시점과 도입률 사이의 간극을 해석하는 <b>가설</b>이며, 직접 검증한 매개효과가 아니다. 설문이나 기업별 연결 자료로 채용 의사결정의 이유를 검증하기 전에는 가설로 남겨야 한다. 저자는 재택근무, 진입 지연, 통화정책과 AI에 대한 기업의 불확실성을 함께 논의한다.</div>
+</section>
+
+<!-- 9. 오해 체크 -->
+<section class="section">
+  <h2 class="section-title">이렇게 읽으면 안 된다</h2>
+  <p class="section-desc">각 문장을 눌러 원문의 해석을 확인하자.</p>
+  <div id="myths">
+    <div class="myth"><button><span class="tag">오해</span>약 12% 감소는 AI가 청년 일자리를 없앤 수치다.</button><div class="ans"><span class="tag">원문</span>AI가 원인임을 확정한 수치가 아니라 노출 수준과 고용 변화의 관계를 나타내는 추정치이다. 'AI가 없앴다'고 단정해서는 안 된다.</div></div>
+    <div class="myth"><button><span class="tag">오해</span>12.4%와 15.2%는 줄어든 사람 수 또는 취업률의 %포인트 하락이다.</button><div class="ans"><span class="tag">원문</span>이 수치들은 감소 인원의 총계나 취업률의 %포인트 변화가 아니다.</div></div>
+    <div class="myth"><button><span class="tag">오해</span>이탈 건수 11.5% 감소는 해고가 줄었다는 뜻이다.</button><div class="ans"><span class="tag">원문</span>이탈에는 자발적 퇴사 등이 포함되므로 이를 해고 수치라고 부를 수 없다.</div></div>
+    <div class="myth"><button><span class="tag">오해</span>채용률이 돌아왔으니 신입 취업 기회도 회복되었다.</button><div class="ans"><span class="tag">원문</span>고용 기반(분모)이 줄었기 때문에 채용 건수가 회복하지 않아도 채용률은 비슷해질 수 있다.</div></div>
+    <div class="myth"><button><span class="tag">오해</span>22~24세 결과는 대졸 신입의 결과이며, 특정 졸업생의 실패 원인을 설명한다.</button><div class="ans"><span class="tag">원문</span>22~24세는 대졸 신입만을 뜻하지 않으며, 집계에서 나타난 현상을 특정 졸업생의 실패 원인으로 환원할 수 없다.</div></div>
+    <div class="myth"><button><span class="tag">오해</span>대체채용 분석은 누가 누구의 자리를 대신했는지 보여준다.</button><div class="ans"><span class="tag">원문</span>QWI는 직접 대체 관계를 보여주지 않는다. 대체채용 분석은 집계 자료의 관계이지 개별 결원 충원 추적이 아니다.</div></div>
+    <div class="myth"><button><span class="tag">오해</span>AI 노출이 높은 산업 = AI를 실제로 도입한 기업이다.</button><div class="ans"><span class="tag">원문</span>AI 노출은 실제 기업별 도입 여부와 다르며 두 지표를 동일시해서는 안 된다.</div></div>
+  </div>
+</section>
+
+<!-- 10. 결론 및 의의 -->
+<section class="section">
+  <h2 class="section-title">결론 및 의의 (8가지)</h2>
+  <div class="btn-row"><button class="btn-sm" id="accAll">모두 펼치기</button></div>
+  <div id="accs">
+    <div class="acc"><button><span class="num-i">1</span>고용 감소를 유량의 문제로 다시 읽어야 한다</button><div class="body">가장 중요한 기여는 고용 규모가 줄어드는 경로를 채용과 이탈로 분해한 데 있다. 관측 결과는 대량 해고보다 진입 문이 좁아지는 상황을 가리킨다. 대학의 진로 지원도 재직자의 업무 자동화뿐 아니라 첫 채용 기회가 사라지는 경로를 따로 살펴야 한다.<div class="note">22~24세 집계에서 나타난 현상을 특정 졸업생의 실패 원인으로 환원할 수는 없다.</div></div></div>
+    <div class="acc"><button><span class="num-i">2</span>비율의 회복과 기회의 회복은 다르다</button><div class="body">채용률뿐 아니라 실제 채용 건수, 고용 규모, 졸업자 수 대비 진입 성과를 함께 보아야 한다. 취업 지원 프로그램의 평가에서도 참가자 비율과 실제 취업 인원을 구별할 필요가 있다.<div class="note">이 연구는 졸업자 수 대비 진입 성과를 직접 추정하지 않았다.</div></div></div>
+    <div class="acc"><button><span class="num-i">3</span>현재의 자동화와 미래를 예상한 채용 보류를 구별해야 한다</button><div class="body">두 설명은 정책 대응이 다르다. 전자는 과업·기술 전환을, 후자는 투자 위험과 진입 기회의 유지 장치를 더 중요하게 만든다. 현재 AI 도입률만으로 노동시장 변화를 판단해서는 안 된다.<div class="note">불확실성 가설은 채용 의사결정의 이유를 검증하기 전까지 가설로 남는다.</div></div></div>
+    <div class="acc"><button><span class="num-i">4</span>AI 교육은 도구 숙련과 독립 수행의 증거를 함께 만들어야 한다</button><div class="body">학생이 AI로 결과물을 만드는 능력과 결과의 오류를 찾아 설명·수정하는 능력을 함께 보여주는 평가가 가능하다. 초안 작성, 검증, 수정, 최종 책임의 단계를 나누고 일부 단계는 AI 없이 수행하게 하여 독립 역량을 확인할 수 있다.<div class="note">이 연구는 특정 교수법을 시험하지 않았다. 이는 리뷰에서 도출한 교육 제안이며 검증된 취업 효과가 아니다.</div></div></div>
+    <div class="acc"><button><span class="num-i">5</span>첫 진입 경험 자체를 교육 자원으로 보아야 한다</button><div class="body">채용 문이 좁아지면 학생은 이력과 현장 학습을 쌓을 기회도 잃을 수 있다. 대학·기업 연계 프로젝트나 인턴십이 실제 책임과 피드백을 제공하도록 설계하고, 모호한 요구를 확인하고 업무를 끝까지 인수인계하는 경험을 남기는 방향이 적절하다.<div class="note">이러한 프로그램이 채용을 늘리는지는 별도 평가가 필요하며, 무급 경험의 확대나 인턴십의 정규직 대체를 정당화하는 결론도 아니다.</div></div></div>
+    <div class="acc"><button><span class="num-i">6</span>장기적인 숙련 파이프라인은 아직 관측되지 않은 위험이다</button><div class="body">첫 일자리는 경력 사다리의 시작점이다. 향후 연구는 지연된 진입자가 나중에 따라잡는지, 산업을 바꾸는지, 교육을 연장하는지, 첫 직장의 질과 이후 이동이 어떻게 달라지는지를 추적해야 한다.<div class="note">이 자료만으로 특정 세대의 장기 소득 손실이나 숙련 붕괴를 확정하지 않는다.</div></div></div>
+    <div class="acc"><button><span class="num-i">7</span>인과 해석은 더 엄격하게 유지해야 한다</button><div class="body">행정자료의 포괄성은 표본 대표성 문제를 줄이지만 연구 설계의 교란을 없애지는 않는다. 노출이 높은 산업은 재택근무, 수요 변화, 진입 연령 상승에서도 다를 수 있으며, 삼중차분의 사전 추세가 이 우려를 뒷받침한다.<div class="note">약 12% 감소를 'AI가 없앴다'고 단정하거나 통화정책 설명을 제외한 나머지를 전부 AI로 배분해서는 안 된다. 한국의 학력·병역·첫 취업 연령과 고용제도가 다르다는 점도 적용 범위에 포함해야 한다.</div></div></div>
+    <div class="acc"><button><span class="num-i">8</span>다음 연구의 핵심은 도입·기대·행동의 연결이다</button><div class="body">기업별 실제 AI 도입, 미래 도입 기대, 채용 계획과 실현 채용을 고용주·근로자 자료에 연결해야 현재 대체와 기대에 따른 유예를 구별할 수 있다. 더 긴 사후 기간과 개인별 일자리 이동 기록이 있어야 따라잡기 여부도 판단할 수 있다. 교육 분야에서는 AI 사용 능력과 독립 수행 능력을 구분한 평가를 취업·현장 수행 결과와 연결하는 연구가 필요하다.</div></div>
+  </div>
+</section>
+
+<!-- 11. 한계 -->
+<section class="section">
+  <div class="alert" style="background:#FFF7ED;border-color:var(--orange)">
+    <h3>연구의 한계 (원문에 명시된 내용)</h3>
+    <ul>
+      <li>CES 워킹페이퍼이며 동료심사 학술지 논문이나 Census Bureau의 공식 입장이 아니다.</li>
+      <li>고용 감소 수치는 AI 노출과 고용 변화의 관계를 나타내는 추정치이며, AI가 원인임을 확정하지 않는다.</li>
+      <li>QWI는 개인의 직업이나 졸업 여부를 직접 관찰하지 못하며, 분기 주기와 거친 연령 구간이라는 제약이 있다.</li>
+      <li>AI 노출 지표는 실제 기업별 AI 도입 여부와 다르다.</li>
+      <li>삼중차분에서도 청년과 고령자에게 다르게 작용하는 동시 충격은 남을 수 있으며, 팬데믹 무렵부터의 사전 추세가 확인되었다.</li>
+      <li>대체채용 분석은 집계 자료의 관계이며 개별 결원 충원을 추적하지 않는다.</li>
+      <li>채용 유예의 불확실성 설명은 직접 검증한 매개효과가 아닌 가설이다.</li>
+      <li>장기 소득 손실이나 숙련 붕괴는 이 자료로 확정할 수 없다. 한국 맥락(학력·병역·첫 취업 연령·고용제도)으로의 적용에는 주의가 필요하다.</li>
+    </ul>
+  </div>
+  <div class="implication">
+    <h3>한 줄 정리</h3>
+    <ul>
+      <li>이 논문의 의의는 확정된 해결책을 주는 데 있지 않고, 무엇을 측정해야 신입 진입의 변화를 정확하게 설명할 수 있는지 보여주는 데 있다.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="footer">
+  <p><b>출처</b></p>
+  <p class="apa">Tucker, L. C. (2026). <i>You're (not) hired: Artificial intelligence and early career hiring in the Quarterly Workforce Indicators</i> (CES Working Paper No. 26-27). U.S. Census Bureau. <a href="https://www2.census.gov/library/working-papers/2026/adrm/ces/CES-WP-26-27.pdf" target="_blank" rel="noopener">https://www2.census.gov/library/working-papers/2026/adrm/ces/CES-WP-26-27.pdf</a></p>
+  <p>본 자료는 워킹페이퍼이며 동료심사 학술지 게재 논문이 아니다. 이 인포그래픽은 블로그 리뷰 원고의 내용만을 바탕으로 구성되었으며, 모든 수치는 리뷰 원고에 서술된 값이다.</p>
+  <p>AI 활용 내역: 논문 내용의 분석·요약과 리뷰 원고 및 인포그래픽 작성에 AI를 활용하였으며, 최종 검토 및 발행은 블로그 운영자가 수행한다.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+  var statData={
+    emp:{t:'22~24세 고용: 약 12% 감소 (선호 추정치 12.4%)',b:'ChatGPT 출시 후 10분기 동안 회귀 보정 기준 약 12% 감소. 계절성 영향을 줄이기 위해 마지막 네 분기와 기준 네 분기를 비교한 저자의 선호 회귀 추정치는 12.4% 감소이다.',c:'AI가 원인임을 확정한 수치가 아니라 노출 수준과 고용 변화의 관계를 나타내는 추정치이다. 감소 인원의 총계나 취업률의 %포인트 변화가 아니다.'},
+    raw:{t:'22~24세 고용: 원자료 기준 15.2% 감소',b:'가장 노출된 집단의 22~24세 고용은 2022년 4분기에서 2025년 2분기 사이 원자료 기준 15.2% 감소하였다. 원자료 감소와 회귀 보정 감소(12.4%)는 다르다.',c:'감소 인원의 총계나 취업률의 %포인트 변화가 아니다.'},
+    hire:{t:'채용 건수: 마지막 네 분기 평균 12.7% 낮음',b:'관측 가능한 마지막 네 분기 평균 채용 건수는 대응하는 기준 네 분기보다 12.7% 낮았다. 고용 감소의 주된 경로는 대규모 해고 증가보다 신규 채용의 감소였다.',c:'같은 시기 채용률은 2025년 1분기에 이전 수준에 가까워졌다. 분모인 고용 기반이 줄었기 때문에 두 결과는 양립한다.'},
+    hire9:{t:'채용 건수: 출시 무렵 약 9% 급감',b:'채용은 ChatGPT 출시 무렵 약 9% 감소한 뒤 지속적으로 낮았다.',c:'원문은 이 약 9%의 정확한 비교 기준(어느 분기 대비인지)을 명시하지 않는다.'},
+    sep:{t:'이탈 건수: 네 분기 평균 기준 11.5% 감소',b:'이탈 건수도 감소하여 고용 감소를 일부 상쇄하였다.',c:'이탈에는 자발적 퇴사 등이 포함되므로 이를 해고 수치라고 부를 수 없다.'},
+    mp:{t:'통화정책: 최대 약 4분의 1과 관련 가능성',b:'2025년 2분기까지 상대적 청년 고용 감소의 최대 약 4분의 1이 2023년까지의 통화정책 충격과 관련될 가능성이 있다 (산업 수준의 국소투영과 역사적 분해).',c:'이 충격이 고노출 집단의 급격한 채용 감소 시점을 설명한다는 증거는 찾지 못했다. 그렇다고 남은 4분의 3이 모두 AI 때문이라는 잔여 인과 계산은 성립하지 않는다.'}
+  };
+  function render(el,d){el.innerHTML='<h4>'+d.t+'</h4><p>'+d.b+'</p>'+(d.c?'<div class="caveat"><b>주의:</b> '+d.c+'</div>':'');}
+  function group(containerId,sel,detailId,data){
+    var items=document.querySelectorAll('#'+containerId+' '+sel),det=document.getElementById(detailId);
+    items.forEach(function(b){b.addEventListener('click',function(){items.forEach(function(x){x.classList.remove('active')});b.classList.add('active');render(det,data[b.dataset.k]);});});
+    render(det,data[items[0].dataset.k]);
+  }
+  group('stats','.stat-card','statDetail',statData);
+
+  var flowData={
+    in:{t:'채용 (유입): 주된 감소 경로',b:'고용 감소의 주된 경로는 대규모 해고 증가보다 신규 채용의 감소였다. 출시 무렵 약 9% 급감, 마지막 네 분기 평균은 기준보다 12.7% 낮음.',c:'경력 초기 노동시장에서는 기업이 새 사람을 덜 뽑는 것만으로도 고용 규모가 줄어든다.'},
+    stock:{t:'고용 (저량): 줄어든 고용 기반',b:'원자료 기준 15.2% 감소(2022년 4분기~2025년 2분기), 저자의 선호 회귀 추정치 12.4% 감소.',c:'고용 기반이 줄면서 채용률의 분모가 작아졌다.'},
+    out:{t:'이탈 (유출): 오히려 감소',b:'이탈 건수는 네 분기 평균 기준 11.5% 감소하여 고용 감소를 일부 상쇄하였다.',c:'이탈에는 자발적 퇴사 등이 포함되므로 해고 수치로 부를 수 없다.'}
+  };
+  group('flow','.node','flowDetail',flowData);
+
+  document.querySelectorAll('#mtabs .tab').forEach(function(t,i,all){
+    t.addEventListener('click',function(){
+      all.forEach(function(x){x.classList.remove('active');document.getElementById(x.dataset.p).hidden=true;});
+      t.classList.add('active');document.getElementById(t.dataset.p).hidden=false;
+    });
+  });
+
+  var dv={
+    es:'<div class="cmp"><span class="pill">고노출 집단 (상위 20%)</span><span class="vs">vs</span><span class="pill alt">다른 집단</span><span style="font-size:.8rem;color:var(--gray)">ChatGPT 출시 전후</span></div><p style="font-size:.8rem;color:var(--gray)">아래는 원문 "연구 결과"의 고노출 집단 수치이다. 원문은 각 수치가 어느 설계에서 나왔는지 하나하나 명시하지 않는다.</p><ul style="padding-left:18px"><li>22~24세 고용: 출시 후 10분기 동안 회귀 보정 기준 약 12% 감소 (선호 추정치 12.4%)</li><li>채용: 출시 무렵 약 9% 감소 후 지속적으로 낮음</li></ul><div class="caveat" style="margin-top:10px;font-size:.8rem;color:#9A3412;background:#FFF7ED;border-radius:8px;padding:8px 10px">한계: 삼중차분은 공통 산업 충격을 "더" 제거한다. 즉 단순 사건연구의 결과에는 그만큼 공통 산업 충격이 섞여 있을 수 있다.</div>',
+    tdd:'<div class="cmp"><span class="pill">같은 산업·주의 22~24세</span><span class="vs">vs</span><span class="pill alt">같은 산업·주의 고령 근로자</span></div><ul style="padding-left:18px"><li>공통 산업 충격을 더 제거하는 더 엄격한 설계</li><li>경력 초기 인력의 상대적 약화 중 일부는 <b>팬데믹 무렵부터</b> 이어져, AI 도입 이후의 변화로 모두 돌리기 어렵다 (사전 추세)</li><li>다만 기업의 일자리 증감, 고령자 이탈과 청년 대체채용 간 관계에서는 <b>출시 시점의 불연속 변화</b>가 남는다</li></ul><div class="caveat" style="margin-top:10px;font-size:.8rem;color:#9A3412;background:#FFF7ED;border-radius:8px;padding:8px 10px">한계: 청년과 고령자에게 다르게 작용하는 동시 충격은 여전히 남을 수 있다. 대체채용 분석은 집계 자료의 관계이며 개별 결원 충원 추적이 아니다.</div>'
+  };
+  var dbtns=document.querySelectorAll('#dtoggle button'),dview=document.getElementById('dview');
+  dbtns.forEach(function(b){b.addEventListener('click',function(){dbtns.forEach(function(x){x.classList.remove('active')});b.classList.add('active');dview.innerHTML=dv[b.dataset.v];});});
+  dview.innerHTML=dv.es;
+
+  document.querySelectorAll('.myth > button').forEach(function(b){b.addEventListener('click',function(){b.parentNode.classList.toggle('open');});});
+  var accs=document.querySelectorAll('.acc');
+  accs.forEach(function(a){a.querySelector('button').addEventListener('click',function(){a.classList.toggle('open');});});
+  var allBtn=document.getElementById('accAll');
+  allBtn.addEventListener('click',function(){
+    var open=allBtn.dataset.open!=='1';
+    accs.forEach(function(a){a.classList.toggle('open',open)});
+    allBtn.dataset.open=open?'1':'0';allBtn.textContent=open?'모두 접기':'모두 펼치기';
+  });
+})();
+</script>
+</body>
+</html>
