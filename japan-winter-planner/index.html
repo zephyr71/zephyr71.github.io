@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>일본 겨울 비용 플래너</title>
+<style>
+:root{color-scheme:light dark;--bg:#f7f6f2;--card:#fff;--ink:#1d1d1b;--mut:#6b6a64;--line:#dedbd1;--acc:#b3392b;--ok:#2f7a4b;--warn:#b27200;--est:#7a5ab0}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--card:#201f1c;--ink:#ecebe5;--mut:#9a988f;--line:#38362f;--acc:#e0705f;--ok:#5fbf84;--warn:#e0b050;--est:#b79be6}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+main{max-width:920px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:4px 0 2px}h2{font-size:16px;margin:0 0 8px}
+.sub{color:var(--mut);font-size:13px;margin-bottom:12px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:8px;font:inherit;cursor:pointer}
+nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin:6px 0}
+label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:3px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-width:0}
+input[type=number]{width:120px}input[type=date]{width:150px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;color:var(--mut);font-weight:600}
+.tag{font-size:11px;padding:1px 6px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.est{color:var(--est)}.bad{color:var(--acc)}
+.note{font-size:12.5px;color:var(--mut)}
+.big{font-size:22px;font-weight:700}
+button.s{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:3px 8px;cursor:pointer;font:inherit}
+.alert{border-left:4px solid var(--warn);padding:6px 10px;background:var(--bg);margin:6px 0;font-size:13.5px}
+.alert.bad{border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.kv{padding:10px;border:1px solid var(--line);border-radius:8px}
+.kv b{display:block;font-size:18px}
+.scroll{overflow-x:auto}
+footer{font-size:12px;color:var(--mut);margin:20px 0}
+a{color:var(--acc)}
+@media print{nav,.noprint{display:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>일본 겨울 비용 플래너</h1>
+<div class="sub">가고시마→후쿠오카→오카야마→교토→나고야→시즈오카→도쿄 · 2인 · 비용 우선 · 기준일 2026-10-12<br>
+<span class="tag ok">확인</span> 출처 확인 값 <span class="tag est">추정</span> 제 추정값(직접 수정) <span class="tag warn">미입력</span> 직접 조사 필요</div>
+<nav id="nav"></nav>
+<div id="view"></div>
+<footer id="foot"></footer>
+</main>
+<script>
+const KEY='japan-winter-planner-v1';
+const PAX=2;
+const AP_IN={KOJ:{n:'가고시마 KOJ',ref:57658,note:'이스타 직항 편도 최저(10/27 샘플)'},FUK:{n:'후쿠오카 FUK',ref:87865,note:'KAYAK 참고(비수기 샘플)'},KIJ:{n:'직접입력',ref:null,note:''}};
+const AP_OUT={NRT:{n:'나리타 NRT',ref:73994,note:'FAQ 수치 47,697~73,994 (페이지 상단 표와 불일치)'},HND:{n:'하네다 HND(김포)',ref:176960,note:'김포→하네다 편도 최저 기준, 반대 방향 별도 확인'},FUK:{n:'후쿠오카 FUK',ref:122708,note:'FUK→ICN 참고'},X:{n:'직접입력',ref:null,note:''}};
+const CITY={kgs:'가고시마',fuk:'후쿠오카',oka:'오카야마',kyo:'교토',ngo:'나고야',szo:'시즈오카',tyo:'도쿄'};
+// 구간 옵션: m 수단, f 1인 엔, s 상태(ok/est/null), jr 패스 사용 가능 여부, note
+const EDGE={
+ 'kgs>fuk':[{m:'고속버스(사쿠라지마호)',f:3500,s:'ok',jr:0,note:'웹운임 ¥3,500~6,000, 약 4시간 33분'},{m:'신칸센',f:11420,s:'ok',jr:1,note:'박다–가고시마중앙'}],
+ 'fuk>oka':[{m:'신칸센(자유석 정규)',f:12100,s:'ok',jr:1,note:'박다–오카야마'},{m:'야간/고속버스',f:null,s:null,jr:0,note:'가격 검색 필요'}],
+ 'oka>kyo':[{m:'신칸센',f:6000,s:'est',jr:1,note:'추정'},{m:'고속버스',f:null,s:null,jr:0,note:'가격 검색 필요'}],
+ 'kyo>ngo':[{m:'신칸센',f:5000,s:'est',jr:1,note:'추정'},{m:'고속버스',f:null,s:null,jr:0,note:'가격 검색 필요'}],
+ 'ngo>szo':[{m:'신칸센(코다마)',f:4500,s:'est',jr:1,note:'추정'},{m:'고속버스',f:null,s:null,jr:0,note:'가격 검색 필요'}],
+ 'szo>tyo':[{m:'신칸센(코다마)',f:4300,s:'est',jr:1,note:'추정'},{m:'고속버스',f:null,s:null,jr:0,note:'가격 검색 필요'}]
+};
+const GEN=[{m:'직접입력',f:null,s:null,jr:0,note:'순서 변경으로 생긴 구간'},{m:'신칸센(직접입력)',f:null,s:null,jr:1,note:'JR 패스 대상으로 계산'}];
+const PASS={7:53000,14:84000,21:105000};
+const DEF={tab:'air',rate:930,inD:'2027-01-12',outD:'2027-02-04',inAp:'KOJ',outAp:'NRT',
+ fl:{inF:null,inB:0,outF:null,outB:0},
+ order:['kgs','fuk','oka','kyo','ngo','szo','tyo'],
+ nights:{kgs:2,fuk:3,oka:2,kyo:5,ngo:3,szo:2,tyo:5},
+ stay:{kgs:0,fuk:0,oka:0,kyo:0,ngo:0,szo:0,tyo:0},
+ leg:{}, bag:{}, passLen:7};
+let S;
+try{S=Object.assign({},DEF,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){S=JSON.parse(JSON.stringify(DEF));}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const $=s=>document.querySelector(s);
+const yen=n=>'¥'+Math.round(n).toLocaleString('ko-KR');
+const won=n=>'₩'+Math.round(n).toLocaleString('ko-KR');
+const y2w=n=>n*S.rate/100;
+const DOW=['일','월','화','수','목','금','토'];
+function pd(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function fmt(s){const d=pd(s);return s+'('+DOW[d.getDay()]+')';}
+function days(a,b){return Math.round((pd(b)-pd(a))/864e5);}
+function addDays(s,n){const d=pd(s);d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+const PEAK=[['2026-12-28','2027-01-04','일본 연말연시: 요금·혼잡 최고','bad'],['2027-01-09','2027-01-11','성인의 날 연휴','warn'],['2027-02-05','2027-02-08','설 연휴: 한국발 수요 집중','bad'],['2027-02-11','2027-02-11','건국기념일','warn']];
+function warns(){
+ const out=[];const a=S.inD,b=S.outD;
+ PEAK.forEach(p=>{const hit=(x)=>x>=p[0]&&x<=p[1];
+  const ov=!(b<p[0]||a>p[1]);
+  if(ov)out.push([p[3],p[0]+'~'+p[1]+' '+p[2]+' 와 일정이 겹칩니다.']);});
+ const n=days(a,b);
+ if(n<1)out.push(['bad','귀국일이 입국일보다 빠릅니다.']);
+ if(n>30)out.push(['bad','한 달 미만 조건을 넘습니다 ('+n+'박).']);
+ const tn=S.order.reduce((s,c)=>s+(+S.nights[c]||0),0);
+ if(tn!==n)out.push(['warn','도시별 숙박 합계 '+tn+'박 ≠ 총 일정 '+n+'박 (차이 '+(n-tn)+'박).']);
+ return out;
+}
+function legs(){
+ const L=[];
+ for(let i=0;i<S.order.length-1;i++){
+  const a=S.order[i],b=S.order[i+1],k=a+'>'+b;
+  const opts=EDGE[k]||GEN;
+  const st=S.leg[k]||{};
+  const oi=Math.min(st.o||0,opts.length-1);
+  const o=opts[oi];
+  const fare=(st.f!=null&&st.f!=='')?+st.f:o.f;
+  const bag=+S.bag[k]||0;
+  let day=0;for(let j=0;j<=i;j++)day+=+S.nights[S.order[j]]||0;
+  L.push({k,a,b,opts,oi,o,fare,bag,day,fixed:!!EDGE[k]});
+ }
+ return L;
+}
+function passCalc(L){
+ const jr=L.filter(l=>l.o.jr&&l.fare!=null);
+ const price=PASS[S.passLen]*PAX;
+ let best=0,bs=0;
+ for(let s=0;s<=Math.max(0,days(S.inD,S.outD));s++){
+  const sum=jr.filter(l=>l.day>=s&&l.day<s+ +S.passLen).reduce((t,l)=>t+l.fare*PAX,0);
+  if(sum>best){best=sum;bs=s;}
+ }
+ const total=jr.reduce((t,l)=>t+l.fare*PAX,0);
+ return {price,best,bs,total,jr};
+}
+function totals(){
+ const L=legs();
+ const air=(AP_IN[S.inAp].ref!=null&&S.fl.inF==null?AP_IN[S.inAp].ref:(+S.fl.inF||0))*PAX+(+S.fl.inB||0)
+        +(AP_OUT[S.outAp].ref!=null&&S.fl.outF==null?AP_OUT[S.outAp].ref:(+S.fl.outF||0))*PAX+(+S.fl.outB||0);
+ let dom=0,miss=0;L.forEach(l=>{if(l.fare==null)miss++;else dom+=l.fare*PAX;dom+=l.bag;});
+ const stay=S.order.reduce((t,c)=>t+(+S.stay[c]||0)*(+S.nights[c]||0),0);
+ return {air,domW:y2w(dom),dom,miss,stayW:y2w(stay),stay,L};
+}
+const TABS=[['air','① 항공·일정'],['route','② 도시 순서·이동'],['pass','③ JR 패스 판단'],['sum','④ 숙박·합계'],['bag','⑤ 짐']];
+function nav(){ $('#nav').innerHTML=TABS.map(t=>`<button data-tab="${t[0]}" class="${S.tab===t[0]?'on':''}">${t[1]}</button>`).join('');}
+function fareVal(dir){const ap=dir==='in'?AP_IN[S.inAp]:AP_OUT[S.outAp];const v=dir==='in'?S.fl.inF:S.fl.outF;return v!=null&&v!==''?+v:(ap.ref||0);}
+function airView(){
+ const w=warns();const n=days(S.inD,S.outD);
+ const iF=fareVal('in'),oF=fareVal('out');
+ return `<div class="card"><h2>입국·출국 (오픈조)</h2>
+ <div class="row">
+  <label>입국일<input type="date" data-k="inD" value="${S.inD}"></label>
+  <label>출국일<input type="date" data-k="outD" value="${S.outD}"></label>
+  <label>환율(₩/¥100)<input type="number" data-k="rate" value="${S.rate}"></label>
+ </div>
+ <div class="note">${fmt(S.inD)} → ${fmt(S.outD)} · ${n}박 ${n+1}일</div>
+ ${w.map(x=>`<div class="alert ${x[0]}">${x[1]}</div>`).join('')}
+ <div class="alert">권장 구간: 일본 연말연시(12/28~1/4), 성인의 날(1/9~1/11), 설(2/5~2/8)을 피한 1/12~2/4.</div>
+ </div>
+ <div class="card scroll"><table><tr><th></th><th>공항</th><th>1인 편도(₩)</th><th>위탁수하물 추가(₩, 2인 합)</th><th>참고</th></tr>
+ <tr><td>입국</td><td><select data-k="inAp">${Object.entries(AP_IN).map(([k,v])=>`<option value="${k}" ${S.inAp===k?'selected':''}>${v.n}</option>`).join('')}</select></td>
+  <td><input type="number" data-fl="inF" placeholder="${AP_IN[S.inAp].ref||''}" value="${S.fl.inF??''}"></td>
+  <td><input type="number" data-fl="inB" value="${S.fl.inB}"></td>
+  <td class="note"><span class="tag est">샘플</span> ${AP_IN[S.inAp].note}</td></tr>
+ <tr><td>출국</td><td><select data-k="outAp">${Object.entries(AP_OUT).map(([k,v])=>`<option value="${k}" ${S.outAp===k?'selected':''}>${v.n}</option>`).join('')}</select></td>
+  <td><input type="number" data-fl="outF" placeholder="${AP_OUT[S.outAp].ref||''}" value="${S.fl.outF??''}"></td>
+  <td><input type="number" data-fl="outB" value="${S.fl.outB}"></td>
+  <td class="note"><span class="tag est">샘플</span> ${AP_OUT[S.outAp].note}</td></tr></table>
+ <p class="note">입력칸이 비어 있으면 위 샘플 가격을 씁니다. 최저가 샘플은 비수기 값이며 위탁수하물이 빠진 가격으로 보는 것이 안전합니다. 예약 전 해당 날짜로 직접 조회하세요.</p>
+ <p><b>항공 합계(2인):</b> ${won(iF*PAX+(+S.fl.inB||0)+oF*PAX+(+S.fl.outB||0))}</p></div>`;
+}
+function routeView(){
+ const T=totals();
+ return `<div class="card"><h2>도시 순서와 숙박일수</h2>
+ <table><tr><th>순서</th><th>도시</th><th>숙박</th><th></th></tr>
+ ${S.order.map((c,i)=>`<tr><td>${i+1}</td><td>${CITY[c]}</td><td><input type="number" style="width:70px" data-n="${c}" value="${S.nights[c]}"></td>
+ <td class="noprint"><button class="s" data-mv="${i}" data-d="-1">▲</button> <button class="s" data-mv="${i}" data-d="1">▼</button></td></tr>`).join('')}</table>
+ <p class="note">순서를 바꾸면 샘플이 없는 구간은 직접 입력 구간이 됩니다. 서→동 한 방향이 가장 쌉니다.</p></div>
+ <div class="card scroll"><h2>구간별 이동 (1인 기준 ¥)</h2>
+ <table><tr><th>구간</th><th>수단</th><th>요금 ¥</th><th>상태</th><th>짐 추가비 ¥(2인)</th><th>메모</th></tr>
+ ${T.L.map(l=>`<tr><td>${CITY[l.a]}→${CITY[l.b]}<div class="note">${l.day}일차 이동</div></td>
+  <td><select data-lo="${l.k}">${l.opts.map((o,i)=>`<option value="${i}" ${l.oi===i?'selected':''}>${o.m}</option>`).join('')}</select></td>
+  <td><input type="number" style="width:90px" data-lf="${l.k}" placeholder="${l.o.f??''}" value="${(S.leg[l.k]&&S.leg[l.k].f)??''}"></td>
+  <td>${l.fare==null?'<span class="tag warn">미입력</span>':(l.o.s==='ok'&&!(S.leg[l.k]&&S.leg[l.k].f)?'<span class="tag ok">확인</span>':'<span class="tag est">추정/입력</span>')}</td>
+  <td><input type="number" style="width:90px" data-lb="${l.k}" value="${S.bag[l.k]||0}"></td>
+  <td class="note">${l.o.note}${l.o.jr?' · JR':''}</td></tr>`).join('')}</table>
+ <p><b>이동 합계(2인):</b> ${yen(T.dom)} ≈ ${won(T.domW)} ${T.miss?`<span class="tag warn">미입력 ${T.miss}구간 제외</span>`:''}</p>
+ <p class="note">신칸센 정규요금 확인값: 박다–오카야마 ¥12,100, 박다–교토 ¥15,400, 박다–나고야 ¥17,830, 박다–시즈오카 ¥19,580, 박다–도쿄 ¥22,220(자유석). 오카야마 이후 구간 요금은 <span class="est">추정</span>이므로 야후 노선·JR 앱에서 확인해 덮어쓰세요.</p></div>`;
+}
+function passView(){
+ const T=totals(),P=passCalc(T.L);
+ const gain=P.best-P.price;
+ const start=addDays(S.inD,P.bs);
+ return `<div class="card"><h2>JR 전국 패스 손익 (2026-10-01 이후 가격, 보통석)</h2>
+ <div class="row"><label>패스 기간<select data-pl>${[7,14,21].map(d=>`<option value="${d}" ${+S.passLen===d?'selected':''}>${d}일권 ¥${PASS[d].toLocaleString()}</option>`).join('')}</select></label></div>
+ <div class="grid">
+  <div class="kv">패스 2인<b>${yen(P.price)}</b></div>
+  <div class="kv">패스 기간 안 JR 구간 정규요금(최적 시작일 ${start})<b>${yen(P.best)}</b></div>
+  <div class="kv">손익<b class="${gain>0?'ok':'bad'}">${gain>0?'+':''}${yen(gain)}</b></div>
+ </div>
+ <p>${gain>0?'패스가 이득입니다.':'패스가 손해입니다. 개별 승차권·버스가 더 쌉니다.'} 일정 전체 JR 구간 합계 ${yen(P.total)} (패스는 연속 ${S.passLen}일만 유효).</p>
+ <div class="alert">패스로 노조미·미즈호는 탈 수 없는 것으로 알고 있고, 이번 조사에서는 추가요금 허용 여부를 확인하지 못했습니다. 히카리·코다마·사쿠라는 탈 수 있습니다. 가고시마→후쿠오카는 버스가 싸서 대상에서 빼는 것이 낫습니다(상단 이동 탭에서 수단 선택).</div>
+ <p class="note">구간 이동일은 숙박일수를 누적한 값입니다. 요금이 비어 있거나 추정값이면 손익도 부정확합니다.</p></div>`;
+}
+function sumView(){
+ const T=totals();
+ const total=T.air+T.domW+T.stayW;
+ return `<div class="card scroll"><h2>도시별 숙박 (1박, 2인, ¥)</h2>
+ <table><tr><th>도시</th><th>숙박</th><th>1박 ¥</th><th>소계 ¥</th></tr>
+ ${S.order.map(c=>`<tr><td>${CITY[c]}</td><td>${S.nights[c]}</td><td><input type="number" style="width:100px" data-st="${c}" value="${S.stay[c]}"></td><td>${yen((+S.stay[c]||0)*(+S.nights[c]||0))}</td></tr>`).join('')}</table>
+ <p class="note">숙박 요금은 이번에 확인한 데이터가 없습니다. 예약 사이트 가격을 직접 입력하세요.</p></div>
+ <div class="card"><h2>총 비용 (2인)</h2><div class="grid">
+ <div class="kv">항공<b>${won(T.air)}</b></div>
+ <div class="kv">국내 이동<b>${won(T.domW)}</b><span class="note">${yen(T.dom)}</span></div>
+ <div class="kv">숙박<b>${won(T.stayW)}</b><span class="note">${yen(T.stay)}</span></div>
+ <div class="kv">합계<b class="big">${won(total)}</b></div></div>
+ ${T.miss?`<p class="warn">이동 ${T.miss}구간 요금 미입력 — 합계에서 빠져 있습니다.</p>`:''}
+ <p class="noprint"><button class="s" id="exp">JSON 복사</button> <button class="s" id="rst">초기화</button> <button class="s" onclick="window.print()">인쇄</button></p></div>`;
+}
+function bagView(){
+ return `<div class="card"><h2>짐 조건 (2인)</h2>
+ <p>기내 10kg 이내 캐리어 2개(1인 1개) + 20kg 위탁 1개. 가지고 이동합니다.</p>
+ <div class="alert warn">아래는 확인된 사실이 아니라 점검 항목입니다. 예약 전 공식 규정을 확인하세요.</div>
+ <ul>
+ <li>국제선 LCC: 최저가는 위탁수하물 미포함일 수 있음 → ① 탭의 수하물 추가비에 편도별 사전구매 요금을 입력. 기내 10kg 두 개가 허용되는지 항공사별 확인.</li>
+ <li>일본 국내선 LCC(젯스타·피치): 기내 반입 약 7kg로 알고 있음 → 10kg 캐리어는 위탁이 필요할 수 있음.</li>
+ <li>신칸센: 세 변 합 160cm 초과 짐은 특대수하물로 사전 좌석 지정이 필요한 것으로 알고 있음. 20kg 가방 치수를 재세요.</li>
+ <li>고속·야간버스: 트렁크 공간·규정이 회사마다 다름 → 대형 짐 가능 여부 확인.</li>
+ <li>도시 이동마다 짐 3개를 옮겨야 하므로, 환승이 적고 엘리베이터·코인로커가 있는 구간이 유리합니다. 택배 발송은 요금 비교 대상.</li>
+ </ul>
+ <p class="note">② 탭의 구간별 ‘짐 추가비’ 칸에 구간별 비용(2인 합)을 입력하면 합계에 반영됩니다.</p></div>`;
+}
+function render(){
+ nav();
+ const v={air:airView,route:routeView,pass:passView,sum:sumView,bag:bagView}[S.tab]();
+ $('#view').innerHTML=v;
+ $('#foot').innerHTML='출처: <a href="https://www.japan.travel/en/ca/news/price-increases-are-coming-to-the-nationwide-japan-rail-pass-2026/">JNTO JR 패스 가격</a> · <a href="https://shinkansen.tabiris.com/fare23.html">신칸센 운임표(박다 기준)</a> · <a href="https://www.bushikaku.net/bus/99104/">사쿠라지마호</a> · <a href="https://www.kayak.co.kr/항공권/가고시마공항-KOJ/서울-인천국제공항-ICN">KAYAK 인천–가고시마</a> · <a href="https://www.hotelscombined.co.kr/flight-routes/Incheon-Intl-ICN/Tokyo-Narita-NRT.ksp">인천–나리타</a> · <a href="https://travelist.jp/airport_TYO/airport_FUK/">후쿠오카–도쿄 LCC</a><br>가격은 변동됩니다. 모든 값은 예약 전 재확인이 필요합니다.';
+ save();
+}
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-tab]');if(t){S.tab=t.dataset.tab;render();return;}
+ const m=e.target.closest('[data-mv]');if(m){const i=+m.dataset.mv,d=+m.dataset.d,j=i+d;if(j>=0&&j<S.order.length){[S.order[i],S.order[j]]=[S.order[j],S.order[i]];render();}return;}
+ if(e.target.id==='exp'){const s=JSON.stringify(S,null,1);try{navigator.clipboard.writeText(s);e.target.textContent='복사됨';}catch(x){prompt('복사',s);}}
+ if(e.target.id==='rst'){if(confirm('초기화할까요?')){S=JSON.parse(JSON.stringify(DEF));render();}}
+});
+document.addEventListener('change',e=>{
+ const t=e.target,d=t.dataset;
+ if(d.k){S[d.k]=(t.type==='number')?+t.value:t.value;}
+ else if(d.fl){S.fl[d.fl]=t.value===''?null:+t.value;}
+ else if(d.n){S.nights[d.n]=+t.value;}
+ else if(d.st){S.stay[d.st]=+t.value;}
+ else if(d.lo){S.leg[d.lo]=Object.assign(S.leg[d.lo]||{},{o:+t.value,f:null});}
+ else if(d.lf){S.leg[d.lf]=Object.assign(S.leg[d.lf]||{},{f:t.value===''?null:+t.value});}
+ else if(d.lb){S.bag[d.lb]=+t.value;}
+ else if('pl' in d){S.passLen=+t.value;}
+ else return;
+ render();
+});
+render();
+</script>
+</body>
+</html>
