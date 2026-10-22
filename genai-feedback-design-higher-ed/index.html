@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>생성형 AI 피드백, 접근이 아니라 설계</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;--s4:#3ddc97;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;--s4:#12805a;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;--s4:#12805a;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.good{color:var(--good);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ttl{font-size:13px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}.big.s3{color:var(--s3)}.big.s4{color:var(--s4)}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.hero-tiles .big.txt{font-size:22px;line-height:1.35;padding-block:6px}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start}
+.step b{color:var(--fg);font-size:14px}
+.step.on{outline:2px solid var(--accent);outline-offset:-2px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+/* condition cards */
+.conds{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.cond{font:inherit;text-align:left;background:var(--card2);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:12px 14px;color:var(--fg2);cursor:pointer;display:grid;gap:4px;font-size:13px}
+.cond b{color:var(--fg);font-size:14.5px}
+.cond[aria-pressed="true"]{outline:2px solid var(--c);outline-offset:-1px;background:var(--card)}
+/* result matrix: one row per condition, status bar is qualitative */
+.mx{display:grid;gap:10px}
+.mrow{display:grid;grid-template-columns:minmax(120px,170px) 1fr;gap:6px 12px;align-items:center}
+.mlabel{font-size:14px;color:var(--fg);display:flex;align-items:center;gap:8px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.mbar{min-height:38px;border-radius:8px;display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:13.5px;border:1px solid var(--line);background:var(--track);color:var(--fg2);cursor:default;animation:fade .45s ease-out both}
+.mbar.hi{background:color-mix(in srgb,var(--c) 26%,transparent);border-color:var(--c);color:var(--fg);font-weight:700}
+.mbar.mid{background:color-mix(in srgb,var(--c) 12%,transparent);border-color:color-mix(in srgb,var(--c) 60%,transparent);color:var(--fg)}
+.mbar.ref{border-style:dashed}
+.mbar.na{border-style:dotted;color:var(--muted);font-style:normal}
+@keyframes fade{from{opacity:0;transform:translateX(-6px)}}
+@media (max-width:540px){.mrow{grid-template-columns:1fr}}
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;align-items:stretch}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:280px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>생성형 AI 피드백, 접근이 아니라 설계</h1>
+  <p class="sub">4개 대학 48개 강좌 1학년 1,176명의 다기관 군집무작위 종단 현장실험 | Ates (2026) · International Journal of Educational Technology in Higher Education</p>
+  <div class="badges">
+    <span class="chip good">동료심사 학술지 게재 논문</span>
+    <span class="chip">2026년 7월 16일 게재 · 오픈 액세스</span>
+    <span class="chip">대학 과학 과목 · 과학적 논증</span>
+  </div>
+  <p class="lead">같은 생성형 AI 도구라도 피드백을 어떻게 배치하느냐에 따라 결과가 갈렸습니다. AI가 평가를 대신한 설계는 즉각적 산출물을 좋게 했고, 학생의 판단을 남겨 둔 설계는 AI 없는 지연 전이 과제에서 앞섰습니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="4개 대학 48개 강좌 1,176명의 1학년 대상 다기관 군집무작위 종단 현장실험"><span class="big s1">1,176명</span><span class="cap">참여 1학년 (4개 대학 · 48개 강좌)</span></div>
+    <div class="tile" tabindex="0" data-tip="성찰적·하이브리드 조건 모두 AI 없이 수행하는 지연 전이 과제에서 직접적 GenAI 조건을 앞섰다. 효과 크기는 글에 미제시"><span class="big txt s3">성찰적·하이브리드<br>&gt; 직접적 GenAI</span><span class="cap">AI 없이 수행한 지연 전이 과제 (효과 크기는 글에 미제시)</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>연구 설계</h2>
+  <p class="lead">4개 대학, 3개 과학 분야, 48개 강좌의 1학년을 강좌 단위로 네 조건에 무작위 배정한 종단 현장실험입니다.</p>
+  <div class="tiles">
+    <div class="tile"><span class="big s1">4</span><span class="cap">대학</span></div>
+    <div class="tile"><span class="big s2">3</span><span class="cap">과학 분야</span></div>
+    <div class="tile"><span class="big s3">48</span><span class="cap">강좌 (무작위 배정 단위)</span></div>
+    <div class="tile"><span class="big s4">1,176</span><span class="cap">1학년 학생</span></div>
+  </div>
+  <p class="ttl">네 가지 피드백 조건. 눌러서 확인하세요. 조건별 배정 인원은 글에 미제시</p>
+  <div class="conds" id="conds" role="group" aria-label="조건 선택">
+    <button type="button" class="cond" style="--c:var(--s2)" data-v="peer" aria-pressed="true"><b>동료 피드백만</b>비교 기준 조건</button>
+    <button type="button" class="cond" style="--c:var(--s1)" data-v="direct" aria-pressed="false"><b>직접적 GenAI 피드백</b>GenAI 조건</button>
+    <button type="button" class="cond" style="--c:var(--s3)" data-v="refl" aria-pressed="false"><b>성찰적 GenAI 피드백</b>GenAI 조건</button>
+    <button type="button" class="cond" style="--c:var(--s4)" data-v="hyb" aria-pressed="false"><b>하이브리드</b>자기평가 + 동료 + GenAI</button>
+  </div>
+  <div class="panel" id="cond-panel" aria-live="polite"></div>
+  <div class="two">
+    <div class="panel"><h3>결과 변수</h3><ul>
+      <li>논증 품질 향상 (네 개 루브릭 차원)</li>
+      <li>개념 학습</li>
+      <li>지연된 AI 없는 전이 수행</li>
+    </ul></div>
+    <div class="panel"><h3>과정 매개변수</h3><ul>
+      <li>피드백 수용</li>
+      <li>자기조절학습</li>
+    </ul><p class="cap">분석: 다층 매개 분석</p></div>
+  </div>
+  <p class="ttl">논증 품질 루브릭 네 차원</p>
+  <div class="chips">
+    <span class="chip">주장의 질</span><span class="chip">증거의 타당성·충분성</span><span class="chip">추론의 일관성</span><span class="chip">한계·대안 설명 처리</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>핵심 결과: 결과 변수별 조건 비교</h2>
+  <p class="lead">결과 변수를 바꿔 보세요. 막대는 글에 서술된 방향만 표시하며 길이나 수치가 아닙니다. 막대에 마우스를 올리면 근거 문장이 나옵니다.</p>
+  <div class="seg" id="seg-out" role="group" aria-label="결과 변수 선택">
+    <button type="button" data-v="imm" aria-pressed="true">즉각적 논증 품질</button><button type="button" data-v="con" aria-pressed="false">개념 학습</button><button type="button" data-v="tr" aria-pressed="false">지연 AI 없는 전이</button><button type="button" data-v="proc" aria-pressed="false">피드백 수용·자기조절</button>
+  </div>
+  <p class="ttl" id="out-ttl"></p>
+  <div class="mx" id="out-mx" aria-live="polite"></div>
+  <p class="note" id="out-note"></p>
+  <p class="cap">효과 크기, p값, 조정 평균의 구체적 수치는 글에 제시되지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>해석: 같은 도구, 다른 설계</h2>
+  <p class="lead">저자의 결론은 GenAI의 교육적 가치가 접근 자체보다 수정 과정에서 학생의 주체성과 평가 판단을 보존하는 설계에 달렸다는 것입니다. 설계를 선택해 경로를 보세요.</p>
+  <div class="seg" id="seg-mech" role="group" aria-label="설계 선택">
+    <button type="button" data-v="keep" aria-pressed="true">판단을 남겨 두는 설계</button><button type="button" data-v="take" aria-pressed="false">AI가 평가를 대신하는 설계</button>
+  </div>
+  <div class="path" id="mech-path" aria-live="polite"></div>
+  <div class="two">
+    <div class="panel"><h3>이론적 바탕</h3><ul>
+      <li>피드백은 전달이 아니라 사용에서 교육적 의미를 가짐 (Carless &amp; Boud, 2018)</li>
+      <li>학생이 비판을 해석하고 기준과 비교해 스스로 판단할 때 피드백이 학습이 됨</li>
+      <li>AI가 이 판단을 대체하면 오히려 학습이 약해질 수 있다는 긴장</li>
+    </ul></div>
+    <div class="panel"><h3>겨냥한 문헌의 세 공백</h3><ol>
+      <li>대학 과학 과목의 학문적 추론에 대한 연구 부족</li>
+      <li>자기평가·동료·GenAI를 다르게 배열한 설계 간 비교 부족</li>
+      <li>즉각적 산출물 개선만 보고 지연된 AI 없는 수행을 보지 않는 관행</li>
+    </ol></div>
+  </div>
+  <p class="note">특허 작성 현장실험(Autor et al., 2026)과 같은 방향의 패턴입니다. AI 보조 중 성과 향상과 AI 없는 상태의 역량 형성은 다른 문제이며, 이 연구는 교육 맥락에서 그 차이를 지연 전이 과제로 직접 측정하고 매개 경로(수용, 자기조절)까지 열어 보였습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button><button type="button" data-v="app" aria-pressed="false">검증된 적용과 아닌 적용</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>접근이 아니라 설계</h3><span>같은 GenAI 도구라도 학생이 먼저 자기 진단을 하고 AI 비평과 비교하게 만드는 설계는 지속적인 학습으로 이어졌습니다.</span></div>
+    <div class="item"><h3>즉각적 산출물과 AI 없는 수행은 다른 지표</h3><span>AI가 평가 작업을 앞에서 대신 처리하는 설계는 즉각적 산출물은 좋게 하되 AI 없는 수행은 약하게 만들었습니다. 즉각적 개선만 보면 이 차이를 놓칩니다.</span></div>
+    <div class="item"><h3>자기평가 먼저, AI 비평은 비교 자료로</h3><span>피드백 전 자기평가를 요구하고 AI 비평을 비교 자료로 배치하는 구조는 이 실험이 직접 검증한 적용입니다.</span></div>
+    <div class="item"><h3>시간 투입의 차이도 함께 고려</h3><span>성찰적·하이브리드 조건의 우위가 시간 투입량과 구조화된 인지 활동량의 차이에서 비롯되었을 수 있다는 저자 자신의 주의가 있습니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>한계와 후속 연구</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>1학년 과학 입문 과정이라는 맥락</li>
+      <li>특정 과업 유형</li>
+      <li>설계 전체의 효과를 피드백 원천의 순수 효과와 분리할 수 없음</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>시간 투입을 통제한 분해 실험</li>
+      <li>다른 학문 분야와 연령대로의 반복</li>
+      <li>장기 추적</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Ates, H. (2026). Human-centered GenAI feedback design in higher education: A multisite experiment on direct, reflective, and hybrid approaches to scientific argumentation. <em>International Journal of Educational Technology in Higher Education</em>. <a href="https://doi.org/10.1186/s41239-026-00614-9">https://doi.org/10.1186/s41239-026-00614-9</a></div>
+  <div>동료심사 학술지 게재 논문 (2026년 7월 16일, 오픈 액세스)</div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+
+/* conditions */
+const C={peer:['동료 피드백만','var(--s2)'],direct:['직접적 GenAI','var(--s1)'],refl:['성찰적 GenAI','var(--s3)'],hyb:['하이브리드','var(--s4)']};
+const condText={
+ peer:`<h3>동료 피드백만</h3><ul><li>네 조건 중 GenAI가 포함되지 않은 조건</li><li>직접적 GenAI 피드백의 즉각적 논증 품질 향상이 이 조건과 비교됨</li></ul>`,
+ direct:`<h3>직접적 GenAI 피드백</h3><ul><li>즉각적 논증 품질 향상: 동료 피드백보다 유의하게 높음</li><li>지연된 AI 없는 전이: 성찰적·하이브리드 조건보다 뒤처짐</li></ul><p class="cap">구체적 피드백 절차는 글에 미제시</p>`,
+ refl:`<h3>성찰적 GenAI 피드백</h3><ul><li>피드백 수용과 자기조절학습에서 더 강함</li><li>개념 학습 우위는 양이지만 비유의</li><li>지연된 AI 없는 전이: 직접적 GenAI 조건을 앞섬</li></ul><p class="cap">구체적 피드백 절차는 글에 미제시</p>`,
+ hyb:`<h3>하이브리드 (자기평가 + 동료 + GenAI)</h3><ul><li>즉각적 논증 품질 향상의 조정 평균이 가장 높음</li><li>개념 학습에서 가장 선명한 우위</li><li>피드백 수용과 자기조절학습에서 더 강함</li><li>지연된 AI 없는 전이: 직접적 GenAI 조건을 앞섬</li></ul>`
+};
+seg('conds',v=>{$('#cond-panel').innerHTML=condText[v]});
+
+/* outcomes: rows {k (condition), s: hi|mid|ref|na, txt, tip} */
+const NA='글에 미제시';
+const out={
+ imm:{ttl:'즉각적 논증 품질 향상 (네 루브릭 차원)',rows:[
+   {k:'peer',s:'ref',txt:'비교 기준',tip:'직접적 GenAI 피드백은 동료 피드백보다 즉각적 논증 품질 향상을 유의하게 높였다.'},
+   {k:'direct',s:'mid',txt:'동료 피드백보다 유의하게 높음',tip:'직접적 GenAI 피드백은 동료 피드백보다 즉각적 논증 품질 향상을 유의하게 높였다.'},
+   {k:'refl',s:'na',txt:NA,tip:'성찰적 조건의 즉각적 논증 품질 향상 결과는 글에 제시되지 않음'},
+   {k:'hyb',s:'hi',txt:'조정 평균 가장 높음',tip:'하이브리드 조건은 즉각적 향상의 조정 평균이 가장 높았다. 다른 조건과의 차이의 유의성은 글에 미제시'}],
+  note:'직접적 GenAI 피드백은 동료 피드백 대비 즉각적 향상을 높였지만, 조정 평균이 가장 높은 것은 하이브리드 조건이었습니다.'},
+ con:{ttl:'개념 학습',rows:[
+   {k:'peer',s:'na',txt:NA,tip:'동료 피드백 조건의 개념 학습 결과는 글에 별도로 서술되지 않음'},
+   {k:'direct',s:'na',txt:NA,tip:'직접적 GenAI 조건의 개념 학습 결과는 글에 서술되지 않음'},
+   {k:'refl',s:'mid',txt:'우위는 양이지만 비유의',tip:'성찰적 조건의 개념 학습 우위는 양이지만 비유의했다. 비교 대상은 글에 명시되지 않음'},
+   {k:'hyb',s:'hi',txt:'가장 선명한 우위',tip:'하이브리드 조건은 개념 학습에서 가장 선명한 이점을 보였다.'}],
+  note:'개념 학습에서는 하이브리드가 가장 선명한 이점을 보였고, 성찰적 조건의 우위는 방향은 양이지만 통계적으로 유의하지 않았습니다.'},
+ tr:{ttl:'지연된 AI 없는 전이 수행',rows:[
+   {k:'peer',s:'na',txt:NA,tip:'동료 피드백 조건의 지연 전이 결과는 글에 서술되지 않음'},
+   {k:'direct',s:'ref',txt:'성찰적·하이브리드보다 뒤처짐',tip:'성찰적·하이브리드 조건 모두 AI 없이 수행하는 지연 전이 과제에서 직접적 GenAI 조건을 앞섰다.'},
+   {k:'refl',s:'hi',txt:'직접적 GenAI 조건을 앞섬',tip:'성찰적·하이브리드 조건 모두 AI 없이 수행하는 지연 전이 과제에서 직접적 GenAI 조건을 앞섰다.'},
+   {k:'hyb',s:'hi',txt:'직접적 GenAI 조건을 앞섬',tip:'성찰적·하이브리드 조건 모두 AI 없이 수행하는 지연 전이 과제에서 직접적 GenAI 조건을 앞섰다.'}],
+  note:'즉각적 향상에서 동료 피드백보다 나았던 직접적 GenAI 조건이, AI 없이 수행한 지연 전이 과제에서는 성찰적·하이브리드 조건에 뒤처졌습니다. 성찰적과 하이브리드 사이의 비교는 글에 미제시입니다.'},
+ proc:{ttl:'과정 변수: 피드백 수용과 자기조절학습',rows:[
+   {k:'peer',s:'na',txt:NA,tip:'동료 피드백 조건의 과정 변수 결과는 글에 서술되지 않음'},
+   {k:'direct',s:'ref',txt:'대비 대상 (직접적 설계)',tip:'직접적 GenAI 피드백은 동료 피드백 대비 즉각적 논증 품질 향상을 높였지만, 성찰적·하이브리드 설계는 피드백 수용과 자기조절학습에서 더 강했다.'},
+   {k:'refl',s:'hi',txt:'더 강함',tip:'성찰적·하이브리드 설계는 피드백 수용과 자기조절학습에서 더 강했다.'},
+   {k:'hyb',s:'hi',txt:'더 강함',tip:'성찰적·하이브리드 설계는 피드백 수용과 자기조절학습에서 더 강했다.'}],
+  note:'피드백 수용과 자기조절학습은 성찰적·하이브리드 조건의 지연 전이 우위를 부분적으로 매개했습니다 (다층 매개 분석). 매개 효과의 크기는 글에 미제시입니다.'}
+};
+const cls={hi:'hi',mid:'mid',ref:'ref',na:'na'};
+seg('seg-out',k=>{const m=out[k];$('#out-ttl').textContent=m.ttl;
+ $('#out-mx').innerHTML=m.rows.map(r=>`<div class="mrow"><div class="mlabel"><span class="sw" style="--c:${C[r.k][1]}"></span>${C[r.k][0]}</div><div class="mbar ${cls[r.s]}" style="--c:${C[r.k][1]}" tabindex="0" data-tip="${esc(r.tip)}" aria-label="${esc(C[r.k][0]+': '+r.txt+'. '+r.tip)}">${r.txt}</div></div>`).join('');
+ $('#out-note').textContent=m.note});
+
+/* mechanism */
+const mech={
+ keep:[['피드백 전','학생이 먼저 자기 진단 (자기평가)'],['피드백','AI 비평을 비교 자료로 삼아 자신의 판단과 비교'],['과정','피드백 수용과 자기조절학습이 더 강함'],['AI 없는 지연 전이','직접적 GenAI 조건을 앞섬. 수용과 자기조절이 부분 매개']],
+ take:[['피드백','AI가 평가 작업을 앞에서 대신 처리'],['즉각적 산출물','논증 품질 향상이 동료 피드백보다 유의하게 높음'],['AI 없는 지연 전이','성찰적·하이브리드 조건보다 뒤처짐']]
+};
+seg('seg-mech',k=>{$('#mech-path').innerHTML=mech[k].map((s,i)=>`<div class="step${i===mech[k].length-1?' on':''}"><b>${i+1}. ${s[0]}</b>${s[1]}</div>`).join('')});
+
+/* reading cautions */
+const read={
+ yes:`<ul><li>같은 GenAI라도 피드백 설계에 따라 즉각적 결과와 지연된 AI 없는 결과가 다르게 나타난다는 점</li><li>즉각적 산출물 개선이 AI 없는 수행으로 그대로 이어지지 않는다는 점</li><li>성찰적·하이브리드 설계의 전이 우위를 피드백 수용과 자기조절학습이 부분적으로 매개한다는 점</li></ul>`,
+ no:`<ul><li>피드백 원천(AI인가 동료인가)의 순수 효과. 설계 전체의 효과와 분리할 수 없음</li><li>우위의 원인이 설계 자체인지 시간 투입량·구조화된 인지 활동량의 차이인지. 저자 스스로 이 가능성을 주의함</li><li>매개가 우위 전체를 설명한다는 것. 매개는 부분적임</li><li>다른 학문 분야, 연령대, 과업 유형으로의 일반화</li></ul>`,
+ app:`<div class="two"><div class="panel"><h3><span class="pill good">직접 검증</span></h3><ul><li>피드백 전 자기평가 요구</li><li>AI 비평을 비교 자료로 배치</li></ul></div><div class="panel"><h3><span class="pill warn">검증되지 않음</span></h3><ul><li>이 설계를 다른 학과로 확장</li><li>이 설계를 K-12로 확장</li></ul></div></div>`
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
