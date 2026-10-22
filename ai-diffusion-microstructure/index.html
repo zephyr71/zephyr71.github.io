@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 확산의 미시 구조: 기업, 업무기능, 노동자 과업</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,210px) 1fr 84px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.blabel small{display:block;font-size:12px;color:var(--muted)}
+.btrack{position:relative;height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bfill.lo{border-radius:0}
+.bext{height:100%;background:repeating-linear-gradient(45deg,var(--c) 0 4px,transparent 4px 8px);border:1px solid var(--c);border-left:0;border-radius:0 4px 4px 0;transform-origin:left;animation:grow .6s ease-out both}
+.bna{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+.bval.na{font-weight:500;font-size:12px;color:var(--muted)}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 76px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0;align-content:start}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}.big.s3{color:var(--s3)}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start;cursor:pointer;border:0;font-family:inherit;text-align:left}
+.step b{color:var(--fg);font-size:14px}
+.step[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:30px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px}
+.stack div.rest{background:var(--track);color:var(--muted);font-weight:500}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>AI 확산의 미시 구조: 넓지만 얕은 확산</h1>
+  <p class="sub">미국 인구조사국 BTOS 2026년 AI 보조조사 | Bonney 외 (2026) · NBER Working Paper No. 35141</p>
+  <div class="badges">
+    <span class="chip warn">NBER 워킹페이퍼 · 동료심사 전</span>
+    <span class="chip">Census CES Working Paper 26-25와 동일한 연구</span>
+    <span class="chip">조사 기간 2025년 11월~2026년 1월</span>
+  </div>
+  <p class="lead">기업이 AI를 도입했다는 사실, 어느 기능에 배치했는가, 노동자가 실제 과업에서 쓰는가는 서로 다른 단계입니다. 이 연구는 세 층위를 동시에 측정했습니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="2025년 11월~2026년 1월 기준 어느 한 기능에서라도 AI를 쓰는 기업 18% (고용 가중 32%)"><span class="big s1">18%</span><span class="cap">어느 한 기능에서라도 AI를 쓰는 기업 (고용 가중 32%)</span></div>
+    <div class="tile" tabindex="0" data-tip="노동자 과업 수준의 사용은 기업의 23% (고용 가중 41%)에서 나타남"><span class="big s3">23%</span><span class="cap">노동자 과업 수준의 AI 사용이 나타난 기업 (고용 가중 41%)</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>연구 개요</h2>
+  <p class="lead">미국 인구조사국의 Business Trends and Outlook Survey(BTOS) 2026년 AI 보조조사 자료로, 전국 대표 기업 표본입니다. 글은 이 연구가 세 층위를 동시에 측정한 첫 전국 대표 자료를 제공한다고 소개합니다.</p>
+  <div class="chips">
+    <span class="chip">자료: BTOS 2026년 AI 보조조사</span><span class="chip">전국 대표 기업 표본</span>
+    <span class="chip">조사 기간 2025년 11월~2026년 1월</span><span class="chip">단순 기업수 기준과 고용 가중 기준 병기</span>
+    <span class="chip">표본 크기: 글에 미제시</span>
+  </div>
+  <p class="ttl">측정의 세 층위. 층위를 눌러 무엇을 측정했는지 확인하세요.</p>
+  <div class="layers" id="layers" role="group" aria-label="측정 층위 선택">
+    <button type="button" class="step" data-v="firm" aria-pressed="true"><b>1. 기업 도입</b>기업 전체의 AI 사용 여부와 예상 도입</button>
+    <button type="button" class="step" data-v="func" aria-pressed="false"><b>2. 업무기능 배치</b>12개 안팎의 업무기능별 배치 여부</button>
+    <button type="button" class="step" data-v="task" aria-pressed="false"><b>3. 노동자 과업</b>노동자 과업 수준의 사용 유형</button>
+  </div>
+  <div class="panel" id="layer-panel" aria-live="polite"></div>
+  <p class="note">분석: 회귀 분석으로 AI 통합 범위와 기업 성과의 관계, 그리고 기능 배치·운영 투자·노동자 과업 사용과 고용 변화의 연관을 추정했습니다. 모든 결과는 횡단면 자료의 연관입니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>층위 1: 기업 도입률</h2>
+  <p class="lead">같은 도입률도 기업 수로 세는지, 고용 규모로 가중하는지에 따라 달라집니다. 기준을 바꿔 보세요.</p>
+  <div class="seg" id="seg-basis" role="group" aria-label="집계 기준 선택">
+    <button type="button" data-v="n" aria-pressed="true">기업수 기준</button><button type="button" data-v="w" aria-pressed="false">고용 가중 기준</button>
+  </div>
+  <p class="ttl">AI 사용 기업 비율 (%). 빗금은 범위로 제시된 수치의 상단</p>
+  <div class="bars" id="adopt-bars" aria-live="polite"></div>
+  <p class="note" id="adopt-note"></p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>층위 2: 어느 업무기능에 배치하는가</h2>
+  <p class="lead">도입 기업 안에서도 범위는 좁습니다. 도입 기업의 57%는 세 개 이하 기능에서만 AI를 사용합니다.</p>
+  <div class="stack" role="img" aria-label="도입 기업 중 세 개 이하 기능에서만 사용 57%">
+    <div style="flex:57;--c:var(--s1)" tabindex="0" data-tip="도입 기업의 57%는 세 개 이하 기능에서만 사용">세 개 이하 기능 57%</div>
+    <div class="rest" style="flex:43" tabindex="0" data-tip="나머지 도입 기업의 기능 수 분포는 글에 제시되지 않음">그 외 (세부 분포 글에 미제시)</div>
+  </div>
+  <p class="ttl">가장 흔한 배치 기능 (%). 막대에 마우스를 올리면 출처 문장이 나옵니다</p>
+  <div class="bars" id="func-bars"></div>
+  <p class="note">글에는 상위 세 기능의 수치만 제시되어 있으며, 나머지 기능(전체 12개 안팎)의 비율은 제시되지 않았습니다. 세 수치의 분모는 문맥상 도입 기업으로 읽히지만 글에 명시적으로 적혀 있지는 않습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>층위 3: 노동자는 어떤 과업에 쓰는가</h2>
+  <div class="tiles">
+    <div class="tile" tabindex="0" data-tip="노동자 과업 사용은 기업의 23% (고용 가중 41%)에서 나타남"><span class="big s3">23%</span><span class="cap">노동자 과업 사용이 나타난 기업 (고용 가중 41%)</span></div>
+    <div class="tile" tabindex="0" data-tip="노동자 과업 사용의 65%는 세 개 이하 과업으로 제한됨"><span class="big s1">65%</span><span class="cap">세 개 이하 과업으로 제한</span></div>
+  </div>
+  <p class="ttl">주된 사용 과업 (과업별 비율은 글에 미제시)</p>
+  <div class="chips"><span class="chip">문서 작성</span><span class="chip">문서 분석</span><span class="chip">정보 검색</span></div>
+  <h3>확산의 두 방향</h3>
+  <p class="lead">기업 도입 없이 노동자 사용이 먼저 생기거나 그 반대도 있어, 두 방향의 확산이 공존합니다.</p>
+  <div class="seg" id="seg-dir" role="group" aria-label="확산 방향 선택">
+    <button type="button" data-v="up" aria-pressed="true">상향식</button><button type="button" data-v="down" aria-pressed="false">하향식</button>
+  </div>
+  <div class="panel" id="dir-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>AI는 무엇을 위해 쓰이고, 고용과는 어떻게 연관되는가</h2>
+  <p class="ttl">AI 사용 목적 (%)</p>
+  <div class="bars" id="purpose-bars"></div>
+  <p class="note">사용 목적의 나머지 범주와 그 비율은 글에 제시되지 않았습니다.</p>
+  <h3>층위별 고용 감소와의 연관 (회귀 분석)</h3>
+  <p class="lead">요인을 눌러 결과를 확인하세요. 핵심은 고용과의 관계가 층위마다 다르다는 점입니다.</p>
+  <div class="seg" id="seg-emp" role="group" aria-label="요인 선택">
+    <button type="button" data-v="func" aria-pressed="true">기능 배치</button><button type="button" data-v="ops" aria-pressed="false">운영 투자</button><button type="button" data-v="task" aria-pressed="false">노동자 과업 사용</button><button type="button" data-v="scope" aria-pressed="false">AI 통합 범위</button>
+  </div>
+  <div class="list" id="emp-list" aria-live="polite"></div>
+  <p class="note">계수, 유의수준 등 회귀 결과의 구체적 수치는 글에 제시되지 않았습니다. 교차 자료의 연관이므로 인과로 단정할 수 없습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>해석: 넓지만 얕은 확산</h2>
+  <div class="two">
+    <div class="panel"><h3>확산의 모습</h3><ul>
+      <li>도입률의 절대값은 아직 낮고, 도입 기업 안에서도 사용 범위가 좁음</li>
+      <li>대기업·지식집약 부문의 집중은 디지털 격차가 기업 규모와 부문 차원에서 재생산될 가능성을 보여줌</li>
+      <li>상향식·하향식 확산의 공존은 생성형 AI가 소비자급 도구로 먼저 퍼진 기술이라는 특성과 일치</li>
+    </ul></div>
+    <div class="panel"><h3>고용과의 관계</h3><ul>
+      <li>노동자 과업 사용은 고용 감소와 무관한 반면, 기능 배치와 운영 투자는 고용 감소와 연관됨</li>
+      <li>기업이 조직 단위로 AI를 재편할 때 고용 조정이 일어나고, 개별 노동자의 도구 사용은 보강에 머문다는 해석과 일치</li>
+      <li>다만 교차 자료의 연관이므로 인과로 단정할 수 없음</li>
+    </ul></div>
+  </div>
+  <p class="note">범용기술 확산 연구는 도입률 하나의 숫자로는 확산의 질을 알 수 없다는 점을 오래 지적해 왔습니다. 이 연구는 그 질을 기업, 기능, 과업의 세 층위로 나누어 보여줍니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">7</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">8</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>도입률 하나로는 확산을 알 수 없음</h3><span>기업 도입 18%, 노동자 과업 사용 23%처럼 층위마다 수치가 다르고, 기업수 기준과 고용 가중 기준도 크게 다릅니다(18% 대 32%).</span></div>
+    <div class="item"><h3>도입해도 좁게 씀</h3><span>도입 기업의 57%는 세 개 이하 기능, 노동자 과업 사용의 65%는 세 개 이하 과업에 머뭅니다.</span></div>
+    <div class="item"><h3>고용 감소와의 연관은 조직 단위 재편에서</h3><span>기능 배치와 운영 투자는 고용 감소와 연관되지만, 노동자 과업 사용은 이를 통제하면 연관이 없습니다. 목적으로 보면 과업 보강이 66%, 고용 감소는 2%입니다.</span></div>
+    <div class="item"><h3>교육·훈련 적용은 검증되지 않은 주장</h3><span>수요가 큰 기능(판매·마케팅, 전략, IT)과 과업(작성, 문서 분석, 검색)에 맞춘 역량 개발이 우선이라는 주장이 가능하지만, 어떤 훈련이 효과적인지는 이 연구가 검증하지 않았습니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">9</span>한계와 후속 질문</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>횡단면 자료</li>
+      <li>기업 자기보고</li>
+      <li>성과-도입 관계의 인과 해석 불가</li>
+      <li>NBER 워킹페이퍼로 동료심사를 거치지 않음</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>BTOS 패널 추적</li>
+      <li>기업 도입과 노동자 결과의 연계</li>
+      <li>규모별 확산 격차의 지속성 검증</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Bonney, K., Breaux, C. L., Dinlersoz, E., Foster, L. S., Haltiwanger, J. C., &amp; Pande, A. A. (2026). <em>The microstructure of AI diffusion: Evidence from firms, business functions, and worker tasks</em> (NBER Working Paper No. 35141). National Bureau of Economic Research. <a href="https://doi.org/10.3386/w35141">https://doi.org/10.3386/w35141</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; pressed one starts active */
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+/* horizontal bars on a 0-100 scale. rows: {l,v,hi? (range top),c?,t,show}; v===null means not stated */
+function bars(host,rows){host.innerHTML=rows.map(r=>{
+  let inner,val;
+  if(r.v===null){inner=`<div class="bna" tabindex="0" data-tip="${esc(r.t)}" aria-label="${esc(r.t)}">글에 미제시</div>`;val=`<div class="bval na">미제시</div>`}
+  else{const w=Math.max(0,Math.min(100,r.v));
+    inner=`<div class="bfill${r.hi?' lo':''}" tabindex="0" style="width:${w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t)}" aria-label="${esc(r.t)}"></div>`;
+    if(r.hi)inner+=`<div class="bext" style="width:${Math.min(100,r.hi)-w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t)}"></div>`;
+    val=`<div class="bval">${r.show}</div>`}
+  return `<div class="brow"><div class="blabel">${r.l}</div><div class="btrack">${inner}</div>${val}</div>`}).join('')}
+
+const P1='var(--s1)',P2='var(--s2)',P3='var(--s3)',PM='var(--muted)';
+
+/* section 1: layers */
+const layer={
+ firm:`<h3>기업 도입</h3><ul><li>기업 전체의 AI 사용 여부와 예상 도입을 측정</li><li>주요 수치: 어느 한 기능에서라도 AI를 쓰는 기업 18% (고용 가중 32%), 6개월 내 22% 예상</li></ul>`,
+ func:`<h3>업무기능 배치</h3><ul><li>12개 안팎의 업무기능별 배치 여부를 측정</li><li>주요 수치: 도입 기업의 57%가 세 개 이하 기능에서만 사용, 판매·마케팅 52%, 전략 45%, IT 41%</li></ul>`,
+ task:`<h3>노동자 과업</h3><ul><li>노동자 과업 수준의 사용 유형을 측정</li><li>주요 수치: 기업의 23% (고용 가중 41%)에서 나타남, 65%는 세 개 이하 과업으로 제한</li><li>주된 과업: 문서 작성, 문서 분석, 정보 검색</li></ul>`
+};
+(function(){const bs=$$('#layers button');const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('#layer-panel').innerHTML=layer[b.dataset.v]};
+ bs.forEach(b=>b.addEventListener('click',()=>set(b)));set(bs[0]);})();
+
+/* section 2: adoption by basis */
+const adopt={
+ n:{rows:[
+   {l:'전체 기업 <small>현재 (2025.11~2026.1)</small>',v:18,c:P1,show:'18%',t:'어느 한 기능에서라도 AI를 쓰는 기업 18%'},
+   {l:'전체 기업 <small>6개월 내 기업 스스로 예상</small>',v:22,c:PM,show:'22%',t:'6개월 내 22%로 상승할 것으로 기업들 스스로 예상'},
+   {l:'정보·전문서비스·금융 <small>초대형 기업</small>',v:50,hi:60,c:P2,show:'50~60%',t:'정보·전문서비스·금융의 초대형 기업에서는 50~60%'},
+   {l:'노동자 과업 사용 <small>참고: 층위 3</small>',v:23,c:P3,show:'23%',t:'노동자 과업 수준의 사용은 기업의 23%에서 나타남'}],
+  note:'6개월 내 22%는 기업들이 스스로 예상한 수치입니다. 초대형 기업의 규모 기준과 부문별 개별 수치는 글에 제시되지 않았습니다.'},
+ w:{rows:[
+   {l:'전체 기업 <small>현재 (2025.11~2026.1)</small>',v:32,c:P1,show:'32%',t:'고용 가중 기준 AI 사용 32%'},
+   {l:'전체 기업 <small>6개월 내 기업 스스로 예상</small>',v:null,t:'6개월 내 예상치의 고용 가중 수치는 글에 제시되지 않음'},
+   {l:'정보·전문서비스·금융 <small>초대형 기업</small>',v:60,hi:70,c:P2,show:'60~70%',t:'정보·전문서비스·금융의 초대형 기업, 고용 가중 60~70%'},
+   {l:'노동자 과업 사용 <small>참고: 층위 3</small>',v:41,c:P3,show:'41%',t:'노동자 과업 사용, 고용 가중 41%'}],
+  note:'글은 도입이 대기업과 지식집약 부문에 집중되어 있다고 설명합니다. 6개월 내 예상치의 고용 가중 수치는 글에 제시되지 않았습니다.'}
+};
+seg('seg-basis',k=>{const m=adopt[k];bars($('#adopt-bars'),m.rows);$('#adopt-note').textContent=m.note});
+
+/* section 3: functions */
+bars($('#func-bars'),[
+ {l:'판매·마케팅',v:52,c:P1,show:'52%',t:'판매·마케팅 52%: 가장 흔한 배치 기능'},
+ {l:'전략',v:45,c:P1,show:'45%',t:'전략 45%'},
+ {l:'IT',v:41,c:P1,show:'41%',t:'IT 41%'}]);
+
+/* section 4: diffusion direction */
+const dir={
+ up:`<h3>상향식 확산</h3><p>노동자가 개인적으로 쓰기 시작하는 경우입니다. 기업 도입 없이 노동자 사용이 먼저 생길 수 있습니다.</p><p class="cap">생성형 AI가 소비자급 도구로 먼저 퍼진 기술이라는 특성과 일치합니다.</p>`,
+ down:`<h3>하향식 확산</h3><p>기업이 도입을 결정하는 경우입니다. 글은 노동자 사용이 먼저 생기는 경우의 반대, 즉 기업 도입이 먼저 있는 경우도 있다고 설명합니다.</p><p class="cap">두 방향 각각에 해당하는 기업 비율은 글에 제시되지 않았습니다.</p>`
+};
+seg('seg-dir',k=>{$('#dir-panel').innerHTML=dir[k]});
+
+/* section 5: purpose and employment */
+bars($('#purpose-bars'),[
+ {l:'과업 보강',v:66,c:P1,show:'66%',t:'AI의 66%는 과업 보강 목적'},
+ {l:'고용 감소',v:2,c:P2,show:'2%',t:'고용 감소 목적은 2%로 드묾'}]);
+const emp={
+ func:[['기능 배치','warn','고용 감소와 연관','기업이 업무기능에 AI를 배치하는 것은 고용 감소와 통계적으로 연관됩니다.']],
+ ops:[['운영 투자','warn','고용 감소와 연관','운영 투자는 고용 감소와 통계적으로 연관됩니다.']],
+ task:[['노동자 과업 사용','good','통제 시 연관 없음','기능 배치와 운영 투자를 통제하면 노동자 과업 사용은 고용 감소와 연관되지 않습니다.']],
+ scope:[['AI 통합 범위','good','기업 성과와 정의 관계','AI 통합 범위는 기업 성과와 정(+)의 관계를 보입니다. 다만 성과-도입 관계는 인과로 해석할 수 없습니다.']]
+};
+seg('seg-emp',k=>{$('#emp-list').innerHTML=emp[k].map(x=>`<div class="item"><h3>${x[0]}</h3><span class="pill ${x[1]}">${x[2]}</span><span>${x[3]}</span></div>`).join('')});
+
+/* section 7: reading cautions */
+const read={
+ yes:`<ul><li>AI 확산을 기업 도입, 업무기능 배치, 노동자 과업 사용의 세 층위로 나누어 본 전국 대표 기업 자료의 모습</li><li>도입이 대기업과 지식집약 부문에 집중되어 있다는 점</li><li>도입 기업 안에서도 사용 범위가 좁다는 점</li><li>고용 감소와의 연관이 층위마다 다르다는 점</li></ul>`,
+ no:`<ul><li>AI 도입이 고용 감소나 기업 성과를 일으킨다는 인과 관계. 교차 자료의 연관임</li><li>시간에 따른 확산 추이. 횡단면 자료이며 6개월 내 22%는 기업 스스로의 예상치임</li><li>노동자가 직접 응답한 사용 실태. 기업 자기보고 자료임</li><li>어떤 교육·훈련이 효과적인지. 이 연구가 검증하지 않음</li><li>동료심사를 거친 결과. NBER 워킹페이퍼임</li></ul>`
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
