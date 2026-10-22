@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>생성형 AI와 교육 격차 무작위 실험</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-block;width:5px;height:20px;border-radius:3px;background:var(--accent)}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,190px) 1fr 84px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.btrack{height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 76px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.cap{font-size:12.5px;color:var(--muted)}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.note.warnbox{border:1px solid var(--warn)}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;align-content:start;min-width:0}
+.step b{color:var(--fg);font-size:14px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:420px;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--muted);font-size:12.5px}
+tbody tr:hover td{background:var(--card2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:30px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px;white-space:nowrap}
+/* hero metric */
+.hero{display:grid;gap:4px;justify-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-top:4px}
+.hero .num{font-size:clamp(44px,11vw,68px);font-weight:900;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.hero .cap{font-size:13.5px;color:var(--fg2)}
+.gapline{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-variant-numeric:tabular-nums;font-size:14px;color:var(--fg2)}
+.gapline b{color:var(--fg);font-size:18px}
+/* 2x2 grid */
+.grid2{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:stretch}
+.grid2 .hd{font-size:12.5px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;padding:4px}
+.cell{background:var(--card2);border-radius:12px;padding:12px;display:grid;gap:4px;align-content:center;text-align:center;min-height:84px;border:1px solid transparent}
+.cell b{font-size:15px}
+.cell span{font-size:12.5px;color:var(--fg2)}
+.cell.hi{border-color:var(--good)}.cell.hi b{color:var(--good)}
+.cell.lo{border-color:var(--bad)}.cell.lo b{color:var(--bad)}
+.cell.na b{color:var(--muted)}
+.cite{font-size:13px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px;text-align:left}
+.cite a{color:var(--accent);word-break:break-all}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:8px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<div class="wrap">
+<header>
+  <h1>생성형 AI는 교육 수준에 따른 생산성 격차를 줄이는가</h1>
+  <p class="sub">아르헨티나 성인 1,174명 무작위 실험 | Cruces, Fernandez Meijide, Galiani, Gálvez &amp; Lombardi (2026) · NBER 워킹페이퍼</p>
+  <div class="badges"><span class="chip warn">NBER Working Paper No. 34851 · 2026년 2월본, 2026년 10월 개정 · 동료심사 거치지 않음</span></div>
+  <div class="hero">
+    <span class="num">75%</span>
+    <span class="cap">AI 접근이 주어졌을 때 사라진 기준 교육 격차 (종합 점수)</span>
+    <div class="gapline"><span>AI 없음 <b>0.548</b> 표준편차</span><span>→</span><span>AI 접근 <b>0.139</b> 표준편차</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico"></span>연구 개요</h2>
+  <p class="lead">같은 업무형 과제를 AI 도우미가 있는 집단과 없는 집단이 수행하게 하고, 이어서 AI 없이 후속 문항을 풀게 해 AI의 도움이 학습인지 위임인지를 구분합니다.</p>
+  <div class="chips">
+    <span class="chip">아르헨티나 · 온라인 실험</span><span class="chip">2025년 9월 ~ 11월</span><span class="chip">25~45세 성인</span><span class="chip">세 개 패널 조사 회사로 모집</span><span class="chip">개인용 컴퓨터로만 참여</span><span class="chip">GPT-4.1 기반 도우미</span><span class="chip">예상 약 20분 · 실제 평균 21분</span><span class="chip">성적에 따라 최대 25,000페소 (약 18달러) 상품권</span>
+  </div>
+  <p class="ttl">분석 표본 구성 (명)</p>
+  <div class="bars" id="funnel"></div>
+  <p class="note">완료율은 처치집단 64%, 통제집단 66%로 처리 배정에 따른 차이가 없었습니다. 평균 연령은 약 35세이고, 두 교육 집단 모두 성별이 거의 균형을 이루었습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>교육 집단은 어떻게 나누었나</h2>
+  <div class="two">
+    <div class="panel"><h3 style="color:var(--s2)">저학력 집단</h3><p class="lead" style="font-size:14px">고등학교 졸업 후 고등교육을 받지 않았거나, 대학·전문대 과정의 절반 미만을 이수한 사람</p></div>
+    <div class="panel"><h3 style="color:var(--s1)">고학력 집단</h3><p class="lead" style="font-size:14px">대학·전문대 과정의 절반 이상을 이수한 사람</p></div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>항목</th><th>저학력</th><th>고학력</th></tr></thead>
+    <tbody>
+      <tr><td>최종 표본</td><td>520명</td><td>654명</td></tr>
+      <tr><td>취업률</td><td>78%</td><td>89%</td></tr>
+      <tr><td>사전 AI 사용 경험</td><td>68%</td><td>77%</td></tr>
+      <tr><td>과제에서 도우미 사용 (처치집단)</td><td>81%</td><td>86%</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">사전 등록된 기준입니다. 아르헨티나에서는 비대학 고등직업교육 과정도 길고 공립 고등교육의 진입 장벽이 낮아 일부만 이수한 사람이 많기 때문에, 대학 재학 여부가 아니라 이수 비율을 기준으로 삼았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>실험 설계</h2>
+  <div class="flow">
+    <div class="step"><b>1. 무작위 배정</b>AI 접근 처치 또는 통제. 처치집단은 실험 화면 안의 대화형 도우미를 간단한 사용 설명과 함께 받고, 통제집단은 AI 없이 수행합니다.</div>
+    <div class="step"><b>2. 주요 과제</b>상사의 이메일과 보고서 속 글, 그림, 표를 읽고 문제의 근본 원인을 진단한 뒤 해결책을 담은 이메일을 작성합니다.</div>
+    <div class="step"><b>3. 후속 문항 (AI 없음)</b>근본 원인을 서술하는 열린 문항 1개, 자료 해석과 사실 회복을 묻는 선택형 문항 2개를 도우미 없이 풉니다.</div>
+  </div>
+  <div class="chips"><span class="chip">과제 버전: 카페테리아</span><span class="chip">음식 배달 서비스</span><span class="chip">가전제품 매장</span><span class="chip">세 버전 무작위 배정 (업종 지식 불필요)</span></div>
+  <p class="note">도우미는 보고서를 미리 읽은 상태였지만, 상사의 이메일과 과제 지시문은 제공되지 않았습니다.</p>
+  <p class="ttl">종합 점수 구성 (사전 등록된 0~10점 기준)</p>
+  <div class="stack" role="img" aria-label="내용 3분의 2, 글쓰기 3분의 1">
+    <div style="flex:2;--c:var(--s1)" tabindex="0" data-tip="내용 3분의 2: 세 가지 진단 문항과 해결책">내용 2/3</div>
+    <div style="flex:1;--c:var(--s3)" tabindex="0" data-tip="글쓰기 3분의 1">글쓰기 1/3</div>
+  </div>
+  <p class="note">점수는 저학력 통제집단의 평균과 표준편차로 표준화했습니다. 그래서 아래 결과는 모두 표준편차 단위입니다. 채점은 GPT-5-mini와 과제별 평가 기준으로 각 응답을 10회 채점해 평균을 냈습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>핵심 결과: AI가 있을 때와 AI를 제거한 뒤</h2>
+  <div class="seg" id="seg-main" role="group" aria-label="결과 보기 선택">
+    <button type="button" data-v="main" aria-pressed="true">본 과제 (AI 접근)</button><button type="button" data-v="follow" aria-pressed="false">후속 문항 (AI 제거 후)</button>
+  </div>
+  <div class="tiles" id="main-tiles" aria-live="polite"></div>
+  <p class="ttl">처치 효과: 같은 교육 집단의 통제집단 대비 (표준편차)</p>
+  <div class="bars" id="eff-bars"></div>
+  <p class="ttl">교육 격차: 고학력이 저학력보다 앞선 정도 (표준편차)</p>
+  <div class="bars" id="gap-bars"></div>
+  <div class="legend"><span><i class="sw" style="--c:var(--s2)"></i>저학력</span><span><i class="sw" style="--c:var(--s1)"></i>고학력</span><span><i class="sw" style="--c:var(--muted)"></i>통제집단 격차</span><span><i class="sw" style="--c:var(--s3)"></i>처치집단 격차</span></div>
+  <div class="list" id="main-list" aria-live="polite"></div>
+  <p class="note" id="main-note"></p>
+  <p class="ttl">두 보기는 같은 눈금입니다. 막대에 마우스를 올리면 유의성 정보가 보입니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>글쓰기만 좋아진 것이 아니다</h2>
+  <p class="lead">내용 점수와 글쓰기 점수 모두 비슷한 패턴을 보였습니다. 문제의 근본 원인을 맞힌 비율도 두 집단에서 모두 올랐습니다.</p>
+  <p class="ttl">근본 원인을 맞힌 비율 (%)</p>
+  <div class="bars" id="root-bars"></div>
+  <div class="tiles">
+    <div class="tile"><span class="big">11.2%p</span><span class="cap">근본 원인 탐지의 처치 효과가 저학력에서 더 큰 폭</span></div>
+    <div class="tile"><span class="big">13% · 21%</span><span class="cap">처치집단에서 9.75점 이상을 받은 비율 (저학력 · 고학력)</span></div>
+  </div>
+  <p class="note">처치집단에서도 점수가 넓게 퍼져 있었고 통제집단에도 강한 바닥 효과가 없었습니다. 평균 상승은 만점 근처에 답이 몰린 기계적 결과가 아니라, 두 집단의 점수 분포가 넓게 이동했다는 해석이 가능합니다. 완료 시간은 두 집단 모두 줄었지만, 단축 폭의 교육 집단 간 차이는 유의하지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>학습인가, 위임인가</h2>
+  <div class="flow">
+    <div class="step"><b>위임이라면</b>AI를 제거했을 때 성과가 떨어지거나 더 나빠질 수 있습니다.</div>
+    <div class="step"><b>학습이라면</b>AI가 없는 후속 문항에서도 일부 이점이 남습니다.</div>
+    <div class="step"><b>관찰된 결과</b>처치집단은 통제집단보다 나빠지지 않았고, 저학력 집단에서는 일부 이점이 남았습니다. 그러나 후속 효과는 본 과제 효과보다 작았고 교육 격차가 상당 부분 재현되었습니다.</div>
+  </div>
+  <p class="note">단기 이해와 회상에는 도움이 되었지만, AI가 기초 인적자본을 대신 만들어 주지는 못했다는 해석이 가능합니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>대화 기록: 사용 빈도보다 사용 방식</h2>
+  <div class="tiles">
+    <div class="tile"><span class="big">약 3개</span><span class="cap">두 집단의 평균 메시지 수</span></div>
+    <div class="tile"><span class="big">약 61%</span><span class="cap">도움을 요청한 과제 구성요소 비율 (두 집단)</span></div>
+    <div class="tile"><span class="big">+0.174</span><span class="cap">고학력 이용자의 상세 지시 지수 (표준편차)</span></div>
+  </div>
+  <p class="ttl">AI 생성 내용을 전체 복사한 비율 (%)</p>
+  <div class="bars" id="copy-bars"></div>
+  <div class="two">
+    <div class="panel"><h3 style="color:var(--s1)">고학력 이용자</h3><ul><li>추론을 안내하는 더 상세한 지시</li><li>더 구체적인 첫 질문</li><li>구조화된 작업 흐름, 선택적 활용</li></ul></div>
+    <div class="panel"><h3 style="color:var(--s2)">저학력 이용자</h3><ul><li>AI 생성 내용을 전체 복사한 비율이 10.1%p 더 높음</li></ul></div>
+  </div>
+  <p class="note">사용 강도는 비슷했지만 사용 방식은 달랐습니다. 프롬프트 방식은 처리 후 선택된 변수라 인과 효과로 해석할 수 없습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>탐색적 분석: AI 도움과 과제 몰입</h2>
+  <p class="lead">처치집단을 AI 도움 요청 정도와 과제 몰입도로 나눈 비교입니다. 점수를 바꿔 보세요.</p>
+  <div class="seg" id="seg-eng" role="group" aria-label="점수 선택">
+    <button type="button" data-v="main" aria-pressed="true">본 과제 점수</button><button type="button" data-v="follow" aria-pressed="false">후속 점수</button>
+  </div>
+  <div class="grid2" id="eng-grid" aria-live="polite"></div>
+  <p class="note warnbox">사후 선택 변수를 사용한 비교이므로 인과 추정이 아닙니다. 낮은 AI 도움 집단의 결과는 블로그 원고에 별도로 서술되지 않아 표시하지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>견고성 점검</h2>
+  <div class="tiles">
+    <div class="tile"><span class="big">0.981~0.986</span><span class="cap">GPT-5-mini 개별 채점 반복 사이의 상관</span></div>
+    <div class="tile"><span class="big">0.9 초과</span><span class="cap">사람이 10% 표본을 맹평가한 점수와 주요 AI 점수의 상관</span></div>
+  </div>
+  <div class="chips"><span class="chip">Claude Haiku 4.5 재채점</span><span class="chip">Gemini Flash 3.0 재채점</span><span class="chip">과제 고정효과</span><span class="chip">기초 통제변수</span><span class="chip">저품질 응답 제외</span><span class="chip">교육 집단 정의 변경</span></div>
+  <p class="note">다른 모델로 다시 채점해도 교육 집단 간 차등 효과는 비슷했고, 여러 사양 변경에도 결과가 크게 바뀌지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>격차 축소는 크지만 완전하지 않다</h3><span>AI 접근으로 기준 격차의 75%가 사라졌지만, 처치집단 안에서도 고학력이 0.139표준편차 앞섰습니다.</span></div>
+    <div class="item"><h3>AI가 있을 때의 고득점과 AI 없는 이해는 다르다</h3><span>AI를 제거한 후속 문항에서 격차가 0.200표준편차로 남았습니다. AI 사용 과제와 AI 없는 확인 과제를 짝지으면 결과물 품질과 독립적 이해를 구분할 수 있습니다.</span></div>
+    <div class="item"><h3>접근보다 사용 방식</h3><span>사용 빈도는 비슷했지만 고학력 이용자는 더 구체적으로 지시하고 선택적으로 통합했습니다. 결과물보다 AI와 상호작용하는 과정을 보는 평가가 필요하다는 해석이 가능합니다.</span></div>
+    <div class="item"><h3>교육 적용은 조심스러운 함의</h3><span>초기 사용 안내, 과제 맥락 제공, 근거 요구, 단계별 대화 같은 최소한의 지원이 저학력 학생의 진입 장벽을 낮출 가능성이 있습니다. 학교 수업이나 장기 학습을 직접 실험한 결과는 아닙니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico"></span>연구의 한계</h2>
+  <div class="two">
+    <div class="panel"><h3>표본</h3><ul><li>아르헨티나 온라인 패널, 개인용 컴퓨터를 쓸 수 있는 25~45세 성인 (학생이나 특정 기업 신입사원 아님)</li><li>완료율 65%, 저학력 표본은 개인용 컴퓨터 요건 때문에 더 제한됨</li><li>한국, 다른 국가, 실제 학교나 기업에 바로 적용할 수 없음</li></ul></div>
+    <div class="panel"><h3>과제</h3><ul><li>하나의 자기완결형 업무 과제와 즉시 후속 문항</li><li>생산성은 임금이나 기업 성과가 아니라 채점된 과제 점수</li><li>몇 주 뒤의 학습 유지나 새로운 과제로의 전이는 측정하지 않음</li></ul></div>
+    <div class="panel"><h3>측정과 추정</h3><ul><li>주요 점수는 AI 채점 기반 (사람 검증과 다른 모델 검증을 거침)</li><li>통제집단 13%의 외부 AI 사용 가능성 때문에 주요 추정치는 접근 배정 효과</li><li>대화 기록의 프롬프트 방식과 몰입도는 처리 후 선택</li><li>실험 시점의 GPT-4.1과 채점 모델 능력에 조건부</li></ul></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="cite">Cruces, G., Fernandez Meijide, D., Galiani, S., Gálvez, R. H., &amp; Lombardi, M. (2026). <em>Does generative AI narrow education-based productivity gaps? Evidence from a randomized experiment</em> (NBER Working Paper No. 34851). National Bureau of Economic Research. <a href="https://doi.org/10.3386/w34851" target="_blank" rel="noopener">https://doi.org/10.3386/w34851</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,t.dataset.tip)});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},t.dataset.tip)}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; pressed one starts selected */
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+/* horizontal bars. rows: {l,v,c?,t,show} */
+function bars(host,rows,max){host.innerHTML=rows.map(r=>{
+  const w=Math.max(0,Math.min(100,r.v/max*100));
+  return `<div class="brow"><div class="blabel">${r.l}</div><div class="btrack"><div class="bfill" tabindex="0" style="width:${w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t||r.l)}" aria-label="${esc(r.l)} ${esc(r.show)}"></div></div><div class="bval">${r.show}</div></div>`}).join('')}
+
+const LO='var(--s2)',HI='var(--s1)',GC='var(--muted)',GT='var(--s3)';
+bars($('#funnel'),[
+ {l:'자격 충족',v:1795,c:GC,show:'1,795',t:'자격을 충족한 1,795명'},
+ {l:'실험 완료 (분석 표본)',v:1174,show:'1,174',t:'1,795명 가운데 1,174명(65%)이 실험을 완료해 분석 표본이 됨'},
+ {l:'저학력',v:520,c:LO,show:'520',t:'최종 표본 중 저학력 520명'},
+ {l:'고학력',v:654,c:HI,show:'654',t:'최종 표본 중 고학력 654명'}],1795);
+
+/* main results: both views share one scale so the follow-up effects read as smaller */
+const SCALE=1.4;
+const res={
+ main:{
+  tiles:[['+1.242','저학력 처치 효과 (표준편차)'],['+0.834','고학력 처치 효과 (표준편차)'],['75%','사라진 기준 격차']],
+  eff:[{l:'저학력',v:1.242,c:LO,show:'+1.242',t:'저학력 처치집단의 종합 점수 1.242표준편차 상승'},
+       {l:'고학력',v:0.834,c:HI,show:'+0.834',t:'고학력 처치집단의 종합 점수 0.834표준편차 상승'}],
+  gap:[{l:'통제집단 (AI 없음)',v:0.548,c:GC,show:'0.548',t:'AI가 없는 통제집단에서 고학력이 0.548표준편차 앞섬'},
+       {l:'처치집단 (AI 접근)',v:0.139,c:GT,show:'0.139',t:'AI가 있을 때 격차 0.139표준편차, p=0.110 (통계적으로 경계선)'}],
+  items:[['두 처치 효과의 차이','good','1% 수준 유의','−0.408표준편차. 저학력 집단이 더 크게 올랐습니다.'],
+         ['처치집단 안의 격차','warn','p=0.110 · 경계선','고학력이 여전히 0.139표준편차 앞섰습니다. 수렴이 컸지만 완전하지 않았습니다.']],
+  note:'저학력 처치집단은 평균적으로 고학력 통제집단보다 높은 점수를 받았습니다. 효과는 실제 사용이 아니라 AI 접근을 배정받은 효과(ITT)입니다.'},
+ follow:{
+  tiles:[['+0.171','저학력 후속 처치 효과 (표준편차)'],['+0.071','고학력 후속 처치 효과 (표준편차)'],['0.200','처치집단 안에 남은 후속 격차']],
+  eff:[{l:'저학력',v:0.171,c:LO,show:'+0.171',t:'이전에 AI를 쓸 수 있었던 저학력 참가자의 후속 점수 0.171표준편차 높음, 5% 수준 유의'},
+       {l:'고학력',v:0.071,c:HI,show:'+0.071',t:'고학력 후속 처치 효과 0.071표준편차, 유의하지 않음'}],
+  gap:[{l:'통제집단 (AI 없음)',v:0.300,c:GC,show:'0.300',t:'후속 문항 통제집단에서 고학력이 0.300표준편차 앞섬'},
+       {l:'처치집단 (AI 제거 후)',v:0.200,c:GT,show:'0.200',t:'처치집단 안의 후속 격차 0.200표준편차, 여전히 유의'}],
+  items:[['저학력 후속 효과','good','5% 수준 유의','+0.171표준편차'],
+         ['고학력 후속 효과','neutral','유의하지 않음','+0.071표준편차'],
+         ['처치집단 안의 후속 격차','warn','여전히 유의','0.200표준편차']],
+  note:'AI를 제거한 뒤에도 두 집단 모두 통제집단보다 나빠지지 않았습니다. 하지만 기준 교육 격차가 다시 나타났고, 후속 효과는 본 과제 효과보다 작았습니다.'}
+};
+seg('seg-main',k=>{const m=res[k];
+ $('#main-tiles').innerHTML=m.tiles.map(t=>`<div class="tile"><span class="big">${t[0]}</span><span class="cap">${t[1]}</span></div>`).join('');
+ bars($('#eff-bars'),m.eff,SCALE);bars($('#gap-bars'),m.gap,SCALE);
+ $('#main-list').innerHTML=m.items.map(x=>`<div class="item"><h3>${x[0]}</h3><span class="pill ${x[1]}">${x[2]}</span><span>${x[3]}</span></div>`).join('');
+ $('#main-note').textContent=m.note});
+
+bars($('#root-bars'),[
+ {l:'저학력 · AI 없음',v:49.5,c:GC,show:'49.5%',t:'저학력: 근본 원인을 맞힌 비율 49.5%에서'},
+ {l:'저학력 · AI 접근',v:84.1,c:LO,show:'84.1%',t:'저학력: 84.1%로 상승'},
+ {l:'고학력 · AI 없음',v:64.7,c:GC,show:'64.7%',t:'고학력: 근본 원인을 맞힌 비율 64.7%에서'},
+ {l:'고학력 · AI 접근',v:88.1,c:HI,show:'88.1%',t:'고학력: 88.1%로 상승'}],100);
+
+bars($('#copy-bars'),[
+ {l:'저학력 이용자',v:70.2,c:LO,show:'70.2%',t:'저학력 이용자의 전체 복사 비율 70.2%'},
+ {l:'고학력 이용자',v:60.1,c:HI,show:'60.1%',t:'고학력 이용자의 전체 복사 비율 60.1% (차이 10.1%p)'}],100);
+
+const eng={
+ main:{hh:['hi','높음','몰입도와 관계없이 AI 도움이 높으면 본 과제 점수가 높음'],hl:['hi','높음','몰입도와 관계없이 AI 도움이 높으면 본 과제 점수가 높음']},
+ follow:{hh:['hi','특히 높음','높은 몰입과 높은 AI 도움이 결합된 경우에만 특히 높음'],hl:['lo','낮음','같은 높은 AI 도움 집단 안에서도 몰입이 낮으면 후속 성적이 낮음']}
+};
+const NA=['na','서술 없음','원고에 이 칸의 결과가 따로 제시되지 않음'];
+const cell=c=>`<div class="cell ${c[0]}"><b>${c[1]}</b><span>${c[2]}</span></div>`;
+seg('seg-eng',k=>{const m=eng[k];
+ $('#eng-grid').innerHTML=`<div class="hd"></div><div class="hd">높은 몰입</div><div class="hd">낮은 몰입</div>`+
+  `<div class="hd">높은 AI 도움</div>${cell(m.hh)}${cell(m.hl)}`+
+  `<div class="hd">낮은 AI 도움</div>${cell(NA)}${cell(NA)}`});
+
+const read={
+ yes:`<ul><li>특정한 업무형 과제에서 AI 접근이 주어졌을 때 교육 수준에 따른 즉시 성과 격차가 크게 줄어든다는 점</li><li>AI를 제거한 직후에도 처치집단이 통제집단보다 나빠지지 않았고, 저학력 집단에 일부 단기 이점이 남았다는 점</li><li>사용 빈도는 비슷해도 교육 집단에 따라 AI 사용 방식이 다르다는 점</li></ul>`,
+ no:`<ul><li>AI가 교육 불평등을 해소한다는 것 (후속 문항과 사용 방식에서 격차가 남음)</li><li>실제 사용의 효과 (주요 추정치는 접근 배정 효과, ITT이며 통제집단 13%의 외부 AI 사용 가능성 때문에 과소추정될 수 있음)</li><li>몇 주 뒤의 학습 유지, 새로운 과제로의 전이, 인적자본 형성의 장기 효과</li><li>채용, 임금, 승진, 실제 직무 평가 (신규 졸업자 고용 기회 확대는 검증되지 않은 적용)</li><li>특정 프롬프트 전략이나 교육 프로그램의 인과 효과</li><li>실제 기업의 협업, 평가, 보상 구조</li></ul>`
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</html>
