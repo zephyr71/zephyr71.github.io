@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 노출 전공 졸업생, 출발선에서 흔들리다</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ttl{font-size:13px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}.big.s3{color:var(--s3)}
+.big small{font-size:.5em;font-weight:700;margin-left:4px}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start}
+.step b{color:var(--fg);font-size:14px}
+.step.on{outline:2px solid var(--accent);outline-offset:-2px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:44px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;text-align:center;font-size:12.5px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px;padding-inline:6px;line-height:1.3;cursor:default;transform-origin:left;animation:grow .6s ease-out both}
+.stack div.dim{opacity:.35}
+@keyframes grow{from{transform:scaleX(0)}}
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;align-items:stretch}
+/* clickable flow steps */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.flow button{font:inherit;text-align:left;cursor:pointer;border:0}
+.flow button[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+/* decile strip */
+.dec{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.dec div{height:34px;border-radius:6px;background:var(--track);display:grid;place-items:center;font-size:11px;color:var(--muted);cursor:default}
+.dec div.top{background:var(--s2);color:var(--on-accent);font-weight:700}
+.decx{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+/* concept timeline */
+.tl{position:relative;display:grid;grid-template-columns:1fr 1fr;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.tl>div{padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;align-content:start}
+.tl>div b{color:var(--fg)}
+.tl .after{background:var(--card2);border-left:2px dashed var(--accent)}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (max-width:540px){.tl{grid-template-columns:1fr}.tl .after{border-left:0;border-top:2px dashed var(--accent)}.dec div{font-size:0}.stack{height:56px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>AI 노출 전공 졸업생, 출발선에서 흔들리다</h1>
+  <p class="sub">미국 인구조사국 행정자료로 본 전공별 AI 노출과 졸업생 노동시장 성과 | Orr, Tucker &amp; Warren (2026) · CES Working Paper No. 26-56</p>
+  <div class="badges">
+    <span class="chip warn">워킹페이퍼 · 동료심사 전 · 2026년 9월</span>
+    <span class="chip">미국 인구조사국 Center for Economic Studies</span>
+    <span class="chip">사건연구 설계 · 기준 시점 2022년 말 ChatGPT 등장</span>
+  </div>
+  <p class="lead">ChatGPT 등장 이후, AI 노출이 가장 높은 전공의 졸업생은 노동시장에 들어서는 첫 단계부터 성과가 즉시 나빠졌습니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="AI 노출 상위 10분위 전공 졸업생, 2022년 말 이후 초기 취업 확률 5%p 하락"><span class="big s2">5%p<small>하락</small></span><span class="cap">초기 취업 확률 · AI 노출 상위 10분위 전공 · 2022년 말 이후</span></div>
+    <div class="tile" tabindex="0" data-tip="AI 노출 상위 10분위 전공 졸업생, 첫 full-quarter 소득 13% 감소. 저자들은 대규모 경기침체기 졸업 손실에 견줄 만한 크기로 평가"><span class="big s2">13%<small>감소</small></span><span class="cap">첫 full-quarter 소득 · 저자 평가: 대규모 경기침체기 졸업 손실에 견줄 만한 크기</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>연구 설계</h2>
+  <p class="lead">전공 단위로 노동시장 진입이라는 선명한 시점을 관찰한다는 점이 이 연구의 강점입니다. 단계를 눌러 내용을 확인하세요.</p>
+  <div class="flow" id="flow" role="group" aria-label="연구 설계 단계 선택">
+    <button type="button" class="step" data-v="data" aria-pressed="true"><b>1. 자료</b>미국 인구조사국 대학 졸업생 행정 기록</button>
+    <button type="button" class="step" data-v="expo" aria-pressed="false"><b>2. 전공별 AI 노출도</b>진입 직업 분포에 직업 단위 노출 측정치 연결</button>
+    <button type="button" class="step" data-v="es" aria-pressed="false"><b>3. 사건연구</b>2022년 말 ChatGPT 도입 전후 비교</button>
+    <button type="button" class="step" data-v="dec" aria-pressed="false"><b>4. 분해와 추적</b>소득 감소 분해, 경과 연수별 감쇠</button>
+  </div>
+  <div class="panel" id="flow-panel" aria-live="polite"></div>
+  <p class="ttl">노출도 10분위 (칸에 마우스를 올리면 설명)</p>
+  <div class="dec" id="dec" role="img" aria-label="노출도 10분위 중 상위 10분위 강조"></div>
+  <div class="decx"><span>노출 낮음</span><span>노출 높음</span></div>
+  <p class="note">비교하는 결과는 초기 취업, 초기 소득, 이직 패턴입니다. 상위 10분위를 제외한 다른 분위의 결과 수치, 표본 규모, 분석 대상 졸업 연도는 글에 제시되지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>핵심 결과: 상위 10분위 전공 졸업생에게 일어난 일</h2>
+  <div class="seg" id="seg-res" role="group" aria-label="결과 선택">
+    <button type="button" data-v="emp" aria-pressed="true">초기 취업</button><button type="button" data-v="earn" aria-pressed="false">첫 full-quarter 소득</button><button type="button" data-v="move" aria-pressed="false">이직</button><button type="button" data-v="fade" aria-pressed="false">졸업 후 경과</button>
+  </div>
+  <div class="panel" id="res-panel" aria-live="polite"></div>
+  <p class="ttl">개념도: 2022년 말을 기준으로 한 발산 (수치 아님)</p>
+  <div class="tl">
+    <div><b>2022년 말 이전</b>사건연구의 비교 기간</div>
+    <div class="after"><b>2022년 말 ChatGPT 등장 이후</b>노출도가 다른 전공 집단의 결과가 즉시 갈라지기 시작</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>소득 13% 감소는 어디서 왔나</h2>
+  <p class="lead">저자들은 소득 감소를 두 마진으로 분해했습니다. 막대에 마우스를 올리거나 버튼을 눌러 각 요인을 확인하세요.</p>
+  <div class="seg" id="seg-dec" role="group" aria-label="요인 선택">
+    <button type="button" data-v="both" aria-pressed="true">전체</button><button type="button" data-v="int" aria-pressed="false">집약적 마진</button><button type="button" data-v="comp" aria-pressed="false">구성 마진</button>
+  </div>
+  <div class="stack" role="img" aria-label="소득 감소의 약 절반은 산업 내부 소득 하락, 나머지 절반은 저임금 산업으로의 이동">
+    <div id="st-int" style="flex:1;--c:var(--s1)" tabindex="0" data-tip="집약적 마진: 졸업생을 고용하는 산업 내부의 소득 하락. 소득 감소의 약 절반">산업 내부 소득 하락 · 약 절반</div>
+    <div id="st-comp" style="flex:1;--c:var(--s2)" tabindex="0" data-tip="구성 마진: 외식업·소매업 같은 저임금 산업으로의 산업 구성 이동. 나머지 절반">저임금 산업으로 이동 · 나머지 절반</div>
+  </div>
+  <div class="panel" id="dec-panel" aria-live="polite"></div>
+  <p class="note">글은 두 요인의 비중을 "약 절반"과 "나머지 절반"으로만 서술합니다. 막대의 반반 분할은 이 서술을 그대로 옮긴 것이며, 요인별 정확한 퍼센트는 글에 제시되지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>해석: 충격은 진입 마진에서 먼저</h2>
+  <p class="lead">저자들의 결과는 기술 충격이 진입 마진(entry margin)에서 먼저 작동한다는 해석과 일치합니다.</p>
+  <div class="path">
+    <div class="step"><b>1. 기업의 선택</b>신규 채용을 줄이는 것이 기존 재직자를 해고하는 것보다 쉬움</div>
+    <div class="step"><b>2. 충격의 집중</b>AI 노출 직업의 충격이 신규 졸업자에게 집중</div>
+    <div class="step"><b>3. 졸업 시점의 불운</b>초기 취업과 소득뿐 아니라 장기 경력 궤적까지 좌우 (Oreopoulos et al., 2012; Altonji et al., 2016)</div>
+    <div class="step on"><b>4. 제기되는 긴장</b>특정 전공의 인적자본 투자 회수가 구조적으로 어려워질 수 있음</div>
+  </div>
+  <h3>배경과 비교 연구</h3>
+  <div class="seg" id="seg-ctx" role="group" aria-label="맥락 선택">
+    <button type="button" data-v="tech" aria-pressed="true">이번 기술 충격의 성격</button><button type="button" data-v="lit" aria-pressed="false">선행연구</button><button type="button" data-v="nor" aria-pressed="false">노르웨이 연구와의 대조</button>
+  </div>
+  <div class="panel" id="ctx-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>충격은 노동시장 입구에서 먼저 나타남</h3><span class="pill warn">진입 마진</span><span>AI 노출 상위 10분위 전공 졸업생의 초기 취업과 첫 소득이 2022년 말 이후 즉시 악화되었습니다. 신규 채용 축소가 해고보다 쉽다는 진입 마진 해석과 일치합니다.</span></div>
+    <div class="item"><h3>크기는 경기침체기 졸업에 견줄 만함</h3><span class="pill warn">저자 평가</span><span>첫 full-quarter 소득 13% 감소는 대규모 경기침체기에 졸업했을 때의 손실에 견줄 만하다는 것이 저자들의 평가입니다.</span></div>
+    <div class="item"><h3>절반은 어느 산업으로 가느냐의 문제</h3><span class="pill neutral">분해</span><span>소득 타격의 약 절반은 산업 내부의 소득 하락, 나머지 절반은 외식업·소매업 같은 저임금 산업으로의 이동입니다.</span></div>
+    <div class="item"><h3>안전한 전공에 대한 처방은 아님</h3><span class="pill neutral">검증되지 않은 적용</span><span>전공 선택·진로 상담에 AI 노출도를 고려하자는 주장, 커리큘럼을 AI 보완 역량 중심으로 재편하자는 주장 모두 이 자료에서 직접 검증된 것이 아닙니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">7</span>한계와 후속 질문</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>노출도는 실제 AI 도입이 아닌 잠재 노출의 측정치</li>
+      <li>사건연구 대비는 인과 해석의 근거를 제공하지만, 같은 시기의 다른 충격(금리 인상, 팬데믹 이후 조정)을 완전히 배제할 수 없음</li>
+      <li>미국 행정자료 기반이므로 다른 제도 환경에 곧바로 일반화하기 어려움</li>
+      <li>전공 단위 평균은 전공 내 개인 차이를 가림</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>개별 기업의 실제 AI 도입과 졸업생 배치를 연결하는 연구</li>
+      <li>전공 내부의 과목·역량 구성에 따른 이질성 분석</li>
+      <li>졸업 코호트의 장기 추적</li>
+      <li>노르웨이 연구처럼 다른 제도 환경에서 같은 측정을 반복하는 비교 연구 (메커니즘 분리에 도움)</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Orr, C., Tucker, L. C., &amp; Warren, L. (2026). <em>Graduating into disruption: Labor market outcomes for AI-exposed college majors</em> (CES Working Paper No. 26-56). U.S. Census Bureau, Center for Economic Studies. <a href="https://www2.census.gov/library/working-papers/2026/adrm/ces/CES-WP-26-56.pdf">https://www2.census.gov/library/working-papers/2026/adrm/ces/CES-WP-26-56.pdf</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; pressed one starts active */
+function seg(el,cb){const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  set(bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0]);}
+
+/* 1. design flow */
+const flow={
+ data:`<h3>자료</h3><ul><li>미국 인구조사국의 대학 졸업생 행정 기록</li><li>졸업생의 전공과 이후 고용주-피고용주 연계 소득 기록을 결합해 졸업 후 노동시장 성과를 관찰</li></ul>`,
+ expo:`<h3>전공별 AI 노출도</h3><ul><li>각 전공 졸업생이 진입하는 직업 분포에 직업 단위 AI 노출 측정치를 연결해 구성</li><li>실제 AI 도입이 아닌 잠재 노출의 측정치</li></ul><p class="cap">사용한 직업 단위 노출 측정치의 이름은 글에 제시되지 않았습니다.</p>`,
+ es:`<h3>사건연구(event study)</h3><ul><li>2022년 말 ChatGPT 도입을 전후해, 노출도가 다른 전공 집단의 결과가 언제부터 어떻게 갈라지는지 추정</li><li>회귀조정 추정치 사용</li><li>노출도 10분위별로 초기 취업, 초기 소득, 이직 패턴 비교</li></ul>`,
+ dec:`<h3>분해와 추적</h3><ul><li>소득 감소를 산업 내부의 소득 하락(집약적 마진)과 저임금 부문으로의 산업 구성 이동(구성 마진)으로 분해</li><li>졸업 후 경과 연수별로 효과가 어떻게 감쇠하는지 추적</li></ul>`
+};
+seg($('#flow'),v=>{$('#flow-panel').innerHTML=flow[v]});
+
+$('#dec').innerHTML=Array.from({length:10},(_,i)=>i===9
+ ?`<div class="top" tabindex="0" data-tip="상위 10분위 (AI 노출 최상위): 초기 취업 확률 5%p 하락, 첫 full-quarter 소득 13% 감소">상위</div>`
+ :`<div tabindex="0" data-tip="이 분위의 결과 수치는 글에 제시되지 않음">${i===0?'하위':''}</div>`).join('');
+
+/* 2. results */
+const res={
+ emp:`<div class="tiles"><div class="tile"><span class="big s2">5%p<small>하락</small></span><span class="cap">초기 취업 확률</span></div><div class="tile"><span class="big s1">즉시</span><span class="cap">발산 시작 시점: 2022년 말 이후</span></div></div><p>AI 노출 상위 10분위 전공의 졸업생은 ChatGPT 등장 직후부터 초기 취업 확률이 5%p 하락했습니다.</p>`,
+ earn:`<div class="tiles"><div class="tile"><span class="big s2">13%<small>감소</small></span><span class="cap">첫 full-quarter 소득</span></div><div class="tile"><span class="big s3">약 절반 + 절반</span><span class="cap">산업 내부 하락 + 저임금 산업 이동 (3번 항목)</span></div></div><p>저자들은 이 소득 감소가 대규모 경기침체기에 졸업했을 때의 손실에 견줄 만한 크기라고 평가합니다.</p>`,
+ move:`<div class="item"><h3>이직 패턴</h3><span class="pill neutral">변화 관찰</span><span>노출 집단의 이직 패턴에서도 변화가 관찰되었습니다. 변화의 방향과 크기는 글에 제시되지 않았습니다.</span></div>`,
+ fade:`<div class="item"><h3>졸업 후 시간이 지나면</h3><span class="pill warn">감쇠하지만 지속</span><span>효과는 노동시장 진입 시점에서 멀어질수록 약해지지만, 노출이 가장 높은 전공에서는 졸업 후에도 상당한 크기로 유지됩니다. 경과 연수별 수치는 글에 제시되지 않았습니다.</span></div>`
+};
+seg($('#seg-res'),v=>{$('#res-panel').innerHTML=res[v]});
+
+/* 3. decomposition */
+const dec={
+ both:`<p>소득 감소의 약 절반은 졸업생을 고용하는 산업 내부의 소득 하락에서, 나머지 절반은 외식업·소매업 같은 저임금 산업으로의 산업 구성 이동에서 비롯되었습니다.</p>`,
+ int:`<h3>집약적 마진 <span class="pill neutral">약 절반</span></h3><p>졸업생을 고용하는 기존 산업 안에서 소득 자체가 하락한 부분입니다.</p>`,
+ comp:`<h3>구성 마진 <span class="pill neutral">나머지 절반</span></h3><p>졸업생이 취업하는 산업 구성 자체가 외식업·소매업 등 저임금 부문으로 이동한 부분입니다.</p>`
+};
+seg($('#seg-dec'),v=>{$('#dec-panel').innerHTML=dec[v];
+ $('#st-int').classList.toggle('dim',v==='comp');$('#st-comp').classList.toggle('dim',v==='int')});
+
+/* 4. context */
+const ctx={
+ tech:`<div class="two"><div class="panel" style="background:var(--track)"><h3>이전 자동화</h3><ul><li>산업용 로봇, 일상적 사무자동화</li><li>예측 가능한 육체·단순 사무 과업을 대체</li></ul></div><div class="panel" style="background:var(--track)"><h3>생성형 AI</h3><ul><li>정보 처리와 소통 같은 비일상적 인지 과업으로 자동화 범위 확대</li><li>대학 교육을 많이 받은 직업일수록 오히려 노출이 큼</li></ul></div></div><p class="cap">이 점에서 이번 기술 충격의 분배적 성격이 다릅니다.</p>`,
+ lit:`<ul><li>최근 연구들은 젊은 노동자에서 직업·산업 단위의 상당한 AI 효과를 보고 (Brynjolfsson et al., 2025; Hosseini Maasoum &amp; Lichtinger, 2025; Tucker, 2026)</li><li>졸업 시점의 노동시장 상태가 초기 취업·소득과 장기 경력 궤적까지 좌우 (Oreopoulos et al., 2012; Altonji et al., 2016)</li><li>따라서 AI가 진입 단계에서 작동한다면 장기적 불평등으로 이어질 수 있음</li></ul>`,
+ nor:`<div class="two"><div class="panel" style="background:var(--track)"><h3>노르웨이 (Hernæs &amp; Kostøl, 2026)</h3><ul><li>전체 직업 대상</li><li>노출도 순위에 따른 고용 격차 확인되지 않음</li></ul></div><div class="panel" style="background:var(--track)"><h3>이 연구 (미국)</h3><ul><li>대학 졸업생, 전공 단위</li><li>즉각적인 발산</li></ul></div></div><p class="ttl">함께 보아야 할 차이</p><div class="chips"><span class="chip">제도: 임금 교섭 구조, 고용 보호</span><span class="chip">측정 단위: 전공 대 직업</span><span class="chip">결과 변수: 소득 포함 여부</span></div><p class="cap">어느 한쪽이 다른 쪽을 반박하는 것은 아닙니다.</p>`
+};
+seg($('#seg-ctx'),v=>{$('#ctx-panel').innerHTML=ctx[v]});
+
+/* 5. reading cautions */
+const read={
+ yes:`<ul><li>AI 노출이 높은 전공의 초기 노동시장 성과가 2022년 말 이후 즉시 악화되었다는 점</li><li>소득 타격의 크기가 대규모 경기침체기 졸업에 견줄 만하다는 점 (저자 평가)</li><li>타격의 절반은 산업 내부의 소득 하락, 절반은 저임금 산업으로의 구성 이동이라는 점</li><li>효과가 시간이 지나며 약해지지만 노출 최상위 전공에서는 상당한 크기로 남는다는 점</li></ul>`,
+ no:`<ul><li>어떤 전공이 안전한지에 대한 처방. 이 연구는 이를 검증하지 않음</li><li>대학 커리큘럼을 AI 보완 역량 중심으로 재편해야 한다는 근거. 이 자료에서 직접 검증되지 않은 적용임</li><li>실제 AI 도입의 효과. 노출도는 잠재 노출 측정치임</li><li>같은 시기 다른 충격(금리 인상, 팬데믹 이후 조정)의 완전한 배제</li><li>전공 안의 개인별 결과. 전공 단위 평균임</li><li>다른 제도 환경으로의 곧바른 일반화. 미국 행정자료 기반임</li><li>동료심사를 거친 결론. 워킹페이퍼 단계임</li></ul>`
+};
+seg($('#seg-read'),v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
