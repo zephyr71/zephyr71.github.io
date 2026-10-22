@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>정답 기계에서 협력 파트너로: 구조화된 생성형 AI 교육 실험</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;min-width:30px;height:24px;padding-inline:6px;border-radius:7px;background:var(--card2);border:1px solid var(--line);color:var(--accent);font-size:12px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.chip.ok{color:var(--good);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* hero stat */
+.hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.hstat{background:var(--card2);border-radius:14px;padding:16px;text-align:center;display:grid;gap:4px;border-top:3px solid var(--c,var(--s1))}
+.hstat .num{font-size:clamp(30px,6vw,40px);font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--c,var(--s1))}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,190px) 1fr 82px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.btrack{height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+.bgroup{display:grid;gap:4px}
+.gtitle{font-size:14px;font-weight:500}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 74px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* stacked composition */
+.stack{display:flex;gap:2px;height:32px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px;transition:opacity .25s;cursor:default;white-space:nowrap}
+.stack div.dim{opacity:.22}
+.srow{display:grid;gap:6px}
+.srow .gtitle{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.srow .gtitle span{color:var(--muted);font-size:12.5px;font-weight:400}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.cap{font-size:12.5px;color:var(--muted)}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.note.warn{border-left:3px solid var(--warn)}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;align-content:start;min-width:0}
+.step b{color:var(--fg);font-size:14px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span.d{font-size:13px;color:var(--fg2);grid-column:1/-1}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>정답 기계에서 협력 파트너로</h1>
+  <p class="sub">구조화된 생성형 AI 교육과 STEM 전공생의 물리 문제 수정 실험 | Huang 외 (2026) · International Journal of STEM Education</p>
+  <div class="badges"><span class="chip ok">2026년 10월 6일 출판 학술지 논문</span><span class="chip warn">같은 날 같은 문항의 AI 보조 수정 수행 · 장기 학습은 검증하지 않음</span></div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">01</span>한눈에 보기: AI 보조 수정 후 전자기학 점수</h2>
+  <div class="hero">
+    <div class="hstat" style="--c:var(--s1)"><span class="num">83.290%</span><span class="cap">45분 AI 교육 집단 (50명)</span></div>
+    <div class="hstat" style="--c:var(--s2)"><span class="num">74.376%</span><span class="cap">일반 문제 해결 교육 집단 (45명)</span></div>
+    <div class="hstat" style="--c:var(--s3)"><span class="num">d = .814</span><span class="cap">약 8.91%포인트 차이 · p&lt;.001</span></div>
+  </div>
+  <p class="lead">AI의 답을 얼마나 많이 받았는가보다 어떤 답을 왜 수정했는가가 중요하다는 연구입니다. 두 집단 모두 이후 같은 AI(Doubao)를 사용했으므로, AI 사용과 비사용의 차이가 아니라 AI 사용 전 교육 방식의 차이를 평가한 실험입니다.</p>
+  <p class="note warn">d=.814는 효과크기이며, 점수가 81.4% 올랐다는 뜻이 아닙니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">02</span>연구 개요</h2>
+  <div class="chips">
+    <span class="chip">중국 중부의 한 상위권 대학</span><span class="chip">미적분 기반 기초 물리 수업</span><span class="chip">STEM 전공 2학년</span><span class="chip">두 조건 무작위 배정</span><span class="chip">AI 도구: Doubao</span>
+  </div>
+  <p class="ttl">모집·배정 116명 중 모든 절차를 마친 95명을 분석</p>
+  <div class="stack" id="sample" role="img" aria-label="교육 집단 50명, 비교 집단 45명, 완전 자료 분석 미포함 21명"></div>
+  <div class="legend" id="sample-leg"></div>
+  <p class="note">일정 충돌이나 질병 등으로 21명이 완전 자료 분석에 포함되지 않았습니다. 미포함 21명이 어느 집단에서 나왔는지는 여기서 제시하지 않아 하나의 구간으로 표시했습니다. 모집·배정 인원과 분석 인원을 구분해야 합니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">03</span>실험 설계: 무엇을 비교했나</h2>
+  <div class="seg" id="seg-arm" role="group" aria-label="집단 선택">
+    <button type="button" data-v="t" aria-pressed="true">교육 집단</button><button type="button" data-v="c" aria-pressed="false">비교 집단</button>
+  </div>
+  <div class="panel" id="arm-panel" aria-live="polite"></div>
+  <p class="ttl">훈련 이후 두 집단이 함께 거친 절차</p>
+  <div class="flow">
+    <div class="step"><b>1. 독립 풀이 (검은 펜)</b>32문항 전기·자기 개념 검사(CSEM)를 혼자 풉니다.</div>
+    <div class="step"><b>2. AI와 대화</b>불확실한 문항에 관해 Doubao와 대화합니다.</div>
+    <div class="step"><b>3. 수정 (빨간 펜)</b>대화 후 답을 수정합니다. 수정 후 점수는 같은 문항의 AI 보조 수행입니다.</div>
+    <div class="step"><b>4. 인지부하 자기보고</b>수행 후 인지부하를 자기보고로 평가합니다.</div>
+  </div>
+  <div class="chips">
+    <span class="chip">AI 기능: 기본 채팅 + 이미지 업로드</span><span class="chip">시스템 프롬프트·온라인 검색·고급 플러그인 미사용</span><span class="chip">훈련: 역학 문제</span><span class="chip">평가: 전자기학 문제</span>
+  </div>
+  <p class="note warn">논문이 사전검사라고 부르는 최초 CSEM은 AI와 대화하기 전이지만, 교육 개입보다 앞선 검사는 아닙니다. 또한 대기 집단과의 비교가 아니라 서로 다른 교육 묶음의 비교입니다.</p>
+  <p class="ttl">분석 방법</p>
+  <div class="chips">
+    <span class="chip">설문: 자기조절학습 · 기존 AI 경험</span><span class="chip">집단 차이: 독립표본 t 검정</span><span class="chip">개인 특성·상호작용: 강건 선형모형 + 5,000회 부트스트랩</span><span class="chip">대화 기록: 두 연구자가 코딩</span><span class="chip">전략 코딩 Krippendorff α = .951</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">04</span>핵심 결과 1: AI 보조 수정 후 CSEM 점수</h2>
+  <div class="seg" id="seg-score" role="group" aria-label="보기 선택">
+    <button type="button" data-v="score" aria-pressed="true">평균 점수</button><button type="button" data-v="read" aria-pressed="false">효과크기 읽기</button>
+  </div>
+  <div class="bars" id="score-bars" aria-live="polite"></div>
+  <div class="chips"><span class="chip">t(93) = 3.964</span><span class="chip">p &lt; .001</span><span class="chip">d = .814</span></div>
+  <p class="note" id="score-note"></p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">05</span>핵심 결과 2: 덜 고쳤지만, 더 잘 고쳤다</h2>
+  <div class="tiles">
+    <div class="tile"><span class="big" style="color:var(--s1)">254건</span><span class="cap">교육 집단 총 수정 사례</span></div>
+    <div class="tile"><span class="big" style="color:var(--s2)">368건</span><span class="cap">비교 집단 총 수정 사례</span></div>
+    <div class="tile"><span class="big" style="color:var(--s1)">5.080</span><span class="cap">교육 집단 학생당 평균 수정</span></div>
+    <div class="tile"><span class="big" style="color:var(--s2)">8.178</span><span class="cap">비교 집단 학생당 평균 수정</span></div>
+  </div>
+  <p class="ttl">교육 집단의 수정 수가 더 적었습니다 (p&lt;.001). 아래는 수정 사례의 구성입니다.</p>
+  <div class="seg" id="seg-rev" role="group" aria-label="강조 선택">
+    <button type="button" data-v="all" aria-pressed="true">전체 구성</button><button type="button" data-v="wr" aria-pressed="false">이익: 오답→정답</button><button type="button" data-v="rw" aria-pressed="false">손실: 정답→오답</button>
+  </div>
+  <div class="bars" id="rev"></div>
+  <div class="legend" id="rev-leg"></div>
+  <p class="note" id="rev-note" aria-live="polite"></p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">06</span>핵심 결과 3: AI와 대화하는 방식</h2>
+  <div class="seg" id="seg-str" role="group" aria-label="전략 선택">
+    <button type="button" data-v="why" aria-pressed="true">원리 이해 전략</button><button type="button" data-v="new" aria-pressed="false">새 문제 만들기 전략</button>
+  </div>
+  <p class="ttl" id="str-ttl"></p>
+  <div class="bars" id="str-bars" aria-live="polite"></div>
+  <div class="list">
+    <div class="item"><h3>대화 차례 수</h3><span class="pill good">p=.026 · d=.465</span><span class="d">교육 집단이 더 많은 대화 차례를 주고받았습니다. 집단별 평균 대화 차례 수는 여기서 제시하지 않았습니다.</span></div>
+    <div class="item"><h3>이미지 업로드 중심 전략</h3><span class="pill neutral">두 집단 모두 흔함</span><span class="d">교육이 모든 학생의 사용 방식을 완전히 바꾼 것은 아닙니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">07</span>핵심 결과 4: 인지부하와 개인 특성</h2>
+  <div class="seg" id="seg-load" role="group" aria-label="보기 선택">
+    <button type="button" data-v="load" aria-pressed="true">인지부하 (자기보고)</button><button type="button" data-v="ind" aria-pressed="false">개인 특성 (강건 모형)</button>
+  </div>
+  <div class="list" id="load-list" aria-live="polite"></div>
+  <p class="note warn" id="load-note"></p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">08</span>왜 이런 차이가 났을까: 이론과 해석</h2>
+  <div class="two">
+    <div class="panel"><h3>Zimmerman의 자기조절학습</h3><ul><li>사전 계획</li><li>수행 중 점검</li><li>자기성찰</li></ul><p class="cap">AI에 질문하는 행동도 목표를 정하고, 제안을 검토하고, 결과를 되돌아보는 학습 과정 안에 놓을 수 있다는 관점입니다.</p></div>
+    <div class="panel"><h3>인지부하 이론</h3><p class="cap">제한된 작업기억에서 과제와 수업 설계가 요구하는 정신적 자원을 다룹니다. AI가 빠르게 답을 준다고 학생의 판단 과정이 자동으로 좋아지지는 않습니다. 이 연구는 AI가 줄여주는 부담과 학생이 검토·설명에 투입하는 노력을 함께 봅니다.</p></div>
+  </div>
+  <p class="ttl">상호작용 방식이 달라진 이유에 대해 남아 있는 설명 (하나를 눌러 보세요)</p>
+  <div class="seg" id="seg-why" role="group" aria-label="설명 선택">
+    <button type="button" data-v="a" aria-pressed="true">더 정확한 신뢰</button><button type="button" data-v="b" aria-pressed="false">훈련 절차 따라 하기</button><button type="button" data-v="c" aria-pressed="false">확신 있을 때만 수정</button>
+  </div>
+  <div class="panel" id="why-panel" aria-live="polite"></div>
+  <p class="note warn">'보완성 인식'이나 '조정된 신뢰'는 결과를 설명하기 위한 해석과 후속 연구 개념입니다. 연구는 조정된 신뢰와 선택 효과를 충분히 구분하지 못했다고 인정하며, 심리적 변화의 지속성과 매개 과정을 직접 확정하지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">09</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button><button type="button" data-v="mis" aria-pressed="false">흔한 오독</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">10</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>목표를 '더 많은 답'에서 '선택적 수정'으로</h3><span class="d">교육 집단은 답을 덜 고쳤지만 수정 후 점수와 수정 사례의 구성이 더 좋았습니다. 많은 대화나 많은 수정 자체가 성공 지표는 아닙니다.</span></div>
+    <div class="item"><h3>이익과 비용을 함께 기록하기</h3><span class="d">AI와 상의하면 틀린 답이 맞아질 수도, 맞은 답이 틀려질 수도 있습니다. 개선 사례만 세지 말고 불필요한 수정과 오류 도입을 함께 기록할 수 있습니다.</span></div>
+    <div class="item"><h3>도구 접근과 사용 교육은 다른 개입</h3><span class="d">두 집단 모두 같은 AI 기능을 썼습니다. AI를 주기만 하면 좋아진다는 증거가 아니라 도구를 쓸 때의 준비 방식이 중요할 수 있다는 증거입니다. AI 없는 수업보다 우월하다는 판단도 할 수 없습니다.</span></div>
+    <div class="item"><h3>근거를 적고 나서 바꾸기 (적용 제안)</h3><span class="d">처음 답과 확신 정도를 남기고, AI 제안을 확인한 뒤 수정·유지 이유를 설명하는 절차입니다. 본 실험에서 효과를 직접 검증한 절차가 아니라 수정 수행을 더 정확히 평가하기 위한 제안입니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">11</span>한계와 후속 과제</h2>
+  <div class="list">
+    <div class="item"><h3>당일 수행 vs 지속적 학습</h3><span class="d">같은 날 같은 문항에 AI를 쓸 수 있는 상태에서 다시 답했습니다. 문항 기억, 잠깐 높아진 주의, 불확실한 문항 집중 효과가 섞일 수 있습니다. 논문도 지속적 학습, 개념 변화, 기술 전이를 이 설계로 추론할 수 없다고 명시합니다.</span></div>
+    <div class="item"><h3>구성 요소별 효과 미분리</h3><span class="d">AI 특성 설명, 자기조절 질문 전략, 한계와 오류 대응, 실습이 하나의 묶음이었습니다. 특정 프롬프트나 특정 오류 교정 기법을 효과의 원인으로 단정할 수 없습니다.</span></div>
+    <div class="item"><h3>일반화 범위</h3><span class="d">한 중국 대학의 STEM 2학년 95명이며, 모집한 116명 중 21명은 완전 자료 분석에 포함되지 않았습니다. 특정 과목·도구·문화적 사용 습관의 결과를 한국 대학 전체나 다른 전공에 바로 적용할 수 없습니다.</span></div>
+    <div class="item"><h3>자료 이용 가능성 문구</h3><span class="d">논문의 문구는 '이 연구에서 자료를 생성하거나 분석하지 않았다'고 적혀 있어 본문의 실험·대화 분석과 일치하지 않습니다. 이 문구만으로 원자료 공개나 재현 가능성이 확인되었다고 볼 수 없습니다.</span></div>
+    <div class="item"><h3>필요한 후속 연구</h3><span class="d">교육 요소별 비교, AI 없는 지연 검사, 새로운 문항과 다른 모델, 개방형 설명 평가, 수정 전 확신 평가가 필요합니다.</span></div>
+  </div>
+  <p class="note">이 논문의 유용한 메시지는 'AI와 대화하면 배운다'가 아니라 '어떤 수정이 이익이고 어떤 수정이 손실인지 가르치고 측정하자'는 것입니다.</p>
+</section>
+
+<footer class="foot">
+  <div>Huang, B., Xie, L., Liu, Y., Liu, X., Tang, H., Feng, X., Qiao, C., Guo, Q., Wu, C., &amp; Bao, L. (2026). From answer machine to collaborative partner: Impact of structured generative AI training on scientific problem solving in STEM education. <em>International Journal of STEM Education, 13</em>, Article 62. <a href="https://doi.org/10.1186/s40594-026-00652-9" target="_blank" rel="noopener">https://doi.org/10.1186/s40594-026-00652-9</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; the pressed one starts active */
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  set(bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0]);}
+/* horizontal bars. rows: {l,v,c,t,show} */
+function bars(host,rows,max){host.innerHTML=rows.map(r=>{
+  const w=Math.max(0,Math.min(100,r.v/max*100));
+  return `<div class="brow"><div class="blabel">${r.l}</div><div class="btrack"><div class="bfill" tabindex="0" style="width:${w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t||r.l)}" aria-label="${esc(r.l)} ${esc(r.show)}"></div></div><div class="bval">${r.show}</div></div>`}).join('')}
+
+const P1='var(--s1)',P2='var(--s2)',P3='var(--s3)';
+
+/* sample composition */
+(()=>{const d=[['교육 집단 (분석)',50,P1],['비교 집단 (분석)',45,P2],['완전 자료 분석 미포함',21,'var(--muted)']];
+  $('#sample').innerHTML=d.map(x=>`<div style="flex:${x[1]};--c:${x[2]}" data-tip="${x[0]} ${x[1]}명" tabindex="0">${x[1]}명</div>`).join('');
+  $('#sample-leg').innerHTML=d.map(x=>`<span><i class="sw" style="--c:${x[2]}"></i>${x[0]} ${x[1]}명</span>`).join('')+'<span>합계 116명 (분석 95명)</span>'})();
+
+/* arms */
+const arm={
+ t:`<h3>구조화된 생성형 AI 교육 (45분)</h3>
+  <div class="stack" role="img" aria-label="도입 10분, 전략 시연 15분, 실습 20분">
+   <div style="flex:10;--c:${P3}" data-tip="도입 10분" tabindex="0">도입 10분</div><div style="flex:15;--c:${P1}" data-tip="전략 시연 15분" tabindex="0">전략 시연 15분</div><div style="flex:20;--c:var(--good)" data-tip="실습 20분" tabindex="0">실습 20분</div>
+  </div>
+  <ul><li>생성형 AI의 특성과 한계</li><li>자기조절학습 단계별 질문 전략</li><li>오류 대응</li></ul>`,
+ c:`<h3>일반 문제 해결 교육 (같은 시간 구조)</h3>
+  <ul><li>교육 집단과 같은 시간 구조, 같은 역학 문제 사용</li><li>일반 문제 해결 전략을 배우고 연습</li><li>AI 사용에 대한 교육은 받지 않음</li><li>이후 교육 집단과 같은 AI 기능(Doubao)을 사용</li></ul>
+  <p class="cap">대기 집단과의 비교가 아니라 서로 다른 교육 묶음의 비교입니다.</p>`
+};
+seg('seg-arm',v=>{$('#arm-panel').innerHTML=arm[v]});
+
+/* scores */
+seg('seg-score',v=>{
+  if(v==='score'){
+    bars($('#score-bars'),[
+      {l:'교육 집단 (50명)',v:83.290,c:P1,show:'83.290%',t:'교육 집단 AI 보조 수정 후 CSEM 평균 83.290% (SD=10.191)'},
+      {l:'비교 집단 (45명)',v:74.376,c:P2,show:'74.376%',t:'비교 집단 AI 보조 수정 후 CSEM 평균 74.376% (SD=11.723)'}],100);
+    $('#score-note').textContent='표준편차: 교육 집단 SD=10.191, 비교 집단 SD=11.723. 교육 집단의 당일 수정 수행이 더 좋았다는 결과이며, AI를 제거한 후에도 그만큼의 개념 이해가 남았다는 결과는 아닙니다.';
+  }else{
+    bars($('#score-bars'),[
+      {l:'점수 차이',v:8.91,c:P3,show:'약 8.91%p',t:'83.290% − 74.376% = 약 8.91퍼센트포인트'},
+      {l:'잘못된 읽기: 81.4% 상승',v:81.4,c:'var(--bad)',show:'오독',t:'d=.814를 점수 81.4% 상승으로 읽는 것은 잘못입니다'}],100);
+    $('#score-note').textContent='실제 점수 차이는 약 8.91퍼센트포인트이고, d=.814는 효과크기입니다. d=.814를 "점수가 81.4% 올랐다"로 읽으면 안 됩니다.';
+  }});
+
+/* revision composition */
+const rev=[
+ {g:'교육 집단',n:'수정 254건',d:[69.3,14.2,16.5]},
+ {g:'비교 집단',n:'수정 368건',d:[41.3,18.7,40.0]}];
+const cat=[['오답→정답','var(--good)'],['오답→오답','var(--muted)'],['정답→오답','var(--bad)']];
+$('#rev-leg').innerHTML=cat.map(c=>`<span><i class="sw" style="--c:${c[1]}"></i>${c[0]}</span>`).join('');
+const revNote={
+ all:'비율의 분모는 각 집단의 수정 사례이며, 전체 학생이나 전체 문제 수가 아닙니다. 원래 틀린 모든 답 중 몇 개가 고쳐졌는지와도 다른 지표입니다.',
+ wr:'수정 사례 중 오답이 정답으로 바뀐 비율: 교육 집단 69.3%, 비교 집단 41.3%.',
+ rw:'수정 사례 중 정답이 오답으로 바뀐 비율: 교육 집단 16.5%, 비교 집단 40.0%. 비교 집단에서 수정 사례의 40.0%가 정답에서 오답으로 바뀌었다는 뜻이며, 전체 문항의 40%를 망쳤다는 뜻은 아닙니다.'};
+seg('seg-rev',k=>{
+  const on=k==='all'?[0,1,2]:k==='wr'?[0]:[2];
+  $('#rev').innerHTML=rev.map(r=>`<div class="srow"><div class="gtitle">${r.g}<span>${r.n} = 100%</span></div><div class="stack" role="img" aria-label="${r.g}: ${cat.map((c,i)=>c[0]+' '+r.d[i].toFixed(1)+'%').join(', ')}">${r.d.map((v,i)=>`<div class="${on.includes(i)?'':'dim'}" style="flex:${v};--c:${cat[i][1]}" tabindex="0" data-tip="${r.g} · ${cat[i][0]}: 수정 사례의 ${v.toFixed(1)}%">${v.toFixed(1)}%</div>`).join('')}</div></div>`).join('');
+  $('#rev-note').textContent=revNote[k];});
+
+/* strategies */
+const str={
+ why:{t:'문제의 원리를 이해하려는 전략을 한 번 이상 사용한 학생 비율',r:[
+   {l:'교육 집단',v:42.0,c:P1,show:'42.0%',t:'교육 집단 42.0% (21명)'},
+   {l:'비교 집단',v:20.0,c:P2,show:'20.0%',t:'비교 집단 20.0% (9명)'}],n:['21명','9명']},
+ new:{t:'새로운 문제를 만들어 보려는 전략을 사용한 학생 비율',r:[
+   {l:'교육 집단',v:14.0,c:P1,show:'14.0%',t:'교육 집단 14.0% (7명)'},
+   {l:'비교 집단',v:0,c:P2,show:'0%',t:'비교 집단 0%'}],n:['7명','']}};
+seg('seg-str',k=>{const m=str[k];$('#str-ttl').textContent=m.t;
+  bars($('#str-bars'),m.r.map((x,i)=>({...x,l:x.l+(m.n[i]?' ('+m.n[i]+')':'')})),100)});
+
+/* load + individual */
+const load={
+ load:{items:[
+   ['전체 인지부하','<span class="pill neutral">p=.414 · 유의하지 않음</span>','유의한 집단 차이가 없었습니다.'],
+   ['내재적 인지부하','<span class="pill warn">p=.079 · 잠정적</span>','교육 집단이 더 높았지만 5% 기준을 넘었습니다.'],
+   ['학습 관련 부하','<span class="pill neutral">유의하지 않음</span>','유의한 차이가 없었습니다 (p값은 원고에 제시되지 않음).'],
+   ['외재적 부하','<span class="pill neutral">유의하지 않음</span>','유의한 차이가 없었습니다 (p값은 원고에 제시되지 않음).']],
+  note:'이 결과를 "교육이 인지부하를 낮췄다"거나 "생산적 고투를 확정했다"로 해석할 수 없습니다. 더 많이 생각하는 느낌은 깊은 이해일 수도, 어려움이나 혼란일 수도 있습니다.'},
+ ind:{items:[
+   ['자기조절학습','<span class="pill good">양의 관련</span>','수정 수행과 양의 관련을 보였습니다.'],
+   ['초기 CSEM 점수','<span class="pill good">양의 관련</span>','수정 수행과 양의 관련을 보였습니다.'],
+   ['집단 × 기존 AI 경험','<span class="pill good">p=.034 · 유의</span>','상호작용이 유의했습니다.'],
+   ['집단 × 자기조절학습','<span class="pill neutral">유의하지 않음</span>','상호작용이 유의하지 않았습니다.'],
+   ['집단 × 초기 지식','<span class="pill neutral">유의하지 않음</span>','상호작용이 유의하지 않았습니다.']],
+  note:'개인 특성은 무작위로 배정되지 않았으므로 이 관련을 특성의 인과 효과로 읽어서는 안 됩니다. 기존 AI 경험의 차이를 교육이 완전히 없앴다는 결론도 범위를 넘습니다.'}};
+seg('seg-load',k=>{const m=load[k];
+  $('#load-list').innerHTML=m.items.map(x=>`<div class="item"><h3>${x[0]}</h3>${x[1]}<span class="d">${x[2]}</span></div>`).join('');
+  $('#load-note').textContent=m.note});
+
+/* alternative explanations */
+const why={
+ a:'<h3>AI를 더 정확히 신뢰하게 되었을 가능성</h3><p class="cap">논문이 제안하는 \'조정된 신뢰\' 해석입니다. 다만 연구는 이를 선택 효과와 충분히 구분하지 못했다고 인정합니다.</p>',
+ b:'<h3>훈련에서 본 절차를 당일 따라 했을 가능성</h3><p class="cap">학습자의 내적 판단이 달라졌다기보다, 훈련에서 본 절차를 같은 날 따라 했을 수도 있습니다.</p>',
+ c:'<h3>확신이 있을 때만 수정했을 가능성</h3><p class="cap">학생들이 확신이 있을 때만 답을 수정했을 수도 있습니다.</p>'};
+seg('seg-why',k=>{$('#why-panel').innerHTML=why[k]+'<p class="cap">새로운 과제, 수정 전 확신 평가, 시간이 지난 뒤의 관찰을 추가하면 학습자의 내적 판단이 달라졌는지 더 잘 알 수 있습니다.</p>'});
+
+/* reading cautions */
+const read={
+ yes:`<ul><li>같은 AI 기능을 쓰더라도 사용 전 교육 방식에 따라 당일 AI 보조 수정 점수가 달라질 수 있다는 무작위 배정 실험의 증거</li><li>교육 집단은 수정 수가 적으면서도 수정 사례 중 오답→정답 비율이 높고 정답→오답 비율이 낮았음</li><li>원리 이해 전략과 새 문제 만들기 전략의 사용이 교육 집단에서 더 많았음</li></ul>`,
+ no:`<ul><li>장기 기억, AI 없는 독립적 문제 해결, 새로운 과제로의 전이</li><li>AI를 쓰는 수업이 AI 없는 수업보다 우월하다는 결론</li><li>교육 묶음 중 어느 구성 요소가 효과를 냈는지</li><li>보완성 인식이나 조정된 신뢰가 효과를 매개했다는 증거</li><li>회로 그림이나 그래프를 잘못 읽은 AI를 학생이 바로잡은 대화 사례는 가능한 과정을 보여줄 뿐, 모든 학생이 같은 능력을 얻었다는 증명이 아님</li><li>채용, 임금, 취업률, 현장 성과 (측정하지 않음)</li></ul>`,
+ mis:`<ul><li><b>d=.814 → 점수 81.4% 상승?</b> 아닙니다. 점수 차이는 약 8.91%포인트입니다.</li><li><b>비교 집단이 문항의 40%를 망쳤다?</b> 아닙니다. 40.0%의 분모는 수정 사례입니다.</li><li><b>사전검사 → 사후검사 향상?</b> 최초 CSEM은 교육 이후, AI 대화 이전에 본 검사입니다.</li><li><b>AI를 주기만 하면 좋아진다?</b> 두 집단 모두 AI를 썼습니다. 비교한 것은 교육 방식입니다.</li><li><b>교육이 인지부하를 낮췄다?</b> 전체 인지부하 차이는 유의하지 않았습니다 (p=.414).</li></ul>`};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
