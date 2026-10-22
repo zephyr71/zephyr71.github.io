@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>생성형 AI는 실제로 어떤 일을 하는가</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,190px) 1fr 72px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.blabel small{display:block;font-size:12px;color:var(--muted)}
+.btrack{height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 64px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* diverging */
+.drow{display:grid;grid-template-columns:minmax(110px,210px) 1fr 76px;gap:6px 12px;align-items:center}
+.dtrack{position:relative;height:14px;background:var(--track);border-radius:4px}
+.dtrack::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
+.dfill{position:absolute;top:0;bottom:0;background:var(--c);animation:growc .6s ease-out both}
+.dfill.neg{right:50%;border-radius:4px 0 0 4px;transform-origin:right}
+.dfill.pos{left:50%;border-radius:0 4px 4px 0;transform-origin:left}
+.dna{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+@keyframes growc{from{transform:scaleX(0)}}
+@media (max-width:540px){.drow{grid-template-columns:1fr 70px}.drow .blabel{grid-column:1/-1}}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.vs{font-size:13px;color:var(--fg2)}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start}
+.step b{color:var(--fg);font-size:14px}
+.step.on{outline:2px solid var(--accent);outline-offset:-2px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--muted);font-size:12.5px}
+td small{display:block;color:var(--muted);font-size:12px}
+tbody tr:hover td{background:var(--card2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:30px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px}
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;align-items:stretch}
+.path .step{position:relative}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* breadth vs depth: share-of-users scale with 50% marker (no point estimates in source) */
+.scale{position:relative;height:30px;background:var(--track);border-radius:6px;margin-top:22px}
+.scale .zone{position:absolute;left:0;top:0;bottom:0;width:50%;border-radius:6px 0 0 6px;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--s1) 55%,transparent) 0 8px,color-mix(in srgb,var(--s1) 30%,transparent) 8px 16px);transform-origin:left;animation:grow .6s ease-out both;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--fg)}
+.scale .mid{position:absolute;left:50%;top:-8px;bottom:-8px;width:2px;background:var(--warn)}
+.scale .midlab{position:absolute;left:50%;top:-24px;transform:translateX(-50%);font-size:12px;font-weight:700;color:var(--warn);white-space:nowrap}
+.scale-ax{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:4px}
+.panel .panel,.panel .step{border:1px solid var(--line);background:var(--card)}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>생성형 AI는 실제로 어떤 일을 하는가</h1>
+  <p class="sub">전국 대표 표본 노동자 설문으로 만든 과업 단위 생성형 AI 도입 지수 | Bick, Blandin, Deming &amp; Schumacher (2026) · NBER Working Paper No. 35677</p>
+  <div class="badges">
+    <span class="chip warn">NBER 워킹페이퍼 · 동료심사를 거치지 않음</span>
+    <span class="chip">전국 대표 표본 설문</span>
+    <span class="chip">최초의 과업 단위 생성형 AI 도입 지수</span>
+  </div>
+  <p class="lead">AI가 할 수 있는 일(노출 가능성)과 노동자가 실제로 AI로 하는 일(도입)은 다른 개념입니다. 이 논문은 그 차이를 실측 데이터로 보여줍니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="대부분의 직업·과업 내에서 실제 사용자는 노동자의 절반 미만 (구체 비율은 글에 미제시)"><span class="big s1">절반 미만</span><span class="cap">대부분의 직업·과업 안에서 생성형 AI를 실제로 쓰는 노동자의 비중</span></div>
+    <div class="tile" tabindex="0" data-tip="생성형 AI가 사용되는 직업과 과업은 많지만, 각 직업·과업 안의 사용은 얕음"><span class="big s2">넓지만 얕다</span><span class="cap">현재 생성형 AI 도입의 모습</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>왜 이 연구가 필요했나</h2>
+  <p class="lead">AI의 노동시장 영향을 추정하는 연구는 대부분 직업의 잠재 노출도를 대리변수로 써 왔습니다. 그러나 노출 가능성은 기술이 할 수 있는 일의 측정이지, 노동자가 실제로 하는 일의 측정이 아닙니다.</p>
+  <div class="cmp">
+    <div class="step" tabindex="0" data-tip="예: Eloundou 등(2024)의 GPT 노출 점수"><b>기존: 노출 점수</b>직업의 잠재 노출도. 기술이 할 수 있는 일을 측정</div>
+    <div class="step" tabindex="0" data-tip="플랫폼 대화는 업무 사용의 일부이며, 대화 내용을 특정 직업의 과업으로 배정하는 문제가 남음"><b>기존: 채팅 로그 분석</b>AI 플랫폼 대화를 활용한 사용 분석</div>
+    <div class="step on" tabindex="0" data-tip="노출 가능성과 실제 사용 사이의 간극을 메우는 실측 도입 지수는 이전에 없었음"><b>빈자리: 실측 도입 지수</b>노동자가 실제로 쓰는지를 과업 단위로 측정한 지수</div>
+  </div>
+  <p class="note">이 연구는 Lee(2026)의 한국 임금 연구나 Orr 등(2026)의 전공 연구처럼 노출도 대리변수에 의존하는 결과들을 해석하는 데 직접적인 기준을 제공합니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>연구 설계</h2>
+  <div class="flow">
+    <div class="step"><b>1. 전국 대표 표본 설문</b>노동자에게 직무에서의 생성형 AI 사용을 물음</div>
+    <div class="step"><b>2. 직업·과업 연결</b>응답을 세부 직업과 과업(task) 분류에 연결</div>
+    <div class="step"><b>3. 과업 단위 도입 지수</b>직업 단위가 아닌 과업 단위의 도입 지수 구축</div>
+    <div class="step"><b>4. 비교 분석</b>기존 노출 점수와 회귀·분해, 플랫폼 채팅 로그 측정치와 개념적·경험적 차이 분석</div>
+  </div>
+  <p class="ttl">세 가지 측정 방식 비교. 버튼을 눌러 보세요</p>
+  <div class="seg" id="seg-meas" role="group" aria-label="측정 방식 선택">
+    <button type="button" data-v="exp" aria-pressed="true">노출 점수</button><button type="button" data-v="log" aria-pressed="false">채팅 로그</button><button type="button" data-v="svy" aria-pressed="false">설문 기반 도입 지수</button>
+  </div>
+  <div class="panel" id="meas-panel" aria-live="polite"></div>
+  <p class="note">표본 규모, 설문 시점, 국가, 과업 분류 체계의 세부 사항은 글에 제시되지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>핵심 결과</h2>
+  <div class="seg" id="seg-main" role="group" aria-label="결과 선택">
+    <button type="button" data-v="exp" aria-pressed="true">노출 점수 vs 실제 도입</button><button type="button" data-v="log" aria-pressed="false">채팅 로그의 과대분류</button><button type="button" data-v="shallow" aria-pressed="false">넓지만 얕은 도입</button><button type="button" data-v="who" aria-pressed="false">누가 도입하는가</button>
+  </div>
+  <div class="panel" id="main-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>해석: 무엇을 의미하나</h2>
+  <div class="seg" id="seg-int" role="group" aria-label="해석 관점 선택">
+    <button type="button" data-v="infra" aria-pressed="true">측정 인프라</button><button type="button" data-v="theory" aria-pressed="false">이론적 의미</button><button type="button" data-v="policy" aria-pressed="false">정책·교육 적용</button>
+  </div>
+  <div class="panel" id="int-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>노출 가능성은 실제 사용이 아니다</h3><span>노출 점수는 직업·과업 간 도입 변동의 일부만 설명합니다. 노출도 기반 연구가 포착하는 것은 잠재성이지 실현된 도입이 아닙니다.</span></div>
+    <div class="item"><h3>측정 방식마다 그리는 그림이 다르다</h3><span>채팅 로그 기반 측정은 개념이 다르며, 대화를 여러 직업에 걸친 일반 활동으로 과대분류하는 경향이 있습니다.</span></div>
+    <div class="item"><h3>넓지만 얕은 도입</h3><span>많은 직업과 과업에서 쓰이지만, 대부분의 직업·과업 안에서 사용자는 절반에 미치지 못합니다. 기술 충격이 아직 초기 단계라는 해석과도 일치합니다.</span></div>
+    <div class="item"><h3>무슨 과업인가만큼 누가 쓰는가</h3><span>비슷한 일을 하는 노동자 사이의 차이가 크므로, 어떤 과업을 AI가 돕는가만큼 누가 도입하는가가 중요합니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">7</span>한계와 후속 연구</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>자기보고 설문에 따른 측정 오류</li>
+      <li>횡단면 자료의 한계</li>
+      <li>도입의 깊이(사용 빈도·중요도)를 충분히 분해하지 못함</li>
+      <li>NBER 워킹페이퍼로 동료심사를 거치지 않음</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>도입 지수의 패널화</li>
+      <li>실제 생산성 결과와의 연결</li>
+      <li>플랫폼 로그와 설문의 통합 검증</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Bick, A., Blandin, A., Deming, D. J., &amp; Schumacher, T. R. (2026). <em>What work does generative AI do?</em> (NBER Working Paper No. 35677). National Bureau of Economic Research. <a href="https://doi.org/10.3386/w35677">https://doi.org/10.3386/w35677</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+
+const meas={
+ exp:`<h3>노출 점수 <span class="pill neutral">잠재성</span></h3><ul><li>무엇을 재나: 직업의 잠재 노출도, 즉 기술이 할 수 있는 일</li><li>예: Eloundou 등(2024)의 GPT 노출 점수</li><li>한계: 노동자가 실제로 하는 일의 측정이 아님</li></ul>`,
+ log:`<h3>채팅 로그 기반 측정 <span class="pill warn">개념이 다름</span></h3><ul><li>무엇을 재나: AI 플랫폼의 대화 내용</li><li>한계: 플랫폼 대화는 업무 사용의 일부</li><li>한계: 대화 내용을 특정 직업의 과업으로 배정하는 문제가 남음</li></ul>`,
+ svy:`<h3>설문 기반 과업 단위 도입 지수 <span class="pill good">이 논문</span></h3><ul><li>무엇을 재나: 노동자가 직무에서 생성형 AI를 실제로 어떻게 쓰는지</li><li>방법: 전국 대표 표본 설문 응답을 세부 직업과 과업에 연결</li><li>한계: 자기보고에 따른 측정 오류 가능성 (7번 항목)</li></ul>`
+};
+seg('seg-meas',v=>{$('#meas-panel').innerHTML=meas[v]});
+
+const main={
+ exp:`<h3>노출 점수는 도입 변동의 일부만 설명 <span class="pill warn">상당 부분 미설명</span></h3>
+  <div class="cmp">
+   <div class="step" tabindex="0" data-tip="노출 점수가 직업·과업 간 도입 변동을 설명하는 구체적 비중은 글에 미제시"><b>설명하는 부분</b>직업과 과업 간 도입 변동의 일부</div>
+   <div class="step on" tabindex="0" data-tip="노출 점수로 설명되지 않는 부분의 구체적 비중도 글에 미제시"><b>설명하지 못하는 부분</b>상당 부분. 전부를 설명하지는 못함</div>
+  </div>
+  <p class="cap">설명 비중의 구체 수치는 글에 제시되지 않았습니다.</p>
+  <p>노출 가능성과 실제 사용은 다른 개념이라는 점이 데이터로 확인됩니다.</p>`,
+ log:`<h3>채팅 로그는 일반 활동으로 과대분류 <span class="pill warn">개념적 차이</span></h3>
+  <div class="cmp">
+   <div class="step"><b>로그 기반</b>대화를 여러 직업에 걸친 일반 활동으로 과대분류하는 경향</div>
+   <div class="step on"><b>설문 기반</b>응답을 세부 직업과 과업에 직접 연결</div>
+  </div>
+  <p>로그 기반 측정은 설문 기반 측정과 개념적으로 다릅니다. 논문은 두 측정을 개념적으로 구분하고 각각의 편향을 비교합니다.</p>`,
+ shallow:`<h3>도입은 광범위하지만 얕다 <span class="pill good">넓음</span> <span class="pill warn">얕음</span></h3>
+  <div class="two">
+   <div class="panel"><b>넓다</b><span class="cap">생성형 AI가 사용되는 직업과 과업은 많음</span></div>
+   <div class="panel"><b>얕다</b><span class="cap">대부분의 직업·과업 내에서 실제 사용자는 노동자의 절반 미만</span></div>
+  </div>
+  <p class="ttl">직업·과업 안 사용자 비중의 위치 (대부분의 경우)</p>
+  <div class="scale" role="img" aria-label="대부분의 직업과 과업에서 사용자 비중은 50% 미만 구간">
+   <div class="zone" tabindex="0" data-tip="대부분의 직업·과업 내 실제 사용자 비중은 이 구간(절반 미만)에 있음. 직업·과업별 구체 비율은 글에 미제시">절반 미만 구간</div>
+   <div class="mid"></div><div class="midlab">노동자의 절반</div>
+  </div>
+  <div class="scale-ax"><span>사용자 없음</span><span>모든 노동자</span></div>
+  <p class="cap">음영은 수치가 아니라 범위입니다. 직업·과업별 실제 비율은 글에 제시되지 않았습니다.</p>`,
+ who:`<h3>비슷한 일을 해도 도입은 크게 갈린다 <span class="pill neutral">집약적 마진</span></h3>
+  <div class="cmp">
+   <div class="step"><b>질문 1</b>어떤 과업을 AI가 돕는가</div>
+   <div class="step on"><b>질문 2</b>같은 일을 하는 노동자 중 누가 도입하는가</div>
+  </div>
+  <p>매우 비슷한 일을 하는 노동자들 사이에서도 도입 여부가 크게 갈립니다. 그래서 어떤 과업을 AI가 돕는가만큼 누가 도입하는가가 중요합니다.</p>
+  <p class="cap">누가 더 많이 도입하는지를 가르는 구체적 특성은 글에 제시되지 않았습니다.</p>`
+};
+seg('seg-main',v=>{$('#main-panel').innerHTML=main[v]});
+
+const intp={
+ infra:`<h3>기여는 측정 인프라</h3><ul><li>과업 단위 도입 지수는 AI의 노동시장 영향을 분석하는 후속 연구의 기초 자료가 될 수 있음</li><li>노출도 기반 연구들이 포착하는 것은 잠재성이지 실현된 도입이 아니라는 점을 데이터로 보임</li></ul>`,
+ theory:`<h3>기술 확산은 노동자의 선택과 조직 맥락의 산물</h3><ul><li>도입의 집약적 마진, 즉 같은 직업 내에서 누가 쓰는가가 중요하다는 발견</li><li>기술 확산이 직업 단위의 수동적 과정이 아님을 시사</li><li>넓지만 얕은 도입은 기술 충격이 아직 초기 단계라는 해석과도 일치</li></ul>`,
+ policy:`<h3>재교육 수요 추정</h3><ul><li>노출도가 높은 직업의 재교육 수요를 추정할 때 노출 지수만 쓰면 수요를 과대추정할 수 있음</li><li>직업훈련 프로그램의 대상 선정에 도입 지수를 활용하는 방안은 그럴듯하지만 <b>이 논문이 검증한 적용은 아님</b></li></ul>`
+};
+seg('seg-int',v=>{$('#int-panel').innerHTML=intp[v]});
+
+const read={
+ yes:`<ul><li>노출 가능성과 실제 사용이 다른 개념이라는 실측 근거</li><li>노출 점수가 직업·과업 간 도입 변동의 일부만 설명한다는 점</li><li>채팅 로그 기반 측정이 설문 기반 측정과 개념적으로 다르며 일반 활동으로 과대분류하는 경향이 있다는 점</li><li>도입이 넓지만 얕고, 비슷한 일을 하는 노동자 사이의 차이가 크다는 점</li></ul>`,
+ no:`<ul><li>노출 점수가 쓸모없다는 것. 노출 점수는 도입 변동의 일부를 설명함</li><li>도입이 시간에 따라 어떻게 변하는지. 자료는 횡단면임</li><li>사용의 깊이(빈도·중요도)에 대한 충분한 분해</li><li>AI 도입이 실제 생산성에 미친 결과. 후속 연구 과제로 남음</li><li>도입 지수로 직업훈련 대상을 고르는 방안의 효과. 이 논문이 검증하지 않음</li><li>동료심사를 거친 결과. NBER 워킹페이퍼임</li></ul>`
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
