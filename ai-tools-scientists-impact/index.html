@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 도구는 과학자의 영향력을 넓히고 과학의 초점을 좁힌다</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.good{color:var(--good);border-color:currentColor;background:transparent}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ttl{font-size:13px;color:var(--muted)}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0;align-content:start}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}.big.s3{color:var(--s3)}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start;cursor:pointer;border:0;font-family:inherit;text-align:left}
+.step b{color:var(--fg);font-size:14px}
+.step[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+/* result metric cards */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.metric{background:var(--card2);border:0;border-radius:12px;padding:14px;text-align:center;display:grid;gap:4px;min-width:0;align-content:start;cursor:pointer;font-family:inherit;color:var(--fg);transition:opacity .2s}
+.metric[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.metric.dim{opacity:.35}
+.metric .lvl{font-size:12px;font-weight:700}
+.metric .lvl.ind{color:var(--s1)}.metric .lvl.col{color:var(--s2)}
+.dirn{font-size:12.5px;font-weight:700}
+.dirn.up{color:var(--good)}.dirn.down{color:var(--bad)}
+.src{font-size:13px;color:var(--muted);border-left:3px solid var(--accent);padding-left:10px}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;counter-reset:f}
+.flow .step{position:relative}
+.flow .step .n{font-size:12px;color:var(--accent);font-weight:900}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>AI 도구는 과학자의 영향력을 넓히고, 과학의 초점을 좁힌다</h1>
+  <p class="sub">Hao, Xu, Li &amp; Evans (2026) · Nature</p>
+  <div class="badges">
+    <span class="chip good">동료심사 학술지 Nature 게재</span>
+    <span class="chip">2026년 1월 14일 게재</span>
+    <span class="chip">자연과학 논문 4,130만 편</span>
+    <span class="chip warn">관찰자료</span>
+  </div>
+  <p class="lead">과학자 개인에게는 이득이, 과학 전체에는 수렴이 나타났습니다. 글은 이를 개인-집합 역설이라고 부릅니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="AI 보강 연구를 하는 과학자는 그렇지 않은 과학자보다 인용을 4.84배 많이 받음"><span class="big s1">4.84배</span><span class="cap">개인: AI 보강 연구자가 받는 인용 (비보강 연구자 대비)</span></div>
+    <div class="tile" tabindex="0" data-tip="AI 도입은 연구 주제의 집합적 다양성을 4.63% 줄임"><span class="big s2">4.63% 축소</span><span class="cap">집합: 연구 주제의 집합적 다양성</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>연구 설계</h2>
+  <p class="lead">AI는 단백질 구조 예측처럼 과학 발견을 가속했지만, 개별 과학자의 성과와 과학 체계 전체의 건강은 다른 문제입니다. 이 연구는 둘 사이의 긴장에서 출발합니다.</p>
+  <div class="tiles">
+    <div class="tile" tabindex="0" data-tip="OpenAlex 등에서 구축한 자연과학 논문 4,130만 편과 연구자 경력 자료"><span class="big s1">4,130만 편</span><span class="cap">자연과학 전 분야 논문</span></div>
+    <div class="tile" tabindex="0" data-tip="사전학습 언어모형으로 AI 보강 연구를 식별. 전문가 수동 분류와의 검증에서 F1 점수 0.875"><span class="big s3">F1 0.875</span><span class="cap">AI 보강 연구 식별 분류기 (전문가 수동 분류와 검증)</span></div>
+  </div>
+  <div class="chips">
+    <span class="chip">자료: OpenAlex 등</span><span class="chip">연구자 경력 자료</span>
+    <span class="chip">식별: 사전학습 언어모형</span><span class="chip">AI 시대 구분에 따라 도입 경로 추적</span>
+    <span class="chip">분석 대상 과학자 수: 글에 미제시</span>
+  </div>
+  <p class="ttl">두 수준의 측정. 수준을 눌러 무엇을 측정했는지 확인하세요.</p>
+  <div class="layers" id="levels" role="group" aria-label="측정 수준 선택">
+    <button type="button" class="step" data-v="ind" aria-pressed="true"><b>개인 수준</b>과학자 한 사람의 성과와 경력</button>
+    <button type="button" class="step" data-v="col" aria-pressed="false"><b>집합 수준</b>과학 전체의 탐색 범위와 상호작용</button>
+  </div>
+  <div class="panel" id="level-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>핵심 결과: 개인은 넓어지고 과학은 좁아진다</h2>
+  <p class="lead">수준을 골라 보고, 지표를 누르면 글의 해당 문장이 나옵니다.</p>
+  <div class="seg" id="seg-res" role="group" aria-label="결과 수준 선택">
+    <button type="button" data-v="all" aria-pressed="true">함께 보기</button><button type="button" data-v="ind" aria-pressed="false">개인 수준</button><button type="button" data-v="col" aria-pressed="false">집합 수준</button>
+  </div>
+  <div class="metrics" id="metrics" role="group" aria-label="결과 지표">
+    <button type="button" class="metric" data-k="pub" data-l="ind" aria-pressed="true"><span class="lvl ind">개인 수준</span><span class="big s1">3.02배</span><span class="cap">논문 발표 수</span><span class="dirn up">증가</span></button>
+    <button type="button" class="metric" data-k="cit" data-l="ind" aria-pressed="false"><span class="lvl ind">개인 수준</span><span class="big s1">4.84배</span><span class="cap">받은 인용</span><span class="dirn up">증가</span></button>
+    <button type="button" class="metric" data-k="lead" data-l="ind" aria-pressed="false"><span class="lvl ind">개인 수준</span><span class="big s1">1.37년</span><span class="cap">연구 프로젝트 리더 도달 시점</span><span class="dirn up">단축</span></button>
+    <button type="button" class="metric" data-k="div" data-l="col" aria-pressed="false"><span class="lvl col">집합 수준</span><span class="big s2">4.63%</span><span class="cap">연구 주제의 집합적 다양성</span><span class="dirn down">축소</span></button>
+    <button type="button" class="metric" data-k="int" data-l="col" aria-pressed="false"><span class="lvl col">집합 수준</span><span class="big s2">22%</span><span class="cap">과학자 간 후속 상호작용</span><span class="dirn down">감소</span></button>
+  </div>
+  <div class="panel" id="metric-panel" aria-live="polite"></div>
+  <p class="note">개인 수준 배수는 AI 보강 연구를 하지 않는 과학자와 비교한 값입니다. 각 지표의 표준오차, 신뢰구간, 분야별 수치는 글에 제시되지 않았습니다. 막대 대신 수치 카드로 표시했습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>해석: 개인의 합리적 선택이 집합적 수렴으로</h2>
+  <p class="lead">글이 소개하는 가설의 흐름입니다. 단계를 눌러 보세요.</p>
+  <div class="flow" id="flow" role="group" aria-label="수렴 가설 단계">
+    <button type="button" class="step" data-v="0" aria-pressed="true"><span class="n">1단계</span><b>도구의 특성</b>AI는 데이터가 풍부한 문제에서 가장 잘 작동</button>
+    <button type="button" class="step" data-v="1" aria-pressed="false"><span class="n">2단계</span><b>개인의 선택</b>성과를 극대화하려 AI를 사용</button>
+    <button type="button" class="step" data-v="2" aria-pressed="false"><span class="n">3단계</span><b>영역 이동</b>데이터가 풍부한 기존 연구 영역으로 모임</button>
+    <button type="button" class="step" data-v="3" aria-pressed="false"><span class="n">4단계</span><b>집합적 수렴</b>과학 전체의 탐색 범위가 좁아짐</button>
+  </div>
+  <div class="panel" id="flow-panel" aria-live="polite"></div>
+  <div class="two">
+    <div class="panel"><h3>저자들의 해석</h3><ul>
+      <li>AI는 기존 분야를 자동화하는 데 쓰이고, 새 분야 탐색에는 덜 쓰임</li>
+      <li>AI 보강 연구는 데이터가 풍부한 영역으로 집중되고 서로 겹치는 작업이 늘었음</li>
+    </ul></div>
+    <div class="panel"><h3>글의 해석: 유인 구조의 문제</h3><ul>
+      <li>AI가 데이터 풍부 영역에서 가장 유용하다면, 성과 중심 평가 체계 아래에서 과학자는 그 영역으로 이동함</li>
+      <li>도구가 아니라 평가 체계와 데이터 분포가 수렴을 만드는 셈</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>개인-집합 역설</h3><span>AI 보강 연구자는 논문 3.02배, 인용 4.84배, 리더 도달 1.37년 단축을 보였지만, 집합 수준에서는 주제 다양성이 4.63% 줄고 후속 상호작용이 22% 감소했습니다.</span></div>
+    <div class="item"><h3>수렴을 만드는 것은 유인 구조</h3><span>글은 도구 자체보다 성과 중심 평가 체계와 데이터 분포가 데이터 풍부 영역으로의 이동을 만든다고 해석합니다.</span></div>
+    <div class="item"><h3>성과 지표는 연구의 질이 아님</h3><span>발표·인용 지표는 연구의 질과 다르며, AI를 쓰는 과학자는 처음부터 다를 수 있습니다(자기선택).</span></div>
+    <div class="item"><h3>정책·교육 적용은 검증되지 않은 주장</h3><span>새 문제 탐색 연구에 별도의 유인을 두거나 AI 도구를 탐색 영역에 맞게 설계하자는 제안이 가능하지만, 어떤 개입이 수렴을 되돌리는지는 이 연구가 검증하지 않았습니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>한계와 후속 질문</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>관찰자료</li>
+      <li>자기선택: AI를 쓰는 과학자와 쓰지 않는 과학자는 처음부터 다를 수 있음</li>
+      <li>발표·인용 지표는 연구의 질과 다름</li>
+      <li>AI 식별 분류기의 오류가 남음</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>인과적 식별</li>
+      <li>질 지표와의 결합</li>
+      <li>분야별 이질성 분석</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Hao, Q., Xu, F., Li, Y., &amp; Evans, J. (2026). Artificial intelligence tools expand scientists' impact but contract science's focus. <em>Nature</em>. <a href="https://doi.org/10.1038/s41586-025-09922-y">https://doi.org/10.1038/s41586-025-09922-y</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; pressed one starts active */
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+/* step group: exclusive selection, renders panel html */
+function steps(id,panel,map){const bs=$$('button',$(id));const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$(panel).innerHTML=map[b.dataset.v]};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));set(bs[0]);}
+
+/* section 1: measurement levels */
+steps('#levels','#level-panel',{
+ ind:`<h3>개인 수준</h3><ul><li>논문 발표</li><li>인용</li><li>리더십 도달 시점 (연구 프로젝트 리더가 되는 시점)</li></ul>`,
+ col:`<h3>집합 수준</h3><ul><li>연구 주제의 다양성</li><li>후속 인용 상호작용</li></ul><p class="cap">다양성 지표의 구체적 계산 방식은 글에 미제시</p>`
+});
+
+/* section 2: results */
+const met={
+ pub:{h:'논문 발표 수 3.02배',s:'AI 보강 연구를 하는 과학자는 그렇지 않은 과학자보다 논문을 3.02배 많이 발표하고 (핵심 요약)'},
+ cit:{h:'인용 4.84배',s:'인용을 4.84배 많이 받으며 (핵심 요약)'},
+ lead:{h:'리더 도달 1.37년 단축',s:'연구 프로젝트 리더가 되는 시점이 1.37년 빨랐다. (핵심 요약)'},
+ div:{h:'연구 주제 다양성 4.63% 축소',s:'AI 도입은 연구 주제의 집합적 다양성을 4.63% 줄이고 (핵심 요약) / 연구 주제의 총량이 4.63% 축소되고 (연구 결과)'},
+ int:{h:'후속 상호작용 22% 감소',s:'과학자 간 후속 상호작용을 22% 감소시켰다. (핵심 요약) / 측정 항목은 연구 방법론에서 후속 인용 상호작용으로 표현됨'}
+};
+const mbs=$$('#metrics .metric');
+function showMetric(b){mbs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));const m=met[b.dataset.k];
+ $('#metric-panel').innerHTML=`<h3>${esc(m.h)}</h3><p class="src">${esc(m.s)}</p>`}
+mbs.forEach(b=>b.addEventListener('click',()=>showMetric(b)));
+seg('seg-res',v=>{mbs.forEach(b=>b.classList.toggle('dim',v!=='all'&&b.dataset.l!==v));
+ const first=mbs.find(b=>v==='all'||b.dataset.l===v);showMetric(first)});
+
+/* section 3: hypothesis flow */
+steps('#flow','#flow-panel',{
+ 0:`<p>AI 도구는 데이터가 풍부한 문제에서 가장 잘 작동합니다.</p>`,
+ 1:`<p>과학자가 성과를 극대화하려 AI를 씁니다. 결과에서 AI 보강 연구자는 논문 3.02배, 인용 4.84배, 리더 도달 1.37년 단축을 보였습니다.</p>`,
+ 2:`<p>그 결과 자연스럽게 데이터가 풍부한 기존 연구 영역으로 모입니다. AI 보강 연구는 데이터가 풍부한 영역으로 집중되고 서로 겹치는 작업이 늘었습니다.</p>`,
+ 3:`<p>개인의 합리적 선택이 모여 집합적 수렴을 만든다는 가설입니다. 집합 수준에서 주제 다양성은 4.63% 줄고, 후속 상호작용은 22% 감소했습니다.</p>`
+});
+
+/* section 4: reading cautions */
+const read={
+ yes:`<ul><li>자연과학 논문 4,130만 편에서 AI 보강 연구자의 발표, 인용, 리더십 도달 지표가 더 높게 나타난 연관</li><li>AI 도입과 함께 연구 주제의 집합적 다양성과 후속 상호작용이 줄어든 모습</li><li>AI 보강 연구가 데이터가 풍부한 영역으로 집중되고 서로 겹치는 작업이 늘었다는 점</li></ul>`,
+ no:`<ul><li>AI 사용이 성과를 높였다는 인과 관계. 관찰자료이며 자기선택 가능성이 있음</li><li>연구의 질. 발표·인용 지표는 연구의 질과 다름</li><li>어떤 개입이 수렴을 되돌리는지. 이 연구가 검증하지 않음</li><li>오류 없는 AI 연구 식별. 분류기 오류가 남음 (F1 0.875)</li><li>분야별 차이. 분야별 이질성 분석은 후속 과제로 제시됨</li></ul>`
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
