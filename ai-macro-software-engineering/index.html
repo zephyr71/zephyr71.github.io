@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI의 거시경제 효과: 소프트웨어 엔지니어링 채널</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,210px) 1fr 84px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.blabel small{display:block;font-size:12px;color:var(--muted)}
+.btrack{position:relative;height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bfill.lo{border-radius:0}
+.bext{height:100%;background:repeating-linear-gradient(45deg,var(--c) 0 4px,transparent 4px 8px);border:1px solid var(--c);border-left:0;border-radius:0 4px 4px 0;transform-origin:left;animation:grow .6s ease-out both}
+.bna{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+.bval.na{font-weight:500;font-size:12px;color:var(--muted)}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 76px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0;align-content:start}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}.big.s3{color:var(--s3)}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start;cursor:pointer;border:0;font-family:inherit;text-align:left}
+.step b{color:var(--fg);font-size:14px}
+.step[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:30px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px}
+.stack div.rest{background:var(--track);color:var(--muted);font-weight:500}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* timeline */
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative}
+.tl .step{text-align:center}
+.tl .when{font-size:12.5px;color:var(--muted)}
+.tl .val{font-size:22px;font-weight:900;color:var(--s1);line-height:1.2}
+.tl .val.na{font-size:14px;font-weight:500;color:var(--muted)}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.flow .step b{font-size:13.5px}
+@media (max-width:540px){.tl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>AI의 거시경제 효과: 소프트웨어 엔지니어링 채널</h1>
+  <p class="sub">금융시장 가격으로 읽은 AI 생산성 기대 | Blumenfeld 외 (2026) · NBER Working Paper No. 35793</p>
+  <div class="badges">
+    <span class="chip warn">NBER 워킹페이퍼 · 동료심사 전</span>
+    <span class="chip warn">시장 기대 현재가치 · 실현된 생산성 아님</span>
+    <span class="chip">분석 기간 2022년 11월~2026년 중반</span>
+  </div>
+  <p class="lead">과거 실적이 아니라 시장이 내다보는 기대를 실시간으로 읽는 전망형 측정입니다. 시장은 AI로 인한 소프트웨어 엔지니어링 생산성 상승을 가격에 반영했습니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="2022년 11월부터 2025년 12월까지 AI는 시장이 평가하는 소프트웨어 엔지니어링 생산성의 기대 현재가치를 영구적 32.6% 생산성 상승에 해당하는 만큼 높였다"><span class="big s1">32.6%</span><span class="cap">소프트웨어 엔지니어링 생산성의 영구적 상승에 해당하는 시장 기대 (2022년 11월~2025년 12월)</span></div>
+    <div class="tile" tabindex="0" data-tip="이에 대응하는 GDP 수준 효과는 기본 추정 3.6%, 소프트웨어 생산성이 연구개발 생산성까지 높이는 경우 6.5%"><span class="big s2">3.6% / 6.5%</span><span class="cap">대응하는 GDP 수준 효과 (기본 추정 / 연구개발 생산성 파급 포함)</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>연구 설계</h2>
+  <p class="lead">AI가 소프트웨어 엔지니어링 생산성을 통해 거시경제에 미치는 영향을 금융시장 정보로 측정했습니다. 소프트웨어 엔지니어링은 생성형 AI 노출이 크고 실제 도입이 빠르게 관찰되는 부문이라 전달 경로로 주목했습니다.</p>
+  <div class="chips">
+    <span class="chip">자료: 금융시장 가격 (주가)</span><span class="chip">전망형 측정, 실시간 갱신 가능</span>
+    <span class="chip">기본 모형과 연구개발 파급 확장 모형 병기</span><span class="chip">분석 대상 기업 수: 글에 미제시</span>
+  </div>
+  <h3>왜 금융시장인가</h3>
+  <p class="lead">AI의 거시 효과 추정은 크게 엇갈립니다. 쟁점은 측정 시점입니다. 접근을 눌러 비교해 보세요.</p>
+  <div class="seg" id="seg-why" role="group" aria-label="측정 접근 선택">
+    <button type="button" data-v="task" aria-pressed="true">과업 기반 하향식 계산</button><button type="button" data-v="back" aria-pressed="false">후향 지표</button><button type="button" data-v="fore" aria-pressed="false">전망</button><button type="button" data-v="mkt" aria-pressed="false">금융시장 가격 (이 연구)</button>
+  </div>
+  <div class="panel" id="why-panel" aria-live="polite"></div>
+  <p class="ttl">추정 절차. 단계를 눌러 설명을 확인하세요.</p>
+  <div class="flow" id="flow" role="group" aria-label="추정 단계 선택">
+    <button type="button" class="step" data-v="0" aria-pressed="true"><b>1. AI 주가 지수 구성</b></button>
+    <button type="button" class="step" data-v="1" aria-pressed="false"><b>2. 기업별 민감도 추정</b></button>
+    <button type="button" class="step" data-v="2" aria-pressed="false"><b>3. 인건비 비중과의 횡단면 관계</b></button>
+    <button type="button" class="step" data-v="3" aria-pressed="false"><b>4. 구조모형으로 생산성 환산</b></button>
+    <button type="button" class="step" data-v="4" aria-pressed="false"><b>5. GDP 수준 효과로 연결</b></button>
+  </div>
+  <div class="panel" id="flow-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>핵심 결과</h2>
+  <h3>GDP 수준 효과: 모형에 따라 달라짐</h3>
+  <p class="lead">영구적 32.6% 생산성 상승에 대응하는 GDP 수준 효과입니다. 모형을 바꿔 보세요.</p>
+  <div class="seg" id="seg-model" role="group" aria-label="모형 선택">
+    <button type="button" data-v="base" aria-pressed="true">기본 추정</button><button type="button" data-v="rd" aria-pressed="false">연구개발 생산성 파급 포함</button><button type="button" data-v="both" aria-pressed="false">함께 보기</button>
+  </div>
+  <p class="ttl">GDP 수준 효과 (%, 막대 축 0~10%). 막대에 마우스를 올리면 출처 문장이 나옵니다</p>
+  <div class="bars" id="gdp-bars" aria-live="polite"></div>
+  <p class="note" id="gdp-note"></p>
+  <h3>시계열 경로</h3>
+  <p class="lead">시장 데이터로 실시간 갱신이 가능해 2022년 11월부터 2026년 중반까지의 경로를 제시합니다. 시점을 눌러 보세요.</p>
+  <div class="tl" id="tl" role="group" aria-label="시점 선택">
+    <button type="button" class="step" data-v="0" aria-pressed="false"><span class="when">2022년 11월</span><span class="val na">측정 시작점</span></button>
+    <button type="button" class="step" data-v="1" aria-pressed="true"><span class="when">2025년 12월까지</span><span class="val">32.6%</span></button>
+    <button type="button" class="step" data-v="2" aria-pressed="false"><span class="when">2026년 중반까지</span><span class="val">두 배 이상</span></button>
+  </div>
+  <div class="panel" id="tl-panel" aria-live="polite"></div>
+  <p class="note">2026년 중반 효과의 구체적 수치와 그 시점의 GDP 수준 효과는 글에 제시되지 않았습니다. 그래서 막대 비교 대신 서술로만 표시합니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>해석: 기대와 실현은 다르다</h2>
+  <div class="two">
+    <div class="panel"><h3>측정의 성격</h3><ul>
+      <li>이 연구가 보고하는 것은 실현된 생산성이 아니라 시장이 가격에 반영한 기대 생산성이며, 이 구분이 해석의 핵심</li>
+      <li>시장 기대는 정보를 빠르게 집계하지만 틀릴 수 있음</li>
+      <li>기대가 실현으로 이어질지는 별개의 검증이 필요</li>
+    </ul></div>
+    <div class="panel"><h3>이론적 함의</h3><ul>
+      <li>AI 효과가 특정 고노출 부문을 경로로 삼아 경제 전체로 전파되는 그림</li>
+      <li>소프트웨어 생산성이 연구개발 생산성을 높이는 파급이 있다면 효과가 증폭됨</li>
+      <li>부문 간 상호작용이 총량 효과의 크기를 가른다는 점을 보여줌</li>
+    </ul></div>
+  </div>
+  <p class="note">초기 경력 소프트웨어 업무 재정의 연구(Westby et al., 2026)가 노동 과업의 변화를 보였다면, 이 연구는 같은 부문을 거시 생산성 채널로 봅니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>시장은 생산성 상승을 가격에 반영했다</h3><span>2022년 11월~2025년 12월, 시장 기대는 소프트웨어 엔지니어링 생산성의 영구적 32.6% 상승에 해당하는 규모로 높아졌습니다.</span></div>
+    <div class="item"><h3>부문 간 파급이 총량 효과를 가른다</h3><span>GDP 수준 효과는 기본 추정 3.6%, 소프트웨어 생산성이 연구개발 생산성까지 높이는 경우 6.5%입니다.</span></div>
+    <div class="item"><h3>기대는 빠르게 커지고 있다</h3><span>2026년 중반까지 효과는 2025년 말 대비 두 배 이상 커졌고, 저자들은 코딩 에이전트의 빠른 진전을 배경으로 지목합니다.</span></div>
+    <div class="item"><h3>기대이지 실현이 아니다</h3><span>고용이나 임금이 아니라 생산성 기대를 측정했습니다. 소프트웨어 교육 확대나 축소의 처방은 이 자료에서 직접 나오지 않으며 검증되지 않은 적용입니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>한계와 후속 연구</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>시장 기반 측정은 기대 오류와 거품 가능성을 내포</li>
+      <li>횡단면 민감도의 인과적 해석에 식별 가정이 필요</li>
+      <li>모형 의존적 환산</li>
+      <li>NBER 워킹페이퍼로 동료심사를 거치지 않음</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>기대와 실현의 괴리 추적</li>
+      <li>다른 부문 경로의 동일 측정</li>
+      <li>시장 지수 구성의 강건성 검증</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Blumenfeld, A., Hazell, J., Lian, C., &amp; Schaab, A. (2026). <em>The macroeconomic effect of AI: Sizing the software engineering channel</em> (NBER Working Paper No. 35793). National Bureau of Economic Research. <a href="https://doi.org/10.3386/w35793">https://doi.org/10.3386/w35793</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; pressed one starts active */
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+/* horizontal bars on a 0-100 scale. rows: {l,v,hi? (range top),c?,t,show}; v===null means not stated */
+function bars(host,rows){host.innerHTML=rows.map(r=>{
+  let inner,val;
+  if(r.v===null){inner=`<div class="bna" tabindex="0" data-tip="${esc(r.t)}" aria-label="${esc(r.t)}">글에 미제시</div>`;val=`<div class="bval na">미제시</div>`}
+  else{const w=Math.max(0,Math.min(100,r.v));
+    inner=`<div class="bfill${r.hi?' lo':''}" tabindex="0" style="width:${w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t)}" aria-label="${esc(r.t)}"></div>`;
+    if(r.hi)inner+=`<div class="bext" style="width:${Math.min(100,r.hi)-w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t)}"></div>`;
+    val=`<div class="bval">${r.show}</div>`}
+  return `<div class="brow"><div class="blabel">${r.l}</div><div class="btrack">${inner}</div>${val}</div>`}).join('')}
+
+const P1='var(--s1)',P2='var(--s2)';
+
+/* section 1: why markets */
+const why={
+ task:'<h3>과업 기반 하향식 계산</h3><p>작은 수치를 내놓습니다.</p>',
+ back:'<h3>후향 지표 (생산성 통계 등)</h3><p>도입 초기의 효과를 늦게 포착합니다.</p>',
+ fore:'<h3>전망</h3><p>일부 전망은 매우 큰 성장을 예상하지만, 근거 없는 기대에 흔들릴 수 있습니다.</p>',
+ mkt:'<h3>금융시장 가격 (이 연구)</h3><p>주가는 미래 이익의 현재가치를 반영합니다. AI 지수에 대한 기업별 주가 민감도와 소프트웨어 인건비 비중의 관계에서 시장이 내재적으로 평가하는 생산성 효과를 읽어냅니다.</p>'
+};
+seg('seg-why',k=>{$('#why-panel').innerHTML=why[k]});
+
+/* method flow */
+const flowTxt=[
+ '<h3>1. AI 주가 지수 구성</h3><p>저자들은 AI 주가 지수를 구성합니다. 지수의 구체적 구성 종목은 글에 미제시.</p>',
+ '<h3>2. 기업별 민감도 추정</h3><p>각 기업 주가수익률의 AI 지수에 대한 민감도를 추정합니다.</p>',
+ '<h3>3. 인건비 비중과의 횡단면 관계</h3><p>민감도가 기업의 소프트웨어 엔지니어링 인건비 비중에 따라 어떻게 달라지는지를 횡단면으로 추정합니다.</p>',
+ '<h3>4. 구조모형으로 생산성 환산</h3><p>이 횡단면 관계를 구조모형에 대응시켜 소프트웨어 엔지니어링 생산성 상승분으로 환산합니다.</p>',
+ '<h3>5. GDP 수준 효과로 연결</h3><p>생산성 효과를 GDP 수준 효과로 연결합니다. 기본 모형과 연구개발 생산성 파급을 포함한 확장 모형을 병기합니다.</p>'
+];
+(function(){const bs=$$('#flow button');const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('#flow-panel').innerHTML=flowTxt[+b.dataset.v]};
+ bs.forEach(b=>b.addEventListener('click',()=>set(b)));set(bs[0]);})();
+
+/* section 2: GDP level effect; bar scale 0-10 mapped to 0-100% width */
+const G={
+ base:{l:'기본 추정',v:3.6,c:P1,t:'GDP 수준 효과는 기본 추정에서 3.6%'},
+ rd:{l:'연구개발 생산성 파급 포함 <small>확장 모형</small>',v:6.5,c:P2,t:'소프트웨어 생산성 향상이 연구개발 생산성도 높이는 경우 6.5%'}
+};
+const gNote={
+ base:'기본 모형의 추정치입니다. 2022년 11월~2025년 12월의 영구적 32.6% 생산성 상승에 대응합니다.',
+ rd:'소프트웨어 생산성 향상이 연구개발 생산성도 높이는 경우의 추정치입니다. 부문 간 파급이 있으면 효과가 증폭됩니다.',
+ both:'두 수치 모두 실현된 GDP가 아니라 시장 기대에 근거한 모형 기반 환산입니다. 신뢰구간 등 불확실성 범위는 글에 미제시.'
+};
+seg('seg-model',k=>{const rows=(k==='both'?[G.base,G.rd]:[G[k]]).map(r=>({l:r.l,v:r.v*10,c:r.c,show:r.v+'%',t:r.t}));
+ bars($('#gdp-bars'),rows);$('#gdp-note').textContent=gNote[k]});
+
+/* timeline */
+const tlTxt=[
+ '<h3>2022년 11월</h3><p>분석 기간의 시작점입니다. 이 시점부터 시장 기대의 변화를 추적합니다.</p>',
+ '<h3>2022년 11월~2025년 12월</h3><p>AI는 소프트웨어 엔지니어링 생산성의 시장 기대 현재가치를 영구적 32.6% 상승에 해당하는 규모로 높였습니다. 이에 대응하는 GDP 수준 효과는 기본 추정 3.6%, 연구개발 파급 포함 시 6.5%입니다.</p>',
+ '<h3>2026년 중반까지</h3><p>효과는 2025년 말 대비 두 배 이상 확대되었습니다. 저자들은 코딩 에이전트의 빠른 진전을 배경으로 지목합니다.</p><p class="cap">구체적 수치: 글에 미제시</p>'
+];
+(function(){const bs=$$('#tl button');const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('#tl-panel').innerHTML=tlTxt[+b.dataset.v]};
+ bs.forEach(b=>b.addEventListener('click',()=>set(b)));set(bs.find(b=>b.getAttribute('aria-pressed')==='true'));})();
+
+/* reading cautions */
+const read={
+ yes:'<ul><li>시장이 가격에 반영한 소프트웨어 엔지니어링 생산성의 기대 현재가치</li><li>그 기대를 구조모형으로 환산한 GDP 수준 효과 (기본 추정과 연구개발 파급 확장 모형)</li><li>2022년 11월부터 2026년 중반까지 시장 기대의 시계열 경로</li><li>부문 간 파급이 있으면 총량 효과가 증폭된다는 점</li></ul>',
+ no:'<ul><li>실현된 생산성. 시장이 가격에 반영한 기대 생산성임</li><li>고용이나 임금의 변화. 생산성 기대를 측정함</li><li>소프트웨어 교육 확대나 축소의 처방. 이 자료에서 직접 나오지 않는 검증되지 않은 적용임</li><li>투자 판단의 근거. 이 연구의 목적 밖임</li><li>동료심사를 거친 결과. NBER 워킹페이퍼임</li></ul>'
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
