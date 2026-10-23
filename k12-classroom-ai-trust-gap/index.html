@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>신뢰 격차에 주의하라: K-12 교실 AI를 둘러싼 교사-학생 시각</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,210px) 1fr 84px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.blabel small{display:block;font-size:12px;color:var(--muted)}
+.btrack{position:relative;height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bfill.lo{border-radius:0}
+.bext{height:100%;background:repeating-linear-gradient(45deg,var(--c) 0 4px,transparent 4px 8px);border:1px solid var(--c);border-left:0;border-radius:0 4px 4px 0;transform-origin:left;animation:grow .6s ease-out both}
+.bna{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+.bval.na{font-weight:500;font-size:12px;color:var(--muted)}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 76px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0;align-content:start}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}.big.s3{color:var(--s3)}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start;cursor:pointer;border:0;font-family:inherit;text-align:left}
+.step b{color:var(--fg);font-size:14px}
+.step[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:30px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px}
+.stack div.rest{background:var(--track);color:var(--muted);font-weight:500}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* participant dots: one dot per participant, counts as stated in the post */
+.dots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--c)}
+.ptile{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;text-align:center;min-width:0}
+/* relation diagram */
+.rel{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.node{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;font-weight:700;cursor:default}
+.node small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.node.ai{grid-column:1/-1;justify-self:center;min-width:200px;border-color:var(--s3);color:var(--s3)}
+.node.t{border-color:var(--s2)}.node.s{border-color:var(--s1)}
+.link{font-size:12px;color:var(--fg2);text-align:center;padding:6px 10px;border:1px dashed var(--line);border-radius:999px;cursor:default}
+.down{grid-column:1/-1;text-align:center;font-size:12.5px;color:var(--muted);cursor:default}
+.themes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+@media (max-width:540px){.rel{grid-template-columns:1fr}.link{justify-self:center}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>신뢰 격차에 주의하라: 교실 AI를 바라보는 교사와 학생의 엇갈린 시각</h1>
+  <p class="sub">K-12 교실 AI의 통제와 주체성 | Nagashima 외 (2026) · Proceedings of the ACM on Human-Computer Interaction (CSCW)</p>
+  <div class="badges">
+    <span class="chip">동료심사 학술지 게재</span>
+    <span class="chip">2026년 9월 23일 게재</span>
+    <span class="chip">독일 · 질적 연구</span>
+    <span class="chip">스토리보드 기반 가상 장면</span>
+  </div>
+  <p class="lead">같은 교실 AI를 두고 학생과 교사는 AI를 얼마나 신뢰할지, AI와 함께하는 학습의 사회·정서적 측면에서 어긋난 시각을 보였습니다. 그리고 그 시각은 AI 사용 밖에서 형성된 교사-학생 관계가 규정했습니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="독일의 학생 16명과 교사 15명을 대상으로 스토리보드 기반 스피드-데이팅 연구를 실시"><span class="big s1">16명</span><span class="cap">참여 학생 (독일)</span></div>
+    <div class="tile" tabindex="0" data-tip="독일의 학생 16명과 교사 15명을 대상으로 스토리보드 기반 스피드-데이팅 연구를 실시"><span class="big s2">15명</span><span class="cap">참여 교사 (독일)</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>연구 설계</h2>
+  <p class="lead">교실 AI 연구는 대부분 학생이나 교사 한쪽의 관점을 다뤘습니다. 그러나 교실은 역할이 다른 여러 당사자가 상호작용하는 공간이고, 양쪽 시각의 정렬 여부가 도구의 실제 작동을 좌우합니다. 이 연구는 학생-AI 의사결정 통제에 대한 양쪽 시각이 얼마나 일치하는지 조사했습니다.</p>
+  <div class="two">
+    <div class="ptile" tabindex="0" data-tip="학생 16명 (점 하나가 참여자 한 명)"><h3>학생 16명</h3><div class="dots" role="img" aria-label="학생 16명"><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span><span class="dot" style="--c:var(--s1)"></span></div></div>
+    <div class="ptile" tabindex="0" data-tip="교사 15명 (점 하나가 참여자 한 명)"><h3>교사 15명</h3><div class="dots" role="img" aria-label="교사 15명"><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span><span class="dot" style="--c:var(--s2)"></span></div></div>
+  </div>
+  <div class="chips">
+    <span class="chip">국가: 독일</span><span class="chip">대상: K-12 교실 AI</span>
+    <span class="chip">초점: 학생-AI 의사결정 통제와 주체성</span><span class="chip">학생-교사 쌍의 수: 글에 미제시</span>
+  </div>
+  <p class="ttl">연구 절차. 단계를 눌러 내용을 확인하세요.</p>
+  <div class="layers" id="steps" role="group" aria-label="연구 단계 선택">
+    <button type="button" class="step" data-v="sb" aria-pressed="true"><b>1. 스토리보드</b>가상의 교실 AI 장면 제시</button>
+    <button type="button" class="step" data-v="sd" aria-pressed="false"><b>2. 스피드-데이팅</b>장면에 빠르게 반응하고 토론</button>
+    <button type="button" class="step" data-v="pair" aria-pressed="false"><b>3. 명시적 쌍 대응 분석</b>주제별 정렬·불일치 분류</button>
+  </div>
+  <div class="panel" id="step-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>핵심 결과</h2>
+  <p class="lead">주제를 눌러 학생과 교사의 시각이 어떻게 나타났는지 확인하세요.</p>
+  <div class="seg" id="seg-res" role="group" aria-label="결과 주제 선택">
+    <button type="button" data-v="trust" aria-pressed="true">AI 신뢰 수준</button><button type="button" data-v="se" aria-pressed="false">사회·정서적 측면</button><button type="button" data-v="rel" aria-pressed="false">교사-학생 관계</button>
+  </div>
+  <div class="list" id="res-list" aria-live="polite"></div>
+  <h3>관계가 시각을 규정하는 구조</h3>
+  <p class="ttl">요소에 마우스를 올리면 글의 해당 문장이 나옵니다</p>
+  <div class="rel">
+    <div class="node s" tabindex="0" data-tip="학생과 교사는 AI를 얼마나 신뢰할지, AI와 함께하는 학습의 사회·정서적 측면 등 핵심 주제에서 어긋난 시각을 보임">학생<small>AI에 대한 시각</small></div>
+    <div class="link" tabindex="0" data-tip="AI 사용 밖에서 형성된 교사-학생 관계가 각자의 시각과 상호작용을 규정">AI 사용 밖에서 형성된 관계</div>
+    <div class="node t" tabindex="0" data-tip="학생과 교사는 AI를 얼마나 신뢰할지, AI와 함께하는 학습의 사회·정서적 측면 등 핵심 주제에서 어긋난 시각을 보임">교사<small>AI에 대한 시각</small></div>
+    <div class="down" tabindex="0" data-tip="교사-학생-AI 상호작용의 선호가 당사자 관계에 따라 동적으로 달라짐">관계에 따라 동적으로 달라지는 상호작용 선호</div>
+    <div class="node ai" tabindex="0" data-tip="통제와 주체성(agency)의 배분은 교실 AI 설계의 핵심 축">교실 AI<small>통제와 주체성의 배분</small></div>
+  </div>
+  <p class="note">어느 쪽이 AI를 더 또는 덜 신뢰하는지 등 학생과 교사 각각의 구체적 입장, 그리고 "등"으로 묶인 그 밖의 주제는 글에 제시되지 않았습니다. 저자들은 어긋남의 원인 후보와 관점 격차를 메우는 전략도 논의하지만, 그 구체적 내용은 글에 미제시입니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>해석: 기술 수용은 관계 속의 협상</h2>
+  <div class="seg" id="seg-int" role="group" aria-label="해석 관점 선택">
+    <button type="button" data-v="msg" aria-pressed="true">핵심 메시지</button><button type="button" data-v="theory" aria-pressed="false">이론적 의의</button><button type="button" data-v="apply" aria-pressed="false">적용</button>
+  </div>
+  <div class="panel" id="int-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>1. 한쪽 관점만으로는 부족함</h3><span>학생과 교사가 같은 도구를 다르게 신뢰하고 다르게 쓰길 원한다면, 한쪽만 대상으로 한 설계와 도입은 현장에서 어긋납니다.</span></div>
+    <div class="item"><h3>2. 어긋남의 핵심은 신뢰와 사회·정서적 측면</h3><span>학생과 교사는 AI에 대한 신뢰 수준, AI와 함께하는 학습의 사회·정서적 측면에서 체계적으로 어긋났습니다.</span></div>
+    <div class="item"><h3>3. 기술보다 관계의 맥락</h3><span>AI 사용 이전의 교사-학생 관계가 AI에 대한 견해와 상호작용 방식을 형성했습니다. 교실 AI 설계는 이해관계자 간 관계의 맥락 안에서 이루어져야 한다는 것이 저자들의 논지입니다.</span></div>
+    <div class="item"><h3>4. 참여적 설계는 검증 전의 제안</h3><span>도입 전에 학생과 교사의 기대를 함께 조사하는 참여적 설계 절차는 저자들이 제안하는 방향이며, 그 효과는 아직 검증되지 않았습니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>한계와 후속 질문</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>작은 표본 (학생 16명, 교사 15명)</li>
+      <li>한 국가(독일)에 국한</li>
+      <li>스토리보드 기반의 가상 장면이라 실제 배치된 시스템에서의 행동과 다를 수 있음</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>실제 배치 환경에서의 관찰</li>
+      <li>더 큰 다국가 표본</li>
+      <li>정량적 측정과의 결합</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Nagashima, T., Siegrist, L. K., Scholz, N., Sato, S., &amp; Vincoli, M. (2026). Mind the trust gap: Identifying (mis)alignments in teacher-student views toward control and agency in K-12 classroom AI. <em>Proceedings of the ACM on Human-Computer Interaction, 10</em>(CSCW), Article CSCW124. <a href="https://doi.org/10.1145/3816972">https://doi.org/10.1145/3816972</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; pressed one starts active */
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+/* horizontal bars on a 0-100 scale. rows: {l,v,hi? (range top),c?,t,show}; v===null means not stated */
+function bars(host,rows){host.innerHTML=rows.map(r=>{
+  let inner,val;
+  if(r.v===null){inner=`<div class="bna" tabindex="0" data-tip="${esc(r.t)}" aria-label="${esc(r.t)}">글에 미제시</div>`;val=`<div class="bval na">미제시</div>`}
+  else{const w=Math.max(0,Math.min(100,r.v));
+    inner=`<div class="bfill${r.hi?' lo':''}" tabindex="0" style="width:${w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t)}" aria-label="${esc(r.t)}"></div>`;
+    if(r.hi)inner+=`<div class="bext" style="width:${Math.min(100,r.hi)-w}%;--c:${r.c||'var(--s1)'}" data-tip="${esc(r.t)}"></div>`;
+    val=`<div class="bval">${r.show}</div>`}
+  return `<div class="brow"><div class="blabel">${r.l}</div><div class="btrack">${inner}</div>${val}</div>`}).join('')}
+
+const P1='var(--s1)',P2='var(--s2)',P3='var(--s3)',PM='var(--muted)';
+
+
+/* section 1: study steps */
+const steps={
+ sb:'<h3>스토리보드</h3><p>가상의 교실 AI 장면을 스토리보드로 제시했습니다.</p><p class="cap">실제 배치된 시스템이 아닌 가상 장면이라는 점은 한계로 이어집니다.</p>',
+ sd:'<h3>스피드-데이팅</h3><p>참여자들이 가상의 교실 AI 장면에 대해 빠르게 반응하고 토론하게 했습니다. 독일의 학생 16명, 교사 15명이 참여했습니다.</p>',
+ pair:'<h3>명시적 쌍 대응 분석</h3><p>학생-교사 쌍을 명시적으로 대응시켜 시각의 정렬·불일치를 주제별로 분류하는 질적 절차입니다.</p><p class="cap">쌍의 수와 쌍을 구성한 기준은 글에 제시되지 않았습니다.</p>'
+};
+(function(){const bs=$$('#steps button');const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('#step-panel').innerHTML=steps[b.dataset.v]};
+ bs.forEach(b=>b.addEventListener('click',()=>set(b)));set(bs[0]);})();
+
+/* section 2: results by theme */
+const res={
+ trust:[['AI를 얼마나 신뢰할지','bad','어긋남','AI에 대한 신뢰 수준에서 학생과 교사의 시각이 체계적으로 어긋났습니다.'],['구체적 방향','neutral','글에 미제시','어느 쪽이 더 신뢰하는지 등 양쪽의 구체적 입장은 글에 제시되지 않았습니다.']],
+ se:[['AI와 함께하는 학습의 사회·정서적 측면','bad','어긋남','AI와 함께하는 학습의 사회·정서적 측면에서 학생과 교사의 시각이 체계적으로 어긋났습니다.'],['구체적 내용','neutral','글에 미제시','사회·정서적 측면에서 각자가 어떤 시각을 보였는지는 글에 제시되지 않았습니다.']],
+ rel:[['AI 사용 이전의 교사-학생 관계','warn','시각을 형성','AI 사용 밖에서 형성된 교사-학생 관계가 AI에 대한 견해와 상호작용 방식을 형성하는 것으로 나타났습니다.'],['상호작용 선호','warn','관계에 따라 변함','저자들은 교사-학생-AI 상호작용의 선호가 당사자 관계에 따라 동적으로 달라짐을 강조합니다.']]
+};
+seg('seg-res',k=>{$('#res-list').innerHTML=res[k].map(x=>'<div class="item"><h3>'+x[0]+'</h3><span class="pill '+x[1]+'">'+x[2]+'</span><span>'+x[3]+'</span></div>').join('')});
+
+/* section 3: interpretation */
+const intp={
+ msg:'<h3>핵심 메시지</h3><ul><li>기술 수용은 개별 선호의 합이 아니라 관계 속의 협상</li><li>학생과 교사가 같은 도구를 다르게 신뢰하고 다르게 쓰길 원한다면, 한쪽만 대상으로 한 설계와 도입은 현장에서 어긋남</li></ul>',
+ theory:'<h3>이론적 의의</h3><ul><li>\'신뢰 격차\' 개념은 교실 AI의 효과 연구가 놓치던 변수를 제공</li><li>같은 도구라도 관계 맥락에 따라 받아들여지는 방식이 다르므로, 실험 효과의 외부 타당성을 해석할 때 관계 변수를 고려해야 함</li></ul>',
+ apply:'<h3>적용</h3><ul><li>교실 AI 도입 전에 학생과 교사의 기대를 함께 조사하는 참여적 설계 절차는 저자들이 제안하는 방향</li><li>그 효과는 아직 검증되지 않은 적용</li><li>한국의 AI 디지털교과서 같은 대규모 도입 정책에의 시사점도 직접 검증된 바 없음</li></ul>'
+};
+seg('seg-int',k=>{$('#int-panel').innerHTML=intp[k]});
+
+/* section 4: reading cautions */
+const read={
+ yes:'<ul><li>학생과 교사의 시각을 쌍으로 대응시켜 본 질적 분석 결과</li><li>AI 신뢰 수준과 AI와 함께하는 학습의 사회·정서적 측면에서 양쪽 시각이 어긋났다는 점</li><li>AI 사용 이전의 교사-학생 관계가 AI에 대한 견해와 상호작용 방식을 형성했다는 점</li></ul>',
+ no:'<ul><li>실제 배치된 시스템에서의 행동. 스토리보드 기반의 가상 장면에 대한 반응임</li><li>다른 국가나 더 큰 집단으로의 일반화. 독일의 학생 16명, 교사 15명의 작은 표본임</li><li>정량적 측정 결과. 질적 절차임</li><li>참여적 설계 절차의 효과. 아직 검증되지 않음</li><li>한국 AI 디지털교과서 정책에의 시사점. 직접 검증된 바 없음</li></ul>'
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
