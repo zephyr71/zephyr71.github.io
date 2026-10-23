@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI는 교사를 도울 수 있는가: 생성형 AI 사용과 AI 교육이 교사의 수업 준비에 미치는 효과</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,210px) 1fr 84px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.blabel small{display:block;font-size:12px;color:var(--muted)}
+.btrack{position:relative;height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bfill.lo{border-radius:0}
+.bext{height:100%;background:repeating-linear-gradient(45deg,var(--c) 0 4px,transparent 4px 8px);border:1px solid var(--c);border-left:0;border-radius:0 4px 4px 0;transform-origin:left;animation:grow .6s ease-out both}
+.bna{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+.bval.na{font-weight:500;font-size:12px;color:var(--muted)}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 76px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0;align-content:start}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}.big.s3{color:var(--s3)}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start;cursor:pointer;border:0;font-family:inherit;text-align:left}
+.step b{color:var(--fg);font-size:14px}
+.step[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:30px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px}
+.stack div.rest{background:var(--track);color:var(--muted);font-weight:500}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.arrow{font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>AI는 교사를 도울 수 있는가</h1>
+  <p class="sub">교사 204명 사전등록 무작위대조실험 | Appel, Fervers &amp; Piepenburg (2026) · Computers and Education Open</p>
+  <div class="badges">
+    <span class="chip">동료심사 학술지 게재 (2026년 10월)</span>
+    <span class="chip">사전등록 AEA RCT Registry 14952</span>
+    <span class="chip">무작위대조실험 · 세 집단</span>
+  </div>
+  <p class="lead">GenAI는 수업 준비의 질을 높이면서 시간도 줄였습니다. AI 교육은 질을 더 높이지는 못했지만 시간을 추가로 줄였습니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="GenAI는 수업 준비의 질을 높이고 준비 시간을 34% 줄였다."><span class="big s1">34%</span><span class="cap">GenAI 접근에 따른 준비 시간 감소 (질도 향상)</span></div>
+    <div class="tile" tabindex="0" data-tip="AI 교육은 질을 더 높이지 못했지만 준비 시간을 추가로 21% 줄였다."><span class="big s3">추가 21%</span><span class="cap">AI 교육에 따른 준비 시간 추가 감소 (질의 추가 향상 없음)</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>연구 설계</h2>
+  <p class="lead">사전등록 무작위대조실험으로 교사 204명을 세 집단에 배정했습니다. 집단을 눌러 조건을 확인하세요.</p>
+  <div class="chips">
+    <span class="chip">교사 204명</span><span class="chip">세 집단 무작위 배정</span><span class="chip">네 가지 보상 부여 수업 준비 과제</span>
+    <span class="chip">사용 도구: ChatGPT</span><span class="chip">집단별 인원: 글에 미제시</span>
+  </div>
+  <div class="groups" id="groups" role="group" aria-label="실험 집단 선택">
+    <button type="button" class="step" data-v="none" aria-pressed="true"><b>집단 1</b>ChatGPT 접근 없음</button>
+    <button type="button" class="step" data-v="gpt" aria-pressed="false"><b>집단 2</b>ChatGPT 접근</button>
+    <button type="button" class="step" data-v="train" aria-pressed="false"><b>집단 3</b>ChatGPT 접근 + AI 교육 수강</button>
+  </div>
+  <div class="panel" id="group-panel" aria-live="polite"></div>
+  <h3>네 가지 수업 준비 과제</h3>
+  <div class="tiles">
+    <div class="tile" tabindex="0" data-tip="과제 1: 도입 퀴즈 제작"><span class="cap">과제 1</span><b>도입 퀴즈 제작</b></div>
+    <div class="tile" tabindex="0" data-tip="과제 2: 강좌 메일 작성"><span class="cap">과제 2</span><b>강좌 메일 작성</b></div>
+    <div class="tile" tabindex="0" data-tip="과제 3: 교과서 연습문제 확장"><span class="cap">과제 3</span><b>교과서 연습문제 확장</b></div>
+    <div class="tile" tabindex="0" data-tip="과제 4: 본문·이전(transfer) 문제 만들기"><span class="cap">과제 4</span><b>본문·이전(transfer) 문제 만들기</b></div>
+  </div>
+  <div class="two">
+    <div class="panel"><h3>결과 변수</h3><ul>
+      <li>준비물의 질: 가중 기준표에 따른 블라인드 전문가 평가</li>
+      <li>총 준비 시간</li>
+    </ul></div>
+    <div class="panel"><h3>추가 분석</h3><ul>
+      <li>프롬프트 로그 분석으로 사용 전략의 차이를 추적</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>핵심 결과</h2>
+  <p class="lead">비교를 바꿔 질과 시간에 나타난 효과를 확인하세요.</p>
+  <div class="seg" id="seg-cmp" role="group" aria-label="비교 선택">
+    <button type="button" data-v="gpt" aria-pressed="true">GenAI 접근의 효과</button><button type="button" data-v="train" aria-pressed="false">AI 교육의 추가 효과</button>
+  </div>
+  <div class="cmp" id="cmp-list" aria-live="polite"></div>
+  <p class="note" id="cmp-note"></p>
+  <h3>프롬프트 전략: 같은 질, 다른 경로</h3>
+  <p class="lead">프롬프트 기록 분석에서 두 집단은 다른 전략을 썼습니다.</p>
+  <div class="seg" id="seg-prompt" role="group" aria-label="교사 집단 선택">
+    <button type="button" data-v="yes" aria-pressed="true">AI 교육 이수 교사</button><button type="button" data-v="no" aria-pressed="false">AI 교육 미이수 교사</button>
+  </div>
+  <div class="panel" id="prompt-panel" aria-live="polite"></div>
+  <p class="note">두 전략의 최종 산출물 질은 동일했습니다. 프롬프트 길이, 수정 횟수 등의 구체적 수치는 글에 제시되지 않았습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>해석</h2>
+  <div class="two">
+    <div class="panel"><h3>질과 시간의 이중 배당</h3><ul>
+      <li>교사의 수업 준비에서 GenAI가 질과 시간 모두에서 이득을 냄을 실험으로 보임</li>
+      <li>드문 이중 배당 사례이며, 효과 크기(시간 34%)가 실무적으로 큼</li>
+      <li>배경: 수업 외 준비는 교사 업무 부담에서 비중이 크고 소진의 주요 원인으로 꼽힘</li>
+    </ul></div>
+    <div class="panel"><h3>AI 교육의 역할</h3><ul>
+      <li>AI 교육은 산출물의 질을 바꾸지 않고 시간만 줄임</li>
+      <li>교육의 가치는 더 좋은 결과가 아니라 더 빠른 도달에 있었음</li>
+      <li>경로: 길고 상세한 초기 프롬프트가 반복 수정을 대체</li>
+    </ul></div>
+  </div>
+  <p class="note">학생 대상 AI 튜터링 연구와 달리 이 연구는 교사의 생산성을 봅니다. 교사 측 효율화가 학생 학습으로 이어지는지는 별개의 문제로 남습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>GenAI는 질과 시간 모두에 도움</h3><span>ChatGPT 접근은 준비물의 질을 높이고 준비 시간을 34% 줄였습니다.</span></div>
+    <div class="item"><h3>AI 교육의 가치는 속도</h3><span>AI 교육은 질의 추가 향상 없이 준비 시간을 추가로 21% 줄였습니다.</span></div>
+    <div class="item"><h3>프롬프트 전략은 달라도 질은 같음</h3><span>교육 이수 교사는 길고 상세한 프롬프트로 수정이 적었고, 미이수 교사는 짧은 프롬프트를 여러 번 다듬었습니다.</span></div>
+    <div class="item"><h3>교사 AI 교육의 목표는 부담 경감</h3><span>교육 프로그램의 목표를 '질 향상'이 아니라 '부담 경감'으로 설정해야 한다는 시사는 이 실험이 직접 지지합니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>한계와 후속 질문</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>일회성 과제</li>
+      <li>독일 표본</li>
+      <li>ChatGPT 특정 도구</li>
+      <li>실제 수업과 학생 결과의 부재</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>실제 학기 중 사용</li>
+      <li>학생 결과 연결</li>
+      <li>도구·과목 이질성</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Appel, P., Fervers, L., &amp; Piepenburg, J. G. (2026). Can AI help teachers? Experimental evidence on the effects of generative AI use and AI training on teachers' lesson preparation. <em>Computers and Education Open</em>. <a href="https://doi.org/10.1016/j.caeo.2026.100427">https://doi.org/10.1016/j.caeo.2026.100427</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+
+/* section 1: groups */
+const grp={
+ none:'<h3>집단 1: ChatGPT 접근 없음</h3><ul><li>ChatGPT 없이 네 가지 수업 준비 과제를 수행</li></ul>',
+ gpt:'<h3>집단 2: ChatGPT 접근</h3><ul><li>ChatGPT에 접근해 네 가지 과제를 수행</li><li>결과: 준비물의 질 향상, 준비 시간 34% 감소 (GenAI 접근의 효과)</li><li>AI 교육을 수강하지 않음</li></ul>',
+ train:'<h3>집단 3: ChatGPT 접근 + AI 교육 수강</h3><ul><li>ChatGPT 접근에 더해 AI 교육을 수강</li><li>결과: 질의 추가 향상 없음, 준비 시간 추가로 21% 감소</li><li>프롬프트: 길고 상세한 프롬프트로 수정이 적음</li><li>AI 교육의 내용과 분량: 글에 미제시</li></ul>'
+};
+seg('groups',k=>{$('#group-panel').innerHTML=grp[k]});
+
+/* section 2: comparisons (no proportional bars: only stated values shown as text) */
+const cmp={
+ gpt:{rows:[
+   ['준비물의 질','good','향상','GenAI는 수업 준비의 질을 높였습니다. 효과 크기 수치는 글에 미제시.','GenAI 접근은 준비물의 질을 높였다.'],
+   ['준비 시간','good','34% 감소','GenAI 접근은 준비 시간을 34% 줄였습니다.','GenAI는 수업 준비의 질을 높이고 준비 시간을 34% 줄였다.']],
+  note:'질은 가중 기준에 따른 블라인드 전문가 평가로 측정했습니다. 34%가 어느 집단 대비 감소율인지는 글에 명시적으로 제시되지 않았습니다.'},
+ train:{rows:[
+   ['준비물의 질','neutral','추가 향상 없음','AI 교육은 질을 더 높이지 못했습니다.','AI 교육은 질의 추가 향상 없이 준비 시간을 추가로 21% 줄였다.'],
+   ['준비 시간','good','추가 21% 감소','AI 교육은 준비 시간을 추가로 21% 줄였습니다.','AI 교육은 질을 더 높이지 못했지만 준비 시간을 추가로 21% 줄였다.']],
+  note:'21%가 어느 집단 대비 감소율인지는 글에 명시적으로 제시되지 않았습니다.'}
+};
+seg('seg-cmp',k=>{const m=cmp[k];$('#cmp-list').innerHTML=m.rows.map(x=>'<div class="item" tabindex="0" data-tip="'+esc(x[4])+'"><h3>'+x[0]+'</h3><span class="pill '+x[1]+'">'+x[2]+'</span><span>'+x[3]+'</span></div>').join('');$('#cmp-note').textContent=m.note});
+
+/* prompt strategy */
+const pr={
+ yes:'<h3>AI 교육 이수 교사</h3><ul><li>길고 상세한 프롬프트를 사용</li><li>사후 수정이 적음</li></ul><p class="cap">길고 상세한 초기 프롬프트가 반복 수정을 대체했습니다.</p>',
+ no:'<h3>AI 교육 미이수 교사</h3><ul><li>짧은 프롬프트를 사용</li><li>여러 번 반복해 다듬음</li></ul><p class="cap">최종 산출물 질은 교육 이수 교사와 동일했습니다.</p>'
+};
+seg('seg-prompt',k=>{$('#prompt-panel').innerHTML=pr[k]});
+
+/* section 4: reading cautions */
+const read={
+ yes:'<ul><li>통제된 실험 과제에서 GenAI 접근이 수업 준비물의 질을 높이고 준비 시간을 줄였다는 점</li><li>AI 교육이 질은 바꾸지 않고 준비 시간만 추가로 줄였다는 점</li><li>교육 이수 여부에 따라 프롬프트 전략이 달랐지만 산출물 질은 같았다는 점</li><li>교사 AI 교육 프로그램의 목표를 부담 경감으로 설정해야 한다는 시사</li></ul>',
+ no:'<ul><li>절감된 시간이 어디에 쓰이는지</li><li>학생 학습 결과로 전이되는지. 실제 수업과 학생 결과는 측정되지 않음</li><li>장기 사용의 효과. 일회성 과제임</li><li>다른 국가, 다른 도구, 다른 과목에서도 같은지. 독일 표본, ChatGPT 특정 도구임</li></ul><p class="cap">절감된 시간의 사용처, 학생 학습 결과로의 전이, 장기 사용의 효과는 이 연구 밖이며 검증되지 않은 적용이라고 글은 밝힙니다.</p>'
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
