@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>중국의 AI 노동수요와 임금: 평균 뒤에서 갈린 분포</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: single-column stack of glass cards on a deep-navy gradient, matching the blog's existing infographics. */
+:root{
+  --bg:#0b1030;--bg2:#17205a;--card:rgba(255,255,255,.06);--card2:rgba(255,255,255,.10);--line:rgba(255,255,255,.15);
+  --fg:#eef1ff;--fg2:#b6bee3;--muted:#8d97c7;--accent:#5cc8ff;--on-accent:#0b1030;
+  --s1:#30a0d0;--s2:#d27620;--s3:#9a7df0;
+  --good:#3ddc97;--warn:#ffd166;--bad:#ff8a8a;--track:rgba(255,255,255,.10);
+  --f-body:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+    --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+    --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+    --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f2f5ff;--bg2:#e1e8ff;--card:#ffffff;--card2:#eef2ff;--line:#cfd7f3;
+  --fg:#131a40;--fg2:#444d7d;--muted:#5f6a96;--accent:#1565c0;--on-accent:#ffffff;
+  --s1:#0a78b5;--s2:#b85a00;--s3:#6d4fd1;
+  --good:#12805a;--warn:#8a5a00;--bad:#c62f2f;--track:rgba(19,26,64,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 100%);color:var(--fg);font:400 15px/1.65 var(--f-body);word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:880px;margin-inline:auto;padding-inline:16px;padding-block:28px 44px;display:grid;gap:18px}
+header{display:grid;gap:10px;text-align:center;padding-block:8px 4px}
+h1{margin:0;font-size:clamp(26px,5.6vw,40px);line-height:1.2;font-weight:900;color:var(--accent);text-wrap:balance}
+.sub{margin:0;color:var(--fg2);font-size:14px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px;min-width:0}
+h2{margin:0;font-size:18px;line-height:1.35;font-weight:700;display:flex;gap:10px;align-items:center}
+h3{margin:0;font-size:15px;font-weight:700}
+p{margin:0}
+.ico{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.lead{color:var(--fg2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--fg2)}
+.chip.warn{color:var(--warn);border-color:currentColor;background:transparent}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--track);border-radius:12px;justify-self:start}
+.seg button{font:inherit;font-size:13px;font-weight:500;color:var(--fg2);background:transparent;border:0;border-radius:9px;padding:7px 14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:700}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--fg2)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.ttl{font-size:13px;color:var(--muted)}
+/* bars */
+.bars{display:grid;gap:12px}
+.brow{display:grid;grid-template-columns:minmax(110px,210px) 1fr 84px;gap:6px 12px;align-items:center}
+.blabel{font-size:14px;color:var(--fg)}
+.blabel small{display:block;font-size:12px;color:var(--muted)}
+.btrack{position:relative;height:14px;background:var(--track);border-radius:4px;display:flex;align-items:center}
+.bfill{height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--c,var(--s1));transform-origin:left;animation:grow .6s ease-out both;cursor:default}
+.bfill.lo{border-radius:0}
+.bext{height:100%;background:repeating-linear-gradient(45deg,var(--c) 0 4px,transparent 4px 8px);border:1px solid var(--c);border-left:0;border-radius:0 4px 4px 0;transform-origin:left;animation:grow .6s ease-out both}
+.bna{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)}
+.bval{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;font-size:14px}
+.bval.na{font-weight:500;font-size:12px;color:var(--muted)}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (max-width:540px){
+  .brow{grid-template-columns:1fr 76px}
+  .brow .blabel{grid-column:1/-1}
+}
+/* tiles, notes, pills */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card2);border-radius:12px;padding:14px;text-align:center;display:grid;gap:2px;min-width:0;align-content:start}
+.big{font-size:28px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+.big.s1{color:var(--s1)}.big.s2{color:var(--s2)}.big.s3{color:var(--s3)}
+.cap{font-size:12.5px;color:var(--muted)}
+.hero-tiles{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.hero-tiles .big{font-size:40px}
+.note{font-size:13.5px;color:var(--fg2);background:var(--card2);border-radius:12px;padding:12px 14px}
+.pill{display:inline-flex;gap:5px;align-items:center;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)}.pill.neutral{color:var(--muted)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.step{background:var(--card2);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--fg2);display:grid;gap:4px;min-width:0;align-content:start;cursor:pointer;border:0;font-family:inherit;text-align:left}
+.step b{color:var(--fg);font-size:14px}
+.step[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.panel{background:var(--card2);border-radius:12px;padding:14px;display:grid;gap:8px;min-width:0;align-content:start}
+.panel ul,.panel ol{margin:0;padding-left:18px;display:grid;gap:6px;font-size:14px;color:var(--fg2)}
+.list{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;background:var(--card2);border-radius:12px;padding:10px 14px}
+.item span:not(.pill){font-size:13px;color:var(--fg2);grid-column:1/-1}
+.stack{display:flex;gap:2px;height:30px}
+.stack div{background:var(--c);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-accent);overflow:hidden;min-width:0;border-radius:4px}
+.stack div.rest{background:var(--track);color:var(--muted);font-weight:500}
+.foot{text-align:center;color:var(--muted);font-size:12.5px;display:grid;gap:4px;padding-top:6px}
+.foot a{color:var(--accent)}
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--bg);color:var(--fg);border:1px solid var(--line);padding:8px 10px;border-radius:8px;font-size:12.5px;line-height:1.5;max-width:260px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.hero-tiles .big{font-size:clamp(28px,6vw,38px)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>중국의 AI 노동수요와 임금: 평균 뒤에서 갈린 분포</h1>
+  <p class="sub">온라인 구인공고 160만 건과 China Family Panel Studies | Fang, Lin &amp; Liu (2026) · Journal of Productivity Analysis</p>
+  <div class="badges">
+    <span class="chip">동료심사 학술지 게재 논문 (2026년 9월)</span>
+    <span class="chip">IZA Discussion Paper No. 18740으로도 공개</span>
+    <span class="chip">중국 · 2016~2024년 구인공고</span>
+  </div>
+  <p class="lead">지역 AI 수요가 늘면 임금은 소폭 올랐습니다. 그러나 이득은 여성, 서부 성과 주요 AI 클러스터 도시, 인간-AI 보완 직업에 집중되었고 남성에게서는 측정 가능한 효과가 없었습니다.</p>
+  <div class="tiles hero-tiles">
+    <div class="tile" tabindex="0" data-tip="지역 AI 수요가 1단위(공고·기업·직무명 1,000건) 늘면 임금이 약 0.2~0.3% 상승"><span class="big s1">약 0.2~0.3%</span><span class="cap">지역 AI 수요 1단위 증가당 임금 상승 (전체)</span></div>
+    <div class="tile" tabindex="0" data-tip="여성은 단위당 약 0.5~0.7%의 더 큰 상승을 경험한 반면 남성은 측정 가능한 효과가 없었음"><span class="big s3">약 0.5~0.7%</span><span class="cap">여성의 단위당 임금 상승 (남성은 측정 가능한 효과 없음)</span></div>
+  </div>
+</header>
+
+<section class="card">
+  <h2><span class="ico">1</span>연구 설계</h2>
+  <p class="lead">온라인 구인공고로 도시-연도별 AI 노동수요를 구성하고, 전국 대표 미시자료의 개인 임금과 결합해 지역 AI 수요가 개인 임금에 미치는 영향을 추정했습니다.</p>
+  <div class="chips">
+    <span class="chip">구인공고 160만 건 (2016~2024년)</span><span class="chip">China Family Panel Studies (2016~2022)</span>
+    <span class="chip">도시-연도 단위 AI 수요 지표</span><span class="chip">고정효과 모형</span>
+    <span class="chip">개인 표본 크기: 글에 미제시</span>
+  </div>
+  <p class="ttl">분석 단계. 단계를 눌러 내용을 확인하세요.</p>
+  <div class="layers" id="steps" role="group" aria-label="분석 단계 선택">
+    <button type="button" class="step" data-v="demand" aria-pressed="true"><b>1. AI 수요 측정</b>구인공고 160만 건에서 도시-연도 지표 구성</button>
+    <button type="button" class="step" data-v="link" aria-pressed="false"><b>2. 미시자료 결합</b>CFPS 개인 임금과 지역 기준 결합</button>
+    <button type="button" class="step" data-v="model" aria-pressed="false"><b>3. 추정과 이질성</b>고정효과 모형, 성별·지역·직업 유형</button>
+  </div>
+  <div class="panel" id="step-panel" aria-live="polite"></div>
+  <h3>왜 노출이 아니라 수요인가</h3>
+  <div class="seg" id="seg-measure" role="group" aria-label="측정 방식 선택">
+    <button type="button" data-v="demand" aria-pressed="true">수요 기반 (이 연구)</button><button type="button" data-v="exposure" aria-pressed="false">노출도 기반 (대비 연구)</button>
+  </div>
+  <div class="panel" id="measure-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">2</span>핵심 결과: 누구에게 이득이 갔나</h2>
+  <p class="lead">보기를 바꿔 평균 효과와 그 뒤의 분포를 확인하세요.</p>
+  <div class="seg" id="seg-result" role="group" aria-label="결과 보기 선택">
+    <button type="button" data-v="gender" aria-pressed="true">성별</button><button type="button" data-v="region" aria-pressed="false">지역</button><button type="button" data-v="occ" aria-pressed="false">직업 유형</button>
+  </div>
+  <div id="result-host" aria-live="polite" style="display:grid;gap:12px"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">3</span>해석: 보완성 가설</h2>
+  <div class="two">
+    <div class="panel"><h3>세 가지 발견</h3><ol>
+      <li>중국에서 지역 AI 수요는 임금과 정(+)의 관계</li>
+      <li>이득은 여성, 역동적 지역, 인간-AI 보완 직업에 집중</li>
+      <li>같은 기술 확산이 집단에 따라 다른 방향으로 작용할 수 있음</li>
+    </ol></div>
+    <div class="panel"><h3>이론적 의미</h3><ul>
+      <li>AI가 모든 노동을 같은 방향으로 대체하는 것이 아니라, 대인·조정 과업이 중심인 직업에서는 생산성을 높이는 방식으로 작동한다는 해석</li>
+      <li>남성 효과 부재는 수요 파급이 자동적으로 전체 임금을 끌어올리지 않음을 보여줌</li>
+    </ul></div>
+  </div>
+  <p class="note">중국은 AI 도입 속도가 빠르면서 지역 간 발전 격차가 커, 기술 확산의 분배 효과를 검증하기에 적합한 환경입니다. 지역 AI 노동수요의 파급을 미시자료로 본 연구는 그동안 미국 중심이었습니다.</p>
+</section>
+
+<section class="card">
+  <h2><span class="ico">4</span>읽을 때 주의할 점</h2>
+  <div class="seg" id="seg-read" role="group" aria-label="보기 선택">
+    <button type="button" data-v="yes" aria-pressed="true">보여주는 것</button><button type="button" data-v="no" aria-pressed="false">보여주지 않는 것</button>
+  </div>
+  <div class="panel" id="read-panel" aria-live="polite"></div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">5</span>핵심 시사점</h2>
+  <div class="list">
+    <div class="item"><h3>평균은 작고, 분포는 갈린다</h3><span>AI 수요 1단위당 임금 상승은 전체 약 0.2~0.3%이지만, 여성은 약 0.5~0.7%, 남성은 측정 가능한 효과가 없었습니다.</span></div>
+    <div class="item"><h3>이득은 역동적 지역에 집중</h3><span>효과는 서부 성과 주요 AI 클러스터 도시에서 가장 컸습니다. 저자들은 보완적 생산요소와 디지털 인프라가 갖춰진 곳에서 파급이 크다고 해석합니다.</span></div>
+    <div class="item"><h3>대체보다 보완</h3><span>여성의 이득은 서비스 지향적·저숙련 직업, 즉 AI가 대인관계·조정 과업을 보완하는 직업에서 나타났습니다.</span></div>
+    <div class="item"><h3>정책 적용은 검증 전</h3><span>지역 균형 발전과 여성 노동시장 참여 정책의 참고 자료가 될 수 있지만, 어떤 정책이 격차를 줄이는지는 이 연구가 검증하지 않았고 다른 국가로의 일반화도 제한됩니다.</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2><span class="ico">6</span>한계와 후속 질문</h2>
+  <div class="two">
+    <div class="panel"><h3>한계</h3><ol>
+      <li>수요 지표가 공고 기반이라 실제 도입·고용과 괴리될 수 있음</li>
+      <li>도시 수준 충격(산업 정책, 인구 이동)의 동시성을 완전히 배제하기 어려움</li>
+      <li>성별 격차의 메커니즘이 직접 식별되지 않음</li>
+    </ol></div>
+    <div class="panel"><h3>후속 연구 방향</h3><ol>
+      <li>기업 실제 도입 자료와의 연계</li>
+      <li>메커니즘 분해</li>
+      <li>더 긴 추적 기간</li>
+    </ol></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div>Fang, T., Lin, C., &amp; Liu, Q. (2026). AI and labor market outcomes: Evidence from China. <em>Journal of Productivity Analysis, 65</em>(3), 1-26. <a href="https://doi.org/10.1007/s11123-026-00817-2">https://doi.org/10.1007/s11123-026-00817-2</a></div>
+  <div>인포그래픽 제작: donghunc.kr | AI 활용 블로그</div>
+</footer>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;moveTip(e)}
+function moveTip(e){const r=tip.getBoundingClientRect();let x=e.clientX+14,y=e.clientY+14;if(x+r.width>innerWidth-8)x=Math.max(8,innerWidth-r.width-8);if(y+r.height>innerHeight-8)y=Math.max(8,e.clientY-r.height-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t)showTip(e,esc(t.dataset.tip))});
+document.addEventListener('mousemove',e=>{if(!tip.hidden)moveTip(e)});
+document.addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.hidden=true});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showTip({clientX:r.left,clientY:r.bottom},esc(t.dataset.tip))}});
+document.addEventListener('focusout',()=>{tip.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true});
+/* segmented control: buttons carry data-v; pressed one starts active */
+function seg(id,cb){const el=document.getElementById(id);const bs=$$('button',el);
+  const set=b=>{bs.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));cb(b.dataset.v)};
+  bs.forEach(b=>b.addEventListener('click',()=>set(b)));
+  const first=bs.find(b=>b.getAttribute('aria-pressed')==='true')||bs[0];set(first);}
+/* range bars on a 0-1% axis. rows: {l,lo,hi,c,t,show}; lo===null means no measurable effect / not stated (text only, no bar) */
+const AX=1; /* axis max in percent */
+function bars(host,rows){host.innerHTML=rows.map(r=>{
+  let inner,val;
+  if(r.lo===null){inner=`<div class="bna" tabindex="0" data-tip="${esc(r.t)}" aria-label="${esc(r.t)}">${esc(r.na)}</div>`;val=`<div class="bval na">${esc(r.show)}</div>`}
+  else{const a=r.lo/AX*100,b=r.hi/AX*100;
+    inner=`<div class="bfill lo" tabindex="0" style="width:${a}%;--c:${r.c}" data-tip="${esc(r.t)}" aria-label="${esc(r.t)}"></div><div class="bext" style="width:${b-a}%;--c:${r.c}" data-tip="${esc(r.t)}"></div>`;
+    val=`<div class="bval">${r.show}</div>`}
+  return `<div class="brow"><div class="blabel">${r.l}</div><div class="btrack">${inner}</div>${val}</div>`}).join('')}
+
+const P1='var(--s1)',P2='var(--s2)',P3='var(--s3)';
+
+/* section 1: steps */
+const steps={
+ demand:`<h3>AI 노동수요 측정</h3><ul><li>2016~2024년 온라인 구인공고 160만 건 사용</li><li>AI 관련 공고·기업·직무명 수로 도시-연도 단위 AI 노동수요 지표를 구성</li><li>1단위 = 공고·기업·직무명 1,000건</li></ul>`,
+ link:`<h3>개인 미시자료와 결합</h3><ul><li>전국 대표 미시자료 China Family Panel Studies(2016~2022)의 개인 임금 자료</li><li>AI 수요 지표와 지역 기준으로 결합</li></ul>`,
+ model:`<h3>추정과 이질성 분석</h3><ul><li>고정효과 모형: 같은 개인·지역 내에서 AI 수요 변화와 임금 변화의 관계를 봄</li><li>이질성: 성별, 지역(서부 성, AI 클러스터 도시), 직업 유형</li></ul>`
+};
+seg('steps',k=>{$('#step-panel').innerHTML=steps[k]});
+
+/* measurement contrast */
+const measure={
+ demand:`<h3>구인공고 기반 AI 수요</h3><ul><li>미국 연구들이 개척한 방식으로, 직업 노출도 같은 잠재성 측정보다 기업의 실제 수요에 가까움</li><li>이 연구는 노출이 아닌 수요의 지역 변동을 보고, 평균 효과보다 누구에게 이득이 집중되는지를 물음</li><li>다만 수요 공고가 실제 고용과 임금으로 이어지는지는 별개의 문제</li></ul>`,
+ exposure:`<h3>노출도 기반 측정</h3><ul><li>직업 노출도는 잠재성 측정에 해당</li><li>노르웨이 연구(Hernæs &amp; Kostøl, 2026)는 노출도 순위의 고용 격차를 찾지 못함</li><li>이 연구의 결과는 그와 대비됨</li></ul>`
+};
+seg('seg-measure',k=>{$('#measure-panel').innerHTML=measure[k]});
+
+/* section 2: results */
+const result={
+ gender:()=>`<p class="ttl">AI 수요 1단위(공고·기업·직무명 1,000건) 증가당 임금 상승 (%). 막대 축 0~1%, 채움은 범위 하단, 빗금은 상단까지</p><div class="bars" id="g-bars"></div>
+  <div class="legend"><span><span class="sw" style="--c:var(--s1)"></span>전체</span><span><span class="sw" style="--c:var(--s3)"></span>여성</span><span><span class="sw" style="--c:var(--muted)"></span>남성: 측정 가능한 효과 없음 (막대 없음)</span></div>
+  <p class="note">글은 여성의 상승을 유의하다고 표현합니다. 계수, 표준오차, 유의수준 등 구체적 추정치는 글에 제시되지 않았습니다.</p>`,
+ region:()=>`<div class="two"><div class="panel" tabindex="0" data-tip="효과는 서부 성과 주요 AI 클러스터 도시에서 가장 컸다"><h3>효과가 가장 큰 곳</h3><ul><li>서부 성</li><li>주요 AI 클러스터 도시</li></ul></div>
+  <div class="panel"><h3>저자들의 해석</h3><ul><li>보완적 생산요소와 디지털 인프라가 갖춰진 곳에서 파급이 큼</li></ul></div></div>
+  <p class="note">지역별 효과 크기 수치와 클러스터 도시의 목록은 글에 미제시입니다.</p>`,
+ occ:()=>`<div class="two"><div class="panel" tabindex="0" data-tip="여성의 이득은 서비스 지향적이고 상대적으로 저숙련인 직업에 집중되었다"><h3>여성 이득이 집중된 직업</h3><ul><li>서비스 지향적 직업</li><li>상대적으로 저숙련인 직업</li></ul></div>
+  <div class="panel" tabindex="0" data-tip="AI가 대인관계·조정 과업을 보완하는 직업에서 나타났다"><h3>공통점</h3><ul><li>AI가 대인관계·조정 과업을 대체하기보다 보완하는 직업</li></ul></div></div>
+  <p class="note">직업 유형별 효과 크기 수치는 글에 미제시입니다.</p>`
+};
+seg('seg-result',k=>{$('#result-host').innerHTML=result[k]();
+  if(k==='gender')bars($('#g-bars'),[
+   {l:'전체',lo:0.2,hi:0.3,c:P1,show:'약 0.2~0.3%',t:'지역 AI 수요 1단위 증가 시 임금 약 0.2~0.3% 상승'},
+   {l:'여성',lo:0.5,hi:0.7,c:P3,show:'약 0.5~0.7%',t:'여성은 단위당 약 0.5~0.7%의 더 큰 상승'},
+   {l:'남성',lo:null,na:'측정 가능한 효과 없음',show:'효과 없음',t:'남성은 측정 가능한 효과가 없었다'}]);});
+
+/* section 4: reading cautions */
+const read={
+ yes:`<ul><li>중국에서 도시-연도별 지역 AI 수요와 개인 임금의 정(+)의 관계 (고정효과 모형, 같은 개인·지역 내 변화)</li><li>임금 상승이 여성, 서부 성과 주요 AI 클러스터 도시, 서비스 지향적·저숙련 직업에 집중된다는 이질성</li><li>같은 기술 확산이 집단에 따라 다른 방향으로 작용할 수 있다는 점</li></ul>`,
+ no:`<ul><li>기업의 실제 AI 도입과 고용. 수요 지표는 구인공고 기반임</li><li>도시 수준 충격(산업 정책, 인구 이동)의 영향을 완전히 배제한 결과. 동시성을 완전히 배제하기 어려움</li><li>성별 격차가 생기는 메커니즘. 직접 식별되지 않음</li><li>어떤 정책이 격차를 줄이는지. 이 연구가 검증하지 않음</li><li>다른 국가에도 같은 결과가 나타나는지. 제도 환경 차이로 일반화가 제한됨</li></ul>`
+};
+seg('seg-read',v=>{$('#read-panel').innerHTML=read[v]});
+</script>
+</body>
+</html>
